@@ -1,0 +1,561 @@
+{
+  "mappings": [
+    {
+      "parent_id": "SYS-ACCECOSYSTEM",
+      "child_ids": [
+        "SYS-ACCSYSTEM",
+        "SYS-ACCORE",
+        "SYS-ACCOMMERCE",
+        "SYS-ACMANAGEMENT",
+        "SYS-ACCMARED-SUP",
+        "SYS-ACCMARED-COU",
+        "ACT-INDIVIDUAL",
+        "ACT-INST-EMPLOYEE",
+        "ACT-INST-ADMIN",
+        "ACT-PLATFORM-ADMIN",
+        "ACT-SUPPORT-STAFF",
+        "ACT-DELIVERY-SUPERVISOR",
+        "ACT-COURIER",
+        "ACT-VISITOR",
+        "EXT-PAYMENT-PROVIDER",
+        "EXT-PACKAGE-CDN"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/landscape.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACCSYSTEM",
+      "child_ids": [
+        "CNT-ACC-APIGATEWAY",
+        "CNT-ACC-IDENTITY",
+        "CNT-ACC-INSTREG",
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-CATALOG",
+        "CNT-ACC-SEARCH",
+        "CNT-ACC-OFFER",
+        "CNT-ACC-CART",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-DELIVERY",
+        "CNT-ACC-NOTIFICATIONS",
+        "CNT-ACC-AUDIT",
+        "CNT-ACC-SOFTCAT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-PLATFORMADMIN",
+        "CNT-ACC-EVENTBUS"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c2-containers/accsystem/container-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACCORE",
+      "child_ids": [
+        "CNT-ACR-PRODUCTMASTER",
+        "CNT-ACR-INVENTORY",
+        "CNT-ACR-SALES",
+        "CNT-ACR-FINANCE",
+        "CNT-ACR-ORGUSERS",
+        "CNT-ACR-COMMERCE",
+        "CNT-ACR-CONNECTOR",
+        "CNT-ACR-OUTBOX"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/systems/SYS-ACCORE.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACCOMMERCE",
+      "child_ids": [
+        "CNT-ACE-MOBILEAPP"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/systems/SYS-ACCOMMERCE.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACMANAGEMENT",
+      "child_ids": [
+        "CNT-ACM-PUBLIC",
+        "CNT-ACM-ADMIN"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/systems/SYS-ACMANAGEMENT.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACCMARED-SUP",
+      "child_ids": [
+        "CNT-AMD-SUPERVISOR"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/systems/SYS-ACCMARED-SUP.md"
+      ]
+    },
+    {
+      "parent_id": "SYS-ACCMARED-COU",
+      "child_ids": [
+        "CNT-AMD-COURIER"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c1-context/systems/SYS-ACCMARED-COU.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-ORDERS",
+      "child_ids": [
+        "CMP-ORD-SAGA",
+        "CMP-ORD-STATEMACHINE",
+        "CMP-ORD-MULTISELLER",
+        "CMP-ORD-SNAPSHOT",
+        "CMP-ORD-CANCEL"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-ORDERS/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-INTEGRATION",
+      "child_ids": [
+        "CMP-INT-GATEWAY",
+        "CMP-INT-PUBLICATION",
+        "CMP-INT-RESERVATION",
+        "CMP-INT-ORDERNOTIFY"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-INTEGRATION/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-PAYMENT",
+      "child_ids": [
+        "CMP-PAY-ORCHESTRATOR",
+        "CMP-PAY-ADAPTER",
+        "CMP-PAY-RECONCILIATION",
+        "CMP-PAY-REFUND"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-PAYMENT/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-LICENSE",
+      "child_ids": [
+        "CMP-LIC-ISSUANCE",
+        "CMP-LIC-ENTITLEMENT",
+        "CMP-LIC-LIFECYCLE",
+        "CMP-LIC-OFFLINE"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-LICENSE/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-IDENTITY",
+      "child_ids": [
+        "CMP-IDN-AUTH",
+        "CMP-IDN-RBAC",
+        "CMP-IDN-SESSION",
+        "CMP-IDN-TENANCY"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-IDENTITY/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-CATALOG",
+      "child_ids": [
+        "CMP-CAT-LISTING",
+        "CMP-CAT-VALIDATION",
+        "CMP-CAT-SEARCHSYNC"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACC-CATALOG/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACR-CONNECTOR",
+      "child_ids": [
+        "CMP-CON-PUBLISHER",
+        "CMP-CON-RESERVATION",
+        "CMP-CON-ORDERRECEIVER",
+        "CMP-CON-LICENSECHECK"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "c3-components/CNT-ACR-CONNECTOR/component-diagram.md"
+      ]
+    },
+    {
+      "parent_id": "OP-CHECKOUT",
+      "child_ids": [
+        "FN-ORD-CHECKOUT"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-RESERVE",
+      "child_ids": [
+        "FN-ORD-RESERVE"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-ORDER-CONFIRM",
+      "child_ids": [
+        "FN-ORD-CONFIRM"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-PAY-AUTHORIZE",
+      "child_ids": [
+        "FN-PAY-AUTHORIZE"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-LIC-ACTIVATE",
+      "child_ids": [
+        "FN-LIC-ACTIVATE"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-LIC-VALIDATE",
+      "child_ids": [
+        "FN-LIC-VALIDATE"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-PUBLISH-LISTING",
+      "child_ids": [
+        "FN-INT-PUBLISH"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "ADR-001",
+      "child_ids": [
+        "SYS-ACCSYSTEM",
+        "SYS-ACCORE"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-001.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-002",
+      "child_ids": [
+        "SYS-ACCORE",
+        "CNT-ACR-PRODUCTMASTER",
+        "CNT-ACR-INVENTORY",
+        "CNT-ACR-ORGUSERS"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-002.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-003",
+      "child_ids": [
+        "SYS-ACCOMMERCE",
+        "SYS-ACCORE",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-CART"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-003.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-004",
+      "child_ids": [
+        "CNT-ACC-CATALOG",
+        "CMP-CAT-LISTING",
+        "CNT-ACR-PRODUCTMASTER"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-004.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-005",
+      "child_ids": [
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-EVENTBUS",
+        "CNT-ACR-OUTBOX",
+        "CNT-ACR-CONNECTOR"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-005.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-006",
+      "child_ids": [
+        "CNT-ACC-ORDERS",
+        "CMP-ORD-SAGA",
+        "CMP-INT-RESERVATION",
+        "CMP-CON-RESERVATION"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-006.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-007",
+      "child_ids": [
+        "CNT-ACC-ORDERS",
+        "CMP-ORD-SAGA",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-DELIVERY"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-007.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-008",
+      "child_ids": [
+        "SYS-ACCMARED-SUP",
+        "SYS-ACCMARED-COU",
+        "CNT-ACC-DELIVERY"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-008.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-009",
+      "child_ids": [
+        "SYS-ACMANAGEMENT",
+        "CNT-ACC-SOFTCAT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-PLATFORMADMIN"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-009.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-010",
+      "child_ids": [
+        "CNT-ACC-SOFTCAT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-IDENTITY",
+        "CMP-LIC-ENTITLEMENT"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-010.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-011",
+      "child_ids": [
+        "CNT-ACC-IDENTITY",
+        "CNT-ACC-PLATFORMADMIN",
+        "CNT-ACC-AUDIT"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-011.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-012",
+      "child_ids": [
+        "SYS-ACCSYSTEM",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-LICENSE"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-012.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-013",
+      "child_ids": [
+        "CMP-ORD-SAGA",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-INTEGRATION"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-013.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-014",
+      "child_ids": [
+        "CMP-LIC-OFFLINE",
+        "CMP-CON-LICENSECHECK",
+        "CNT-ACC-LICENSE"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-014.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-CATALOG",
+      "child_ids": [
+        "IF-ACC-CATALOG-QUERY"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-ORDERS",
+      "child_ids": [
+        "IF-ACC-ORDER-CREATE"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-INTEGRATION",
+      "child_ids": [
+        "IF-ACC-RESERVE-SAGA"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-PAYMENT",
+      "child_ids": [
+        "IF-ACC-PAYMENT-WEBHOOK"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-EVENTBUS",
+      "child_ids": [
+        "IF-ACC-EVENT-ENVELOPE"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-LICENSE",
+      "child_ids": [
+        "IF-ACC-LICENSE-VALIDATE"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACC-SOFTCAT",
+      "child_ids": [
+        "IF-ACC-SOFTDL"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    },
+    {
+      "parent_id": "CNT-ACR-CONNECTOR",
+      "child_ids": [
+        "IF-ACR-PUBLISH-EVENT",
+        "IF-ACR-RESERVATION-RESP"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "supporting-views/interface-contracts.md"
+      ]
+    }
+  ]
+}

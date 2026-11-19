@@ -1,0 +1,170 @@
+{
+  "mappings": [
+    {
+      "parent_id": "SYS-PARCELFLOW",
+      "child_ids": [
+        "ACT-MERCHANT",
+        "EXT-CARRIER",
+        "CNT-WEB",
+        "CNT-API",
+        "CNT-DB"
+      ],
+      "kind": "CONTEXT_TO_CONTAINER",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CNT-WEB",
+      "child_ids": [
+        "CMP-WEB-FORM",
+        "CMP-WEB-STATUS"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CNT-API",
+      "child_ids": [
+        "CMP-API-VALIDATION",
+        "CMP-API-BOOKING",
+        "CMP-API-REPOSITORY"
+      ],
+      "kind": "CONTAINER_TO_COMPONENT",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CNT-DB",
+      "child_ids": [],
+      "kind": "EXCEPTION",
+      "status": "COMPLETE",
+      "doc_refs": [],
+      "exception": {
+        "reason": "Data store decomposed in data architecture, not software components.",
+        "replacement_docs": [
+          "data-architecture/data-ownership.md",
+          "data-architecture/data-models/parcel-record.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "parent_id": "CMP-WEB-FORM",
+      "child_ids": [
+        "CODE-WEB-FORM"
+      ],
+      "kind": "COMPONENT_TO_CODE",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CMP-WEB-STATUS",
+      "child_ids": [
+        "CODE-WEB-STATUS"
+      ],
+      "kind": "COMPONENT_TO_CODE",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CMP-API-VALIDATION",
+      "child_ids": [
+        "CODE-API-VALIDATOR"
+      ],
+      "kind": "COMPONENT_TO_CODE",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CMP-API-BOOKING",
+      "child_ids": [
+        "CODE-API-ORCHESTRATOR"
+      ],
+      "kind": "COMPONENT_TO_CODE",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "CMP-API-REPOSITORY",
+      "child_ids": [
+        "CODE-API-REPO"
+      ],
+      "kind": "COMPONENT_TO_CODE",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-SHIPMENT-VALIDATION",
+      "child_ids": [
+        "FN-ORDER-001"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "OP-SHIPMENT-BOOKING",
+      "child_ids": [
+        "FN-ORDER-002"
+      ],
+      "kind": "OPERATION_TO_FUNCTION",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "EXT-CARRIER",
+      "child_ids": [
+        "IF-CARRIER-001"
+      ],
+      "kind": "EXCEPTION",
+      "status": "COMPLETE",
+      "doc_refs": [],
+      "exception": {
+        "reason": "External internals excluded; interface specified.",
+        "replacement_docs": [
+          "interfaces/integrations/carrier-booking.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "parent_id": "ADR-001",
+      "child_ids": [
+        "CNT-DB",
+        "CNT-WEB",
+        "CNT-API"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "ADR-002",
+      "child_ids": [
+        "CNT-DB",
+        "CNT-WEB",
+        "CNT-API"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": []
+    },
+    {
+      "parent_id": "ADR-003",
+      "child_ids": [
+        "CNT-API",
+        "CMP-API-VALIDATION",
+        "CMP-API-BOOKING",
+        "CMP-API-REPOSITORY"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/adr/ADR-003.md"
+      ]
+    }
+  ]
+}

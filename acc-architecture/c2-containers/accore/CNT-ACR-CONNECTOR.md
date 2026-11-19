@@ -1,0 +1,101 @@
+# CNT-ACR-CONNECTOR — Platform Connector (ACCore)
+
+**Parent:** SYS-ACCORE | **Level:** C2 | **C3:** Selected
+
+---
+
+## 1. Identity
+
+| Field | Value |
+|---|---|
+| **Container ID** | CNT-ACR-CONNECTOR |
+| **Purpose** | Integration bridge between an ACCore institution instance and the ACCSystem platform. Handles outbound product publication events, inbound reservation handling, inbound order event reception, and license validation. Implements Outbox/Inbox pattern for reliable messaging. |
+| **Scope Boundary** | Owns integration protocol and message relay logic. Does NOT own product master data (CNT-ACR-PRODUCTMASTER) or inventory state (CNT-ACR-INVENTORY). |
+
+CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، مزامنة المنتجات، استقبال الطلبات والأحداث وإرسال الردود."
+
+---
+
+## 2. Collaborators
+
+| Collaborator | Direction | Role |
+|---|---|---|
+| CNT-ACR-PRODUCTMASTER | Inbound | Product data for publication events |
+| CNT-ACR-INVENTORY | Bidirectional | Checks and commits inventory reservations |
+| CNT-ACR-SALES | Outbound | Delivers confirmed order data for sales record creation |
+| CNT-ACR-OUTBOX | Bidirectional | Reads outbound events from Outbox; writes incoming events to Inbox |
+| CNT-ACC-INTEGRATION | Bidirectional | IF-ACR-PUBLISH-EVENT (outbound), IF-ACR-RESERVATION-RESP (outbound), IF-ACC-RESERVE-SAGA (inbound) |
+| CNT-ACC-LICENSE | Inbound (via IF-ACC-LICENSE-VALIDATE) | Online license validation requests |
+
+---
+
+## 3. Technology Stack
+
+| Aspect | Status | Note |
+|---|---|---|
+| Transport | CONFIRMED (idea.md §4.3) | HTTPS/TLS; OAuth 2.0 service-to-service auth |
+| Messaging pattern | CONFIRMED (idea.md §6.5) | Outbox/Inbox; at-least-once; idempotency keys |
+| Connectivity model | CONFIRMED (idea.md §4.3) | Outbound polling or secure message channel (depending on hosting) |
+
+---
+
+## 4. Data Owned
+
+- Outbox: queued outbound events (product publication, reservation responses)
+- Inbox: received inbound events (reservation requests, order confirmations) with deduplication state
+- ID mapping table: `{platform_institution_id ↔ local_institution_reference}`
+
+---
+
+## 5. Interfaces
+
+- **IF-ACR-PUBLISH-EVENT** (provider): Product publication events → CNT-ACC-INTEGRATION
+- **IF-ACR-RESERVATION-RESP** (provider): Reservation responses → CNT-ACC-INTEGRATION
+- **IF-ACC-RESERVE-SAGA** (consumer): Receives reservation requests from CNT-ACC-INTEGRATION
+- **IF-ACC-LICENSE-VALIDATE** (consumer): Online license validation
+
+---
+
+## 6. Failure Modes
+
+| Failure | Response |
+|---|---|
+| ACCSystem unreachable | Events queued in Outbox; retried with exponential backoff on reconnect — CONFIRMED (idea.md §4.2) |
+| Duplicate reservation request | Inbox deduplication by idempotency_key — CONFIRMED (idea.md §6.5) |
+| Reservation commit fails at inventory | ReservationRejected response sent back to ACCSystem |
+
+---
+
+## 7. Security
+
+- CONFIRMED (idea.md §4.3): TLS + service-to-service authentication for all platform connections
+- CONFIRMED (idea.md §9): Institution identity included in every message
+- CONFIRMED (idea.md §4.3): License validation does not expose ERP data to ACCSystem
+
+---
+
+## 8. Operational Concerns
+
+| Concern | Note |
+|---|---|
+| SLI | CONFIRMED (idea.md §11): "Integration Health — آخر مزامنة لكل مؤسسة، زمن استجابة ACCore" |
+| Offline operation | CONFIRMED (idea.md §4.2): ACCore can queue messages during connectivity loss |
+
+---
+
+## 9. C3 Disposition
+
+**SELECTED for C3 decomposition.** Components:
+- CMP-CON-PUBLISHER — Product Publication Client
+- CMP-CON-RESERVATION — Reservation Handler
+- CMP-CON-ORDERRECEIVER — Order Event Receiver
+- CMP-CON-LICENSECHECK — License Validator (offline capable)
+
+See: `c3-components/CNT-ACR-CONNECTOR/`
+
+
+---
+
+## 8. Open Risks and Decisions
+
+- Connectivity mode is governed by ADR-015: outbound-initiated connector is the default for firewalled institutions; protected inbound mode is optional. Transport selection and channel parameters remain controlled operations policy.

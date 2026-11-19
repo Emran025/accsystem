@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "status": "proposed",
+      "doc": "decisions/adr/ADR-001.md",
+      "affected_element_ids": [
+        "CNT-DB"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "status": "proposed",
+      "doc": "decisions/adr/ADR-002.md",
+      "affected_element_ids": [
+        "CNT-WEB",
+        "CNT-API"
+      ]
+    },
+    {
+      "id": "ADR-003",
+      "status": "proposed",
+      "doc": "decisions/adr/ADR-003.md",
+      "affected_element_ids": [
+        "CNT-API",
+        "CMP-API-VALIDATION",
+        "CMP-API-BOOKING",
+        "CMP-API-REPOSITORY"
+      ]
+    }
+  ]
+}

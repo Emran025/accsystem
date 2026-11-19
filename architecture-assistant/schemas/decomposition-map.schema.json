@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "decomposition-map.schema.json",
+  "type": "object",
+  "required": [
+    "mappings"
+  ],
+  "properties": {
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "parent_id",
+          "child_ids",
+          "kind"
+        ],
+        "properties": {
+          "parent_id": {
+            "type": "string"
+          },
+          "child_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kind": {
+            "enum": [
+              "CONTEXT_TO_CONTAINER",
+              "CONTAINER_TO_COMPONENT",
+              "COMPONENT_TO_CODE",
+              "OPERATION_TO_FUNCTION",
+              "DECISION_TO_ELEMENT",
+              "EXCEPTION"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "exception": {
+            "type": "object"
+          },
+          "doc_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

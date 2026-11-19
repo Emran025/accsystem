@@ -1,0 +1,1 @@
+Parent CNT-WEB. Captures origin, destination and parcel dimensions; client-side required-field feedback; does not determine authoritative price or persist data. Sends typed request to API; reports field errors.

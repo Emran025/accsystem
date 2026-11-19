@@ -1,0 +1,11 @@
+# Skill routing and durable control flow
+
+1. Discovery/scale screen → `discovery`; scope/C1 → `scope-c1`.
+2. Scope/strategy creates a complete source/element inventory, initializes `validation/architecture-consistency-ledger.md`, records terminology/scope/authority and resolves or records contradictions. Write a view-selection plan and initialize diagram coverage. Architecture-style assessment → `architecture-style` when distribution is relevant; significant choices → `adr-governance`.
+3. C2 → `container-decomposition`; selected C3 → `component-decomposition`; diagram triage/revision → `diagram-selection`.
+4. Selected C4/functions → `code-and-functions`; selected supporting/concern views follow the view plan.
+5. Validation/release → `traceability-validation`; modifications → `change-impact` plus affected skill(s).
+6. Every stage consumes relevant retrieved project evidence. Index each project separately; cite source paths and stable IDs. Search excerpts are leads, not proof of a complete source review. If retrieval is empty, widen search or inspect original documents; absence from the index is not proof of absence.
+7. At every stage boundary, call `checkpoint_architecture_stage` with status, durable summary, changed artifacts, blockers and ordered next actions. At a model handoff, reread the portable checkpoint and verify the last completed stage before proceeding.
+8. Apply `OUTPUT-DEPTH-AND-AMPLIFIER.md` and `CONSISTENCY-AND-POLISH-POLICY.md` to every artifact. Update the ledger and diagram-coverage matrix at each stage. At final validation, call `validate_architecture`, `review_artifact_depth`, and `validate_consistency_artifacts`; independently challenge inventory and diagram coverage, artifact depth, cross-artifact contradictions, provenance, failure cases, readiness gaps and gate/report consistency; repair evidence-supported omissions, reread every changed/dependent file, repeat the cross-check to a fixed point, and rerun all checks.
+9. Autonomous mode is default: complete safe stages without approval pauses. Missing evidence becomes an explicit assumption/unknown with impact, owner/action and revisit trigger. Never invent waivers or claim blocked/unverified checks passed.

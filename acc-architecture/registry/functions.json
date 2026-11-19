@@ -1,0 +1,11 @@
+{
+  "functions": [
+    {"id":"FN-ORD-CHECKOUT","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-CART","parent_component":"CNT-ACC-CART","doc":"functions/specs/FN-ORD-CHECKOUT.md"},
+    {"id":"FN-ORD-RESERVE","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-ORDERS","parent_component":"CMP-ORD-SAGA","doc":"functions/specs/FN-ORD-RESERVE.md"},
+    {"id":"FN-ORD-CONFIRM","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-ORDERS","parent_component":"CMP-ORD-SAGA","doc":"functions/specs/FN-ORD-CONFIRM.md"},
+    {"id":"FN-PAY-AUTHORIZE","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-PAYMENT","parent_component":"CMP-PAY-ORCHESTRATOR","doc":"functions/specs/FN-PAY-AUTHORIZE.md"},
+    {"id":"FN-LIC-ACTIVATE","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-LICENSE","parent_component":"CMP-LIC-ISSUANCE","doc":"functions/specs/FN-LIC-ACTIVATE.md"},
+    {"id":"FN-LIC-VALIDATE","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-LICENSE","parent_component":"CMP-LIC-ENTITLEMENT","doc":"functions/specs/FN-LIC-VALIDATE.md"},
+    {"id":"FN-INT-PUBLISH","parent_system":"SYS-ACCSYSTEM","parent_container":"CNT-ACC-INTEGRATION","parent_component":"CMP-INT-PUBLICATION","doc":"functions/specs/FN-INT-PUBLISH.md"}
+  ]
+}

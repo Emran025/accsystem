@@ -1,0 +1,13 @@
+{
+  "interfaces": [
+    {"id":"IF-ACC-CATALOG-QUERY","provider_id":"CNT-ACC-CATALOG","consumer_ids":["CNT-ACE-MOBILEAPP","CNT-ACR-COMMERCE","CNT-ACC-APIGATEWAY"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-ORDER-CREATE","provider_id":"CNT-ACC-ORDERS","consumer_ids":["CNT-ACE-MOBILEAPP","CNT-ACR-COMMERCE","CNT-ACC-APIGATEWAY"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-RESERVE-SAGA","provider_id":"CNT-ACC-INTEGRATION","consumer_ids":["CNT-ACC-ORDERS","CMP-ORD-SAGA"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-PAYMENT-WEBHOOK","provider_id":"EXT-PAYMENT-PROVIDER","consumer_ids":["CNT-ACC-PAYMENT","CMP-PAY-ORCHESTRATOR"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-EVENT-ENVELOPE","provider_id":"CNT-ACC-EVENTBUS","consumer_ids":["CNT-ACC-ORDERS","CNT-ACC-PAYMENT","CNT-ACC-DELIVERY","CNT-ACC-INTEGRATION","CNT-ACC-LICENSE","CNT-ACC-NOTIFICATIONS"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-LICENSE-VALIDATE","provider_id":"CNT-ACC-LICENSE","consumer_ids":["CNT-ACR-CONNECTOR","CMP-CON-LICENSECHECK"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-SOFTDL","provider_id":"CNT-ACC-SOFTCAT","consumer_ids":["CNT-ACM-PUBLIC","ACT-VISITOR","ACT-INST-ADMIN"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACR-PUBLISH-EVENT","provider_id":"CNT-ACR-CONNECTOR","consumer_ids":["CNT-ACC-INTEGRATION","CMP-INT-GATEWAY"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACR-RESERVATION-RESP","provider_id":"CNT-ACR-CONNECTOR","consumer_ids":["CNT-ACC-INTEGRATION","CMP-INT-RESERVATION"],"contract_ref":"supporting-views/interface-contracts.md"}
+  ]
+}

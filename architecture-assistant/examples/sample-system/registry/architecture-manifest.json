@@ -1,0 +1,16 @@
+{
+  "system_id": "SYS-PARCELFLOW",
+  "slug": "sample-system",
+  "name": "ParcelFlow",
+  "language": "English",
+  "stages": {
+    "discovery": "PASSED",
+    "scope": "PASSED",
+    "C1": "PASSED",
+    "C2": "PASSED",
+    "C3": "PASSED",
+    "C4": "PASSED",
+    "validation": "IN_PROGRESS"
+  },
+  "sample": "All assertions are illustrative; unresolved production concerns are disclosed."
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "architectural-element.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "type",
+    "level",
+    "scope_status",
+    "decomposition_status",
+    "parent_id",
+    "doc"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string"
+    },
+    "level": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "FUNCTION",
+        "INTERFACE",
+        "DATA",
+        "DECISION"
+      ]
+    },
+    "scope_status": {
+      "enum": [
+        "IN_SCOPE",
+        "OUT_OF_SCOPE",
+        "EXTERNAL",
+        "UNRESOLVED"
+      ]
+    },
+    "decomposition_status": {
+      "enum": [
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "COMPLETE",
+        "EXCEPTION",
+        "BLOCKED"
+      ]
+    },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "doc": {
+      "type": "string"
+    },
+    "children_expected": {
+      "type": "boolean"
+    },
+    "exception": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

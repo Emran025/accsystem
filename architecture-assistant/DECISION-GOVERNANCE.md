@@ -1,0 +1,3 @@
+# Decision governance
+
+Use one ADR per significant choice. Status is proposed, accepted, rejected, superseded, or deprecated. Capture context, problem, requirements/constraints, alternatives, criteria, trade-offs, decision, rationale, consequences, risks, operational/security/scalability/cost effects, confidence, assumptions, reconsideration triggers, and affected architecture IDs. Distinguish facts, proposals, assumptions, and approved decisions. Technology selection must consider actual requirements, constraints, team/operations when known, complexity, maintainability, and costs; otherwise mark unresolved. Do not treat a recommendation as approval.

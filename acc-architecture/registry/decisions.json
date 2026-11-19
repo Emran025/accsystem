@@ -1,0 +1,253 @@
+{
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "status": "proposed",
+      "doc": "decisions/ADR-001.md",
+      "affected_element_ids": [
+        "SYS-ACCSYSTEM",
+        "SYS-ACCORE"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "status": "proposed",
+      "doc": "decisions/ADR-002.md",
+      "affected_element_ids": [
+        "SYS-ACCORE",
+        "CNT-ACR-PRODUCTMASTER",
+        "CNT-ACR-INVENTORY",
+        "CNT-ACR-ORGUSERS"
+      ]
+    },
+    {
+      "id": "ADR-003",
+      "status": "proposed",
+      "doc": "decisions/ADR-003.md",
+      "affected_element_ids": [
+        "SYS-ACCOMMERCE",
+        "SYS-ACCORE",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-CART"
+      ]
+    },
+    {
+      "id": "ADR-004",
+      "status": "proposed",
+      "doc": "decisions/ADR-004.md",
+      "affected_element_ids": [
+        "CNT-ACC-CATALOG",
+        "CMP-CAT-LISTING",
+        "CNT-ACR-PRODUCTMASTER"
+      ]
+    },
+    {
+      "id": "ADR-005",
+      "status": "proposed",
+      "doc": "decisions/ADR-005.md",
+      "affected_element_ids": [
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-EVENTBUS",
+        "CNT-ACR-OUTBOX",
+        "CNT-ACR-CONNECTOR"
+      ]
+    },
+    {
+      "id": "ADR-006",
+      "status": "proposed",
+      "doc": "decisions/ADR-006.md",
+      "affected_element_ids": [
+        "CNT-ACC-ORDERS",
+        "CMP-ORD-SAGA",
+        "CMP-INT-RESERVATION",
+        "CMP-CON-RESERVATION"
+      ]
+    },
+    {
+      "id": "ADR-007",
+      "status": "proposed",
+      "doc": "decisions/ADR-007.md",
+      "affected_element_ids": [
+        "CNT-ACC-ORDERS",
+        "CMP-ORD-SAGA",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-DELIVERY"
+      ]
+    },
+    {
+      "id": "ADR-008",
+      "status": "proposed",
+      "doc": "decisions/ADR-008.md",
+      "affected_element_ids": [
+        "SYS-ACCMARED-SUP",
+        "SYS-ACCMARED-COU",
+        "CNT-ACC-DELIVERY"
+      ]
+    },
+    {
+      "id": "ADR-009",
+      "status": "proposed",
+      "doc": "decisions/ADR-009.md",
+      "affected_element_ids": [
+        "SYS-ACMANAGEMENT",
+        "CNT-ACC-SOFTCAT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-PLATFORMADMIN"
+      ]
+    },
+    {
+      "id": "ADR-010",
+      "status": "proposed",
+      "doc": "decisions/ADR-010.md",
+      "affected_element_ids": [
+        "CNT-ACC-SOFTCAT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-IDENTITY",
+        "CMP-LIC-ENTITLEMENT"
+      ]
+    },
+    {
+      "id": "ADR-011",
+      "status": "proposed",
+      "doc": "decisions/ADR-011.md",
+      "affected_element_ids": [
+        "CNT-ACC-IDENTITY",
+        "CNT-ACC-PLATFORMADMIN",
+        "CNT-ACC-AUDIT"
+      ]
+    },
+    {
+      "id": "ADR-012",
+      "status": "proposed",
+      "doc": "decisions/ADR-012.md",
+      "affected_element_ids": [
+        "SYS-ACCSYSTEM",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-LICENSE"
+      ]
+    },
+    {
+      "id": "ADR-013",
+      "status": "proposed",
+      "doc": "decisions/ADR-013.md",
+      "affected_element_ids": [
+        "CMP-ORD-SAGA",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-INTEGRATION"
+      ]
+    },
+    {
+      "id": "ADR-014",
+      "status": "proposed",
+      "doc": "decisions/ADR-014.md",
+      "affected_element_ids": [
+        "CMP-LIC-OFFLINE",
+        "CMP-CON-LICENSECHECK",
+        "CNT-ACC-LICENSE"
+      ]
+    },
+    {
+      "id": "ADR-015",
+      "status": "proposed",
+      "doc": "decisions/ADR-015.md",
+      "affected_element_ids": [
+        "SYS-ACCORE",
+        "CNT-ACR-CONNECTOR",
+        "CNT-ACC-INTEGRATION"
+      ]
+    },
+    {
+      "id": "ADR-016",
+      "status": "proposed",
+      "doc": "decisions/ADR-016.md",
+      "affected_element_ids": [
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CMP-ORD-MULTISELLER",
+        "CMP-PAY-RECONCILIATION"
+      ]
+    },
+    {
+      "id": "ADR-017",
+      "status": "proposed",
+      "doc": "decisions/ADR-017.md",
+      "affected_element_ids": [
+        "SYS-ACCECOSYSTEM",
+        "CNT-ACC-IDENTITY",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-PAYMENT"
+      ]
+    },
+    {
+      "id": "ADR-018",
+      "status": "proposed",
+      "doc": "decisions/ADR-018.md",
+      "affected_element_ids": [
+        "CMP-ORD-SAGA",
+        "CMP-INT-RESERVATION",
+        "CMP-CON-RESERVATION",
+        "IF-ACC-RESERVE-SAGA",
+        "IF-ACR-RESERVATION-RESP",
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-ORDERS"
+      ]
+    },
+    {
+      "id": "ADR-019",
+      "status": "proposed",
+      "doc": "decisions/ADR-019.md",
+      "affected_element_ids": [
+        "CMP-CON-ORDERRECEIVER",
+        "CNT-ACR-FINANCE",
+        "CNT-ACR-SALES",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-INTEGRATION"
+      ]
+    },
+    {
+      "id": "ADR-020",
+      "status": "proposed",
+      "doc": "decisions/ADR-020.md",
+      "affected_element_ids": [
+        "SYS-ACCSYSTEM",
+        "SYS-ACCORE",
+        "SYS-ACCOMMERCE",
+        "SYS-ACMANAGEMENT",
+        "SYS-ACCMARED-SUP",
+        "SYS-ACCMARED-COU"
+      ]
+    },
+    {
+      "id": "ADR-021",
+      "status": "proposed",
+      "doc": "decisions/ADR-021.md",
+      "affected_element_ids": [
+        "IF-ACC-RESERVE-SAGA",
+        "IF-ACR-RESERVATION-RESP",
+        "IF-ACC-CATALOG-QUERY",
+        "IF-ACC-ORDER-CREATE",
+        "IF-ACC-PAYMENT-WEBHOOK",
+        "IF-ACC-EVENT-ENVELOPE",
+        "IF-ACC-LICENSE-VALIDATE",
+        "IF-ACC-SOFTDL",
+        "IF-ACR-PUBLISH-EVENT"
+      ]
+    },
+    {
+      "id": "ADR-022",
+      "status": "proposed",
+      "doc": "decisions/ADR-022.md",
+      "affected_element_ids": [
+        "SYS-ACCECOSYSTEM",
+        "CMP-ORD-SAGA",
+        "CMP-LIC-OFFLINE",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-IDENTITY"
+      ]
+    }
+  ]
+}

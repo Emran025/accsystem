@@ -1,0 +1,26 @@
+{
+  "system_id": "SYS-ACCECOSYSTEM",
+  "slug": "acc-ecosystem",
+  "name": "ACC Ecosystem",
+  "language": "English",
+  "stages": {
+    "discovery": "PASSED",
+    "scope": "PASSED",
+    "C1": "PASSED",
+    "C2": "PASSED",
+    "C3": "PASSED",
+    "C4": "NOT_STARTED",
+    "validation": "IN_PROGRESS"
+  },
+  "note": "Owner decisions from prompt.md were applied as ACCEPTED only where explicit. Architect-selected defaults are PROPOSED/ARCHITECTURAL DEFAULT and require ratification; configurable commercial, legal, provider, and operational policies remain gated.",
+  "validation_summary": {
+    "validate_architecture": "PASS",
+    "validate_artifact_depth": "STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW",
+    "last_run": "2026-11-19T04:00:00+03:00",
+    "elements_count": 105,
+    "open_decisions": 24,
+    "adrs_status": "PROPOSED_WITH_OWNER_DECISIONS_LABELLED",
+    "incomplete_outlines": 0,
+    "adrs_review_package": "decisions/ADR-STAKEHOLDER-REVIEW-GATE.md"
+  }
+}

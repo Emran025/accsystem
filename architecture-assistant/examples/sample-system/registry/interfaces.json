@@ -1,0 +1,15 @@
+{
+  "interfaces": [
+    {
+      "id": "IF-CARRIER-001",
+      "name": "Carrier booking API",
+      "kind": "external_api",
+      "provider_id": "EXT-CARRIER",
+      "consumer_ids": [
+        "CNT-API"
+      ],
+      "protocol": "HTTPS proposed",
+      "contract_ref": "interfaces/integrations/carrier-booking.md"
+    }
+  ]
+}

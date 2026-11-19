@@ -1,0 +1,20 @@
+{
+  "functions": [
+    {
+      "id": "FN-ORDER-001",
+      "name": "validate shipment request",
+      "parent_system": "SYS-PARCELFLOW",
+      "parent_container": "CNT-API",
+      "parent_component": "CMP-API-VALIDATION",
+      "doc": "functions/specifications/FN-ORDER-001.md"
+    },
+    {
+      "id": "FN-ORDER-002",
+      "name": "book shipment",
+      "parent_system": "SYS-PARCELFLOW",
+      "parent_container": "CNT-API",
+      "parent_component": "CMP-API-BOOKING",
+      "doc": "functions/specifications/FN-ORDER-002.md"
+    }
+  ]
+}

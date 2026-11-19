@@ -1,0 +1,1 @@
+For this fixture, C3 is selected for CNT-API and CNT-WEB because each has distinct responsibilities that benefit from focused views. This is an example-specific decision, not a rule to decompose every container in every system. See `../diagram-plan.md` for dispositions and rationale; CNT-DB is represented at C2 and its data view is separate.

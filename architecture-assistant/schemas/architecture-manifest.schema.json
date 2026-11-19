@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "architecture-manifest.schema.json",
+  "type": "object",
+  "required": [
+    "system_id",
+    "slug",
+    "name",
+    "language",
+    "stages"
+  ],
+  "properties": {
+    "system_id": {
+      "type": "string",
+      "pattern": "^SYS-[A-Z0-9-]+$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "enum": [
+        "English",
+        "Arabic"
+      ]
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "NOT_STARTED",
+          "IN_PROGRESS",
+          "BLOCKED",
+          "PASSED",
+          "WAIVED"
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
+}

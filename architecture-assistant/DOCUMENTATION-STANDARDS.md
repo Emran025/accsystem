@@ -1,0 +1,3 @@
+# Documentation standards
+
+Markdown-first, navigable, focused files; one authoritative record per significant element; indexes link rather than duplicate. Include IDs, type, parent, purpose, responsibilities, boundaries, dependencies, interfaces, data, technology/rationale when relevant, interactions/failure/security, related decisions/diagrams, status and assumptions. Keep diagrams scoped and readable; multiple views rather than omitted elements. Follow user language (English/Arabic), preserve identifiers, maintain glossary. Local links should resolve. Use renderer-compatible text notation and state renderer limitations.

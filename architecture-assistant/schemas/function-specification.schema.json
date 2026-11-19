@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "function-specification.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "parent_system",
+    "parent_container",
+    "parent_component",
+    "purpose",
+    "responsibility",
+    "signature",
+    "parameters",
+    "return_type",
+    "preconditions",
+    "postconditions",
+    "business_rules",
+    "failure_scenarios",
+    "required_tests"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "parent_system": {
+      "type": "string"
+    },
+    "parent_container": {
+      "type": "string"
+    },
+    "parent_component": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "responsibility": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "return_type": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

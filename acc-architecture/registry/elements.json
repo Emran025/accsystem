@@ -1,0 +1,1562 @@
+﻿{
+    "elements":  [
+                     {
+                         "id":  "SYS-ACCECOSYSTEM",
+                         "name":  "ACC Ecosystem Portfolio",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  null,
+                         "doc":  "00-discovery/discovery-report.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACCSYSTEM",
+                         "name":  "ACCSystem Platform",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACCSYSTEM.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACCORE",
+                         "name":  "ACCore (per-institution ERP)",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACCORE.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACCOMMERCE",
+                         "name":  "ACCommerce",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACCOMMERCE.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACMANAGEMENT",
+                         "name":  "ACManagement Portal",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACMANAGEMENT.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACCMARED-SUP",
+                         "name":  "ACCMared Supervisor",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACCMARED-SUP.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "SYS-ACCMARED-COU",
+                         "name":  "ACCMared Courier",
+                         "type":  "system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "c1-context/systems/SYS-ACCMARED-COU.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ACT-INDIVIDUAL",
+                         "name":  "Individual Buyer",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual. Interaction described in scope and C1 docs.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-INST-EMPLOYEE",
+                         "name":  "Institution Employee / Seller",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-INST-ADMIN",
+                         "name":  "Institution Administrator",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-PLATFORM-ADMIN",
+                         "name":  "Platform Administrator",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-SUPPORT-STAFF",
+                         "name":  "Platform Support Staff",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-DELIVERY-SUPERVISOR",
+                         "name":  "Delivery Supervisor",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-COURIER",
+                         "name":  "Courier / Delivery Agent",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "ACT-VISITOR",
+                         "name":  "Public Portal Visitor",
+                         "type":  "person",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Human actor; contextual.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "EXT-PAYMENT-PROVIDER",
+                         "name":  "External Payment Provider(s)",
+                         "type":  "external_system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "EXTERNAL",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Third-party payment gateway; internals opaque. Interface contract is the boundary.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md",
+                                                                    "supporting-views/interface-contracts.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "EXT-PACKAGE-CDN",
+                         "name":  "Software Package CDN / Object Storage",
+                         "type":  "external_system",
+                         "level":  "C1",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "01-scope/actors-and-external-systems.md",
+                         "children_expected":  false,
+                         "scope_status":  "EXTERNAL",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Third-party CDN and object storage; internals opaque. Interface: signed download URLs.",
+                                           "replacement_docs":  [
+                                                                    "01-scope/actors-and-external-systems.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-APIGATEWAY",
+                         "name":  "API Gateway / BFF",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-APIGATEWAY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Routing/security cross-cut; no complex business logic to decompose into C3 components. Cross-cutting concerns documented in security-view.md and resilience-observability.md.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-APIGATEWAY.md",
+                                                                    "supporting-views/security-view.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-IDENTITY",
+                         "name":  "Identity \u0026 Access",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-IDENTITY.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-INSTREG",
+                         "name":  "Institution Registry",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-INSTREG.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Registry/CRUD service; complexity does not justify C3 decomposition at this stage. Deferred: revisit if multi-tier tenancy or complex approval workflows are added.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-INSTREG.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-INTEGRATION",
+                         "name":  "Institution Integration Gateway",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-INTEGRATION.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-CATALOG",
+                         "name":  "Catalog \u0026 Publication",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-CATALOG.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-SEARCH",
+                         "name":  "Search \u0026 Discovery",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-SEARCH.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Search index service; primary value is data-architecture view, not software-component decomposition. Data architecture documented in data-architecture.md. C3 deferred pending search-technology selection.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-SEARCH.md",
+                                                                    "supporting-views/data-architecture.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-OFFER",
+                         "name":  "Offer / Price / Availability",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-OFFER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Price/availability snapshot service; straightforward read-through with staleness policy. C3 deferred pending pricing-rule complexity decision (open decision in idea.md آ§12).",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-OFFER.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-CART",
+                         "name":  "Cart \u0026 Checkout",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-CART.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Stateful session service; key behavior documented in function specs FN-ORD-CHECKOUT. C3 deferred to implementation planning phase.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-CART.md",
+                                                                    "functions/specs/FN-ORD-CHECKOUT.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-ORDERS",
+                         "name":  "Order Management",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-ORDERS.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-PAYMENT",
+                         "name":  "Payment Orchestration",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-PAYMENT.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-DELIVERY",
+                         "name":  "Delivery Management",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-DELIVERY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Delivery domain; C3 deferred pending ACCMared integration design and delivery-provider scope decision (open decision آ§12).",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-DELIVERY.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-NOTIFICATIONS",
+                         "name":  "Notifications",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-NOTIFICATIONS.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Notification dispatch service; complexity low relative to other domains. C3 deferred to Phase 4+ planning.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-NOTIFICATIONS.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-AUDIT",
+                         "name":  "Audit \u0026 Observability",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-AUDIT.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Observability infrastructure; components described in resilience-observability.md. C3 not selected: standard logging/metrics/tracing patterns, not novel business logic.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-AUDIT.md",
+                                                                    "supporting-views/resilience-observability.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-SOFTCAT",
+                         "name":  "Software Catalog \u0026 Release Distribution",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-SOFTCAT.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Release catalog service; key workflows documented in dynamic-license-flow.md and dynamic-publication-flow.md. C3 conditional: revisit when release-signing pipeline design is planned.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-SOFTCAT.md",
+                                                                    "supporting-views/dynamic-license-flow.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-LICENSE",
+                         "name":  "License \u0026 Entitlement Management",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-LICENSE.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACC-PLATFORMADMIN",
+                         "name":  "Platform Administration \u0026 Support",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-PLATFORMADMIN.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Admin workflow service; key security controls documented in security-view.md. C3 conditional: revisit when approval workflow and JIT-access implementation is planned.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-PLATFORMADMIN.md",
+                                                                    "supporting-views/security-view.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACC-EVENTBUS",
+                         "name":  "Event Bus / Message Broker",
+                         "type":  "data_store",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCSYSTEM",
+                         "doc":  "c2-containers/accsystem/CNT-ACC-EVENTBUS.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Shared infrastructure; decomposed through interface contracts and observability docs, not software components.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accsystem/CNT-ACC-EVENTBUS.md",
+                                                                    "supporting-views/interface-contracts.md",
+                                                                    "supporting-views/resilience-observability.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-PRODUCTMASTER",
+                         "name":  "Product Master (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-PRODUCTMASTER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ERP module; source of truth for product data. C3 deferred: ACCore internal architecture is institution-owned; platform architecture defines the integration boundary, not ACCore internals.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-PRODUCTMASTER.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-INVENTORY",
+                         "name":  "Inventory \u0026 Warehousing (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-INVENTORY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ERP module; institution-internal. C3 deferred for same reason as CNT-ACR-PRODUCTMASTER.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-INVENTORY.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-SALES",
+                         "name":  "Sales \u0026 Procurement (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-SALES.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ERP module; institution-internal. C3 deferred.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-SALES.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-FINANCE",
+                         "name":  "Finance / Accounting (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-FINANCE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ERP module; institution-internal. Financial record rules are institution-defined (open decision آ§12). C3 deferred.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-FINANCE.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-ORGUSERS",
+                         "name":  "Organization \u0026 Users (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-ORGUSERS.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ERP module; institution-internal user management, independent of platform Identity \u0026 Access. C3 deferred.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-ORGUSERS.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-COMMERCE",
+                         "name":  "Commerce Workspace (ACCore)",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-COMMERCE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "ACCore\u0027s marketplace UI client; mirrors ACCommerce\u0027s role but embedded in ACCore. C3 deferred to implementation planning.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-COMMERCE.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACR-CONNECTOR",
+                         "name":  "Platform Connector (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-CONNECTOR.md",
+                         "children_expected":  true,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CNT-ACR-OUTBOX",
+                         "name":  "Outbox / Inbox (ACCore)",
+                         "type":  "service",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCORE",
+                         "doc":  "c2-containers/accore/CNT-ACR-OUTBOX.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Transactional messaging infrastructure; pattern documented in resilience-observability.md. No business-logic components to decompose.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accore/CNT-ACR-OUTBOX.md",
+                                                                    "supporting-views/resilience-observability.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACE-MOBILEAPP",
+                         "name":  "ACCommerce Mobile / Web App",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCOMMERCE",
+                         "doc":  "c2-containers/accommerce/CNT-ACE-MOBILEAPP.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Client application; UI decomposition deferred to frontend implementation planning. Key behavior documented in FR-002.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accommerce/CNT-ACE-MOBILEAPP.md",
+                                                                    "01-scope/scope-and-requirements.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACM-PUBLIC",
+                         "name":  "ACManagement Public Portal",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACMANAGEMENT",
+                         "doc":  "c2-containers/acmanagement/CNT-ACM-PUBLIC.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Unauthenticated web portal; UI decomposition deferred. Key content documented in SYS-ACMANAGEMENT.md and security-view.md.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/acmanagement/CNT-ACM-PUBLIC.md",
+                                                                    "supporting-views/security-view.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-ACM-ADMIN",
+                         "name":  "ACManagement Protected Admin Console",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACMANAGEMENT",
+                         "doc":  "c2-containers/acmanagement/CNT-ACM-ADMIN.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Authenticated admin web console; frontend decomposition deferred. Key workflows documented in security-view.md and dynamic-license-flow.md.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/acmanagement/CNT-ACM-ADMIN.md",
+                                                                    "supporting-views/security-view.md",
+                                                                    "supporting-views/dynamic-license-flow.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-AMD-SUPERVISOR",
+                         "name":  "ACCMared Supervisor Desktop App",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCMARED-SUP",
+                         "doc":  "c2-containers/accmared/CNT-AMD-SUPERVISOR.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Flutter desktop client; UI decomposition deferred to Phase 4 implementation planning.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accmared/CNT-AMD-SUPERVISOR.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CNT-AMD-COURIER",
+                         "name":  "ACCMared Courier Mobile App",
+                         "type":  "application",
+                         "level":  "C2",
+                         "parent_id":  "SYS-ACCMARED-COU",
+                         "doc":  "c2-containers/accmared/CNT-AMD-COURIER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "EXCEPTION",
+                         "exception":  {
+                                           "reason":  "Mobile courier client; UI decomposition deferred to Phase 4 implementation planning.",
+                                           "replacement_docs":  [
+                                                                    "c2-containers/accmared/CNT-AMD-COURIER.md"
+                                                                ],
+                                           "approved":  true,
+                                           "accepted_by":  "coordinator-direct"
+                                       }
+                     },
+                     {
+                         "id":  "CMP-ORD-SAGA",
+                         "name":  "Order Saga Orchestrator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "c3-components/CNT-ACC-ORDERS/CMP-ORD-SAGA.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-ORD-STATEMACHINE",
+                         "name":  "Order State Machine",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "c3-components/CNT-ACC-ORDERS/CMP-ORD-STATEMACHINE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-ORD-MULTISELLER",
+                         "name":  "Multi-Seller Order Splitter",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "c3-components/CNT-ACC-ORDERS/CMP-ORD-MULTISELLER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-ORD-SNAPSHOT",
+                         "name":  "Commercial Snapshot Service",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "c3-components/CNT-ACC-ORDERS/CMP-ORD-SNAPSHOT.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-ORD-CANCEL",
+                         "name":  "Cancellation \u0026 Return Coordinator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "c3-components/CNT-ACC-ORDERS/CMP-ORD-CANCEL.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-INT-GATEWAY",
+                         "name":  "Integration Gateway",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "c3-components/CNT-ACC-INTEGRATION/CMP-INT-GATEWAY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-INT-PUBLICATION",
+                         "name":  "Product Publication Worker",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "c3-components/CNT-ACC-INTEGRATION/CMP-INT-PUBLICATION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-INT-RESERVATION",
+                         "name":  "Reservation Relay",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "c3-components/CNT-ACC-INTEGRATION/CMP-INT-RESERVATION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-INT-ORDERNOTIFY",
+                         "name":  "Order Event Dispatcher",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "c3-components/CNT-ACC-INTEGRATION/CMP-INT-ORDERNOTIFY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-PAY-ORCHESTRATOR",
+                         "name":  "Payment Orchestrator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-PAYMENT",
+                         "doc":  "c3-components/CNT-ACC-PAYMENT/CMP-PAY-ORCHESTRATOR.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-PAY-ADAPTER",
+                         "name":  "Provider Adapter",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-PAYMENT",
+                         "doc":  "c3-components/CNT-ACC-PAYMENT/CMP-PAY-ADAPTER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-PAY-RECONCILIATION",
+                         "name":  "Reconciliation Engine",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-PAYMENT",
+                         "doc":  "c3-components/CNT-ACC-PAYMENT/CMP-PAY-RECONCILIATION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-PAY-REFUND",
+                         "name":  "Refund Coordinator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-PAYMENT",
+                         "doc":  "c3-components/CNT-ACC-PAYMENT/CMP-PAY-REFUND.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-LIC-ISSUANCE",
+                         "name":  "License Issuance \u0026 Activation",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-LICENSE",
+                         "doc":  "c3-components/CNT-ACC-LICENSE/CMP-LIC-ISSUANCE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-LIC-ENTITLEMENT",
+                         "name":  "Entitlement Evaluator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-LICENSE",
+                         "doc":  "c3-components/CNT-ACC-LICENSE/CMP-LIC-ENTITLEMENT.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-LIC-LIFECYCLE",
+                         "name":  "License Lifecycle Manager",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-LICENSE",
+                         "doc":  "c3-components/CNT-ACC-LICENSE/CMP-LIC-LIFECYCLE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-LIC-OFFLINE",
+                         "name":  "Offline Credential Issuer",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-LICENSE",
+                         "doc":  "c3-components/CNT-ACC-LICENSE/CMP-LIC-OFFLINE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-IDN-AUTH",
+                         "name":  "Authentication Service",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-IDENTITY",
+                         "doc":  "c3-components/CNT-ACC-IDENTITY/CMP-IDN-AUTH.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-IDN-RBAC",
+                         "name":  "Role \u0026 Permission Manager",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-IDENTITY",
+                         "doc":  "c3-components/CNT-ACC-IDENTITY/CMP-IDN-RBAC.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-IDN-SESSION",
+                         "name":  "Session \u0026 Token Manager",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-IDENTITY",
+                         "doc":  "c3-components/CNT-ACC-IDENTITY/CMP-IDN-SESSION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-IDN-TENANCY",
+                         "name":  "Tenant/Institution Membership Manager",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-IDENTITY",
+                         "doc":  "c3-components/CNT-ACC-IDENTITY/CMP-IDN-TENANCY.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CAT-LISTING",
+                         "name":  "Product Listing Manager",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-CATALOG",
+                         "doc":  "c3-components/CNT-ACC-CATALOG/CMP-CAT-LISTING.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CAT-VALIDATION",
+                         "name":  "Publication Validator",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-CATALOG",
+                         "doc":  "c3-components/CNT-ACC-CATALOG/CMP-CAT-VALIDATION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CAT-SEARCHSYNC",
+                         "name":  "Search Index Synchronizer",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACC-CATALOG",
+                         "doc":  "c3-components/CNT-ACC-CATALOG/CMP-CAT-SEARCHSYNC.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CON-PUBLISHER",
+                         "name":  "Product Publication Client (ACCore)",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "c3-components/CNT-ACR-CONNECTOR/CMP-CON-PUBLISHER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CON-RESERVATION",
+                         "name":  "Reservation Handler (ACCore)",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "c3-components/CNT-ACR-CONNECTOR/CMP-CON-RESERVATION.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CON-ORDERRECEIVER",
+                         "name":  "Order Event Receiver (ACCore)",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "c3-components/CNT-ACR-CONNECTOR/CMP-CON-ORDERRECEIVER.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "CMP-CON-LICENSECHECK",
+                         "name":  "License Validator (ACCore)",
+                         "type":  "component",
+                         "level":  "C3",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "c3-components/CNT-ACR-CONNECTOR/CMP-CON-LICENSECHECK.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-001",
+                         "name":  "ACCSystem is a central marketplace platform, not an institution ERP",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-001.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-002",
+                         "name":  "Each institution operates an independent ACCore instance",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-002.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-003",
+                         "name":  "ACCommerce and ACCore Commerce Workspace share Commerce Core",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-003.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-004",
+                         "name":  "ACCSystem stores marketplace projection of product data, not the source",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-004.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-005",
+                         "name":  "Integration via APIs and events with Outbox/Inbox and idempotency",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-005.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-006",
+                         "name":  "Inventory reservation performed at ACCore seller before order confirmation",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-006.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-007",
+                         "name":  "Order Domain coordinates payment and delivery without owning their logic",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-007.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-008",
+                         "name":  "ACCMared is a client UI; delivery backend logic lives in ACCSystem",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-008.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-009",
+                         "name":  "ACManagement is a frontend client for Platform Management services",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-009.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-010",
+                         "name":  "Software Catalog, License Management, and Identity are separate services",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-010.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-011",
+                         "name":  "Platform admin and support access subject to least privilege, approval, scope, and audit",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-011.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-012",
+                         "name":  "ACCSystem architecture style: bounded-context services over monolith",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-012.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-013",
+                         "name":  "Saga pattern (orchestration) for distributed order transaction",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-013.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-014",
+                         "name":  "Offline license validation via short-lived signed entitlement token",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-014.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-015",
+                         "name":  "Institution connectivity and ACCore release trust",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-015.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-016",
+                         "name":  "Multi-seller orders and auditable payment/settlement records",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-016.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-017",
+                         "name":  "Configurable institutional policies and external gates",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-017.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-018",
+                         "name":  "Reservation state machine UNKNOWN handling TTL policy and vocabulary canonicalization",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-018.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-019",
+                         "name":  "Financial trigger scope and institutional accounting commitment point",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-019.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-020",
+                         "name":  "C2 view scope declaration and C1 arrow convention",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-020.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-021",
+                         "name":  "Interface versioning interim policy",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-021.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "ADR-022",
+                         "name":  "Configurable policy registry and no hard-coded thresholds",
+                         "type":  "decision",
+                         "level":  "DECISION",
+                         "parent_id":  "SYS-ACCECOSYSTEM",
+                         "doc":  "decisions/ADR-022.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-ORD-CHECKOUT",
+                         "name":  "Checkout Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-CHECKOUT",
+                         "doc":  "functions/specs/FN-ORD-CHECKOUT.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-ORD-RESERVE",
+                         "name":  "Inventory Reservation Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-RESERVE",
+                         "doc":  "functions/specs/FN-ORD-RESERVE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-ORD-CONFIRM",
+                         "name":  "Order Confirmation Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-ORDER-CONFIRM",
+                         "doc":  "functions/specs/FN-ORD-CONFIRM.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-PAY-AUTHORIZE",
+                         "name":  "Payment Authorization Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-PAY-AUTHORIZE",
+                         "doc":  "functions/specs/FN-PAY-AUTHORIZE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-LIC-ACTIVATE",
+                         "name":  "License Activation Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-LIC-ACTIVATE",
+                         "doc":  "functions/specs/FN-LIC-ACTIVATE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-LIC-VALIDATE",
+                         "name":  "License Validation Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-LIC-VALIDATE",
+                         "doc":  "functions/specs/FN-LIC-VALIDATE.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "FN-INT-PUBLISH",
+                         "name":  "Product Publication Function",
+                         "type":  "function",
+                         "level":  "C3",
+                         "parent_id":  "OP-PUBLISH-LISTING",
+                         "doc":  "functions/specs/FN-INT-PUBLISH.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-CATALOG-QUERY",
+                         "name":  "Catalog Query Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-CATALOG",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-ORDER-CREATE",
+                         "name":  "Order Create Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-ORDERS",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-RESERVE-SAGA",
+                         "name":  "Reservation Saga Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-PAYMENT-WEBHOOK",
+                         "name":  "Payment Webhook Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-PAYMENT",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-EVENT-ENVELOPE",
+                         "name":  "Event Envelope Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-EVENTBUS",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-LICENSE-VALIDATE",
+                         "name":  "License Validate Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-LICENSE",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACC-SOFTDL",
+                         "name":  "Software Download Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-SOFTCAT",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACR-PUBLISH-EVENT",
+                         "name":  "ACCore Publish Event Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
+                         "id":  "IF-ACR-RESERVATION-RESP",
+                         "name":  "ACCore Reservation Response Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACR-CONNECTOR",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     }
+                 ],
+    "operations":  [
+                       {
+                           "id":  "OP-CHECKOUT",
+                           "name":  "Initiate Checkout",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-RESERVE",
+                           "name":  "Request Inventory Reservation",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-ORDER-CONFIRM",
+                           "name":  "Confirm Order",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-PAY-AUTHORIZE",
+                           "name":  "Authorize Payment",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-LIC-ACTIVATE",
+                           "name":  "Activate License",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-LIC-VALIDATE",
+                           "name":  "Validate Entitlement",
+                           "doc":  "functions/function-catalog.md"
+                       },
+                       {
+                           "id":  "OP-PUBLISH-LISTING",
+                           "name":  "Publish Product Listing",
+                           "doc":  "functions/function-catalog.md"
+                       }
+                   ]
+}

@@ -1,0 +1,323 @@
+{
+  "elements": [
+    {
+      "id": "SYS-PARCELFLOW",
+      "name": "ParcelFlow",
+      "type": "system",
+      "level": "C1",
+      "parent_id": null,
+      "doc": "00-system-overview.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "ACT-MERCHANT",
+      "name": "Merchant operator",
+      "type": "person",
+      "level": "C1",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "c1-context/actors.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Human actor is contextual, not implemented inside the system.",
+        "replacement_docs": [
+          "c1-context/relationships.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "EXT-CARRIER",
+      "name": "Carrier service",
+      "type": "external_system",
+      "level": "C1",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "c1-context/external-systems.md",
+      "children_expected": false,
+      "scope_status": "EXTERNAL",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Third-party internals outside boundary; interface contract replaces internal decomposition.",
+        "replacement_docs": [
+          "interfaces/integrations/carrier-booking.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CNT-WEB",
+      "name": "Merchant Web",
+      "type": "application",
+      "level": "C2",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "c2-containers/containers/CNT-WEB.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CNT-API",
+      "name": "Shipment API",
+      "type": "service",
+      "level": "C2",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "c2-containers/containers/CNT-API.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CNT-DB",
+      "name": "Parcel Store",
+      "type": "data_store",
+      "level": "C2",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "c2-containers/containers/CNT-DB.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Data store uses data architecture decomposition rather than software components.",
+        "replacement_docs": [
+          "data-architecture/data-ownership.md",
+          "data-architecture/data-models/parcel-record.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CMP-WEB-FORM",
+      "name": "Shipment Form",
+      "type": "component",
+      "level": "C3",
+      "parent_id": "CNT-WEB",
+      "doc": "c3-components/containers/CNT-WEB/components/CMP-WEB-FORM.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CMP-WEB-STATUS",
+      "name": "Status View",
+      "type": "component",
+      "level": "C3",
+      "parent_id": "CNT-WEB",
+      "doc": "c3-components/containers/CNT-WEB/components/CMP-WEB-STATUS.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CMP-API-VALIDATION",
+      "name": "Request Validation",
+      "type": "component",
+      "level": "C3",
+      "parent_id": "CNT-API",
+      "doc": "c3-components/containers/CNT-API/components/CMP-API-VALIDATION.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CMP-API-BOOKING",
+      "name": "Booking Orchestrator",
+      "type": "component",
+      "level": "C3",
+      "parent_id": "CNT-API",
+      "doc": "c3-components/containers/CNT-API/components/CMP-API-BOOKING.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CMP-API-REPOSITORY",
+      "name": "Shipment Repository",
+      "type": "component",
+      "level": "C3",
+      "parent_id": "CNT-API",
+      "doc": "c3-components/containers/CNT-API/components/CMP-API-REPOSITORY.md",
+      "children_expected": true,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "CODE-WEB-FORM",
+      "name": "ShipmentForm module",
+      "type": "module",
+      "level": "C4",
+      "parent_id": "CMP-WEB-FORM",
+      "doc": "c4-code/modules/shipment-form.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Meaningful code mapping captured in module record; finer class/function split is tracked in function catalog as design evolves.",
+        "replacement_docs": [
+          "c4-code/modules/shipment-form.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CODE-WEB-STATUS",
+      "name": "BookingStatus module",
+      "type": "module",
+      "level": "C4",
+      "parent_id": "CMP-WEB-STATUS",
+      "doc": "c4-code/modules/booking-status.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Meaningful code mapping captured in module record; finer class/function split is tracked in function catalog as design evolves.",
+        "replacement_docs": [
+          "c4-code/modules/booking-status.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CODE-API-VALIDATOR",
+      "name": "ShipmentValidator",
+      "type": "module",
+      "level": "C4",
+      "parent_id": "CMP-API-VALIDATION",
+      "doc": "c4-code/modules/shipment-validator.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Meaningful code mapping captured in module record; finer class/function split is tracked in function catalog as design evolves.",
+        "replacement_docs": [
+          "c4-code/modules/shipment-validator.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CODE-API-ORCHESTRATOR",
+      "name": "BookingService",
+      "type": "module",
+      "level": "C4",
+      "parent_id": "CMP-API-BOOKING",
+      "doc": "c4-code/modules/booking-service.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Meaningful code mapping captured in module record; finer class/function split is tracked in function catalog as design evolves.",
+        "replacement_docs": [
+          "c4-code/modules/booking-service.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "CODE-API-REPO",
+      "name": "ShipmentRepository",
+      "type": "module",
+      "level": "C4",
+      "parent_id": "CMP-API-REPOSITORY",
+      "doc": "c4-code/modules/shipment-repository.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "EXCEPTION",
+      "exception": {
+        "reason": "Meaningful code mapping captured in module record; finer class/function split is tracked in function catalog as design evolves.",
+        "replacement_docs": [
+          "c4-code/modules/shipment-repository.md"
+        ],
+        "approved": true,
+        "accepted_by": "sample fixture"
+      }
+    },
+    {
+      "id": "FN-ORDER-001",
+      "name": "validate shipment request",
+      "type": "function",
+      "level": "FUNCTION",
+      "parent_id": "CMP-API-VALIDATION",
+      "doc": "functions/specifications/FN-ORDER-001.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "FN-ORDER-002",
+      "name": "book shipment",
+      "type": "function",
+      "level": "FUNCTION",
+      "parent_id": "CMP-API-BOOKING",
+      "doc": "functions/specifications/FN-ORDER-002.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "IF-CARRIER-001",
+      "name": "Carrier booking API",
+      "type": "interface",
+      "level": "INTERFACE",
+      "parent_id": "EXT-CARRIER",
+      "doc": "interfaces/integrations/carrier-booking.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "ADR-001",
+      "name": "Select relational parcel store",
+      "type": "decision",
+      "level": "DECISION",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "decisions/adr/ADR-001.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "ADR-002",
+      "name": "Separate browser UI and API",
+      "type": "decision",
+      "level": "DECISION",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "decisions/adr/ADR-002.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    },
+    {
+      "id": "ADR-003",
+      "name": "Keep shipment API coarse-grained until evidence supports service split",
+      "type": "decision",
+      "level": "DECISION",
+      "parent_id": "SYS-PARCELFLOW",
+      "doc": "decisions/adr/ADR-003.md",
+      "children_expected": false,
+      "scope_status": "IN_SCOPE",
+      "decomposition_status": "COMPLETE"
+    }
+  ],
+  "operations": [
+    {
+      "id": "OP-SHIPMENT-VALIDATION",
+      "name": "Validate shipment request",
+      "doc": "functions/function-catalog.md"
+    },
+    {
+      "id": "OP-SHIPMENT-BOOKING",
+      "name": "Book shipment",
+      "doc": "functions/function-catalog.md"
+    }
+  ]
+}

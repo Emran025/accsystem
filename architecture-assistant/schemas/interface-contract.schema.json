@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "interface-contract.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "kind",
+    "provider_id",
+    "consumer_ids",
+    "protocol",
+    "contract_ref"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string"
+    },
+    "consumer_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "protocol": {
+      "type": "string"
+    },
+    "contract_ref": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

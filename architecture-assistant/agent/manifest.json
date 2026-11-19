@@ -1,0 +1,57 @@
+{
+  "name": "Architecture Documentation Agent",
+  "version": "1.1.0",
+  "entry_contract": "../AGENT.md",
+  "default_mode": "AUTONOMOUS",
+  "profiles": [
+    "architect",
+    "reviewer",
+    "librarian"
+  ],
+  "skills": [
+    {
+      "id": "discovery",
+      "path": "skills/discovery/SKILL.md"
+    },
+    {
+      "id": "scope-c1",
+      "path": "skills/scope-c1/SKILL.md"
+    },
+    {
+      "id": "container-decomposition",
+      "path": "skills/container-decomposition/SKILL.md"
+    },
+    {
+      "id": "component-decomposition",
+      "path": "skills/component-decomposition/SKILL.md"
+    },
+    {
+      "id": "code-and-functions",
+      "path": "skills/code-and-functions/SKILL.md"
+    },
+    {
+      "id": "adr-governance",
+      "path": "skills/adr-governance/SKILL.md"
+    },
+    {
+      "id": "traceability-validation",
+      "path": "skills/traceability-validation/SKILL.md"
+    },
+    {
+      "id": "change-impact",
+      "path": "skills/change-impact/SKILL.md"
+    },
+    {
+      "id": "diagram-selection",
+      "path": "skills/diagram-selection/SKILL.md"
+    },
+    {
+      "id": "architecture-style",
+      "path": "skills/architecture-style/SKILL.md"
+    }
+  ],
+  "retrieval": {
+    "implementation": "../rag/indexer.py",
+    "policy": "local BM25; cite source and chunk"
+  }
+}

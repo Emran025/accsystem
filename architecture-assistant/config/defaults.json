@@ -1,0 +1,76 @@
+{
+  "language": "follow_user_or_project",
+  "interaction_mode": "AUTONOMOUS",
+  "rag": {
+    "engine": "bm25-local",
+    "chunk_chars": 1200,
+    "overlap_chars": 120,
+    "top_k": 5,
+    "citation_required": true,
+    "separate_index_per_system": true
+  },
+  "validation": {
+    "python_min": "3.9",
+    "external_dependencies": false,
+    "semantic_review_required": true,
+    "diagram_rendering": "not_automated"
+  },
+  "safety": {
+    "index_secrets": false,
+    "external_upload": false,
+    "assumptions_must_be_labeled": true
+  },
+  "runtime": {
+    "entrypoint": "agent/runtime.py",
+    "provider_protocol": "OpenAI Chat Completions compatible",
+    "default_model": "gpt-6.1-sol",
+    "model_catalog_checked_at_build_time": "2026-11-15",
+    "model_must_support_tools": true,
+    "default_effort": "high",
+    "max_tool_steps": 64,
+    "max_completion_tokens": 10000,
+    "timeout_seconds": 120,
+    "durable_session_checkpoints": true,
+    "checkpoint_after_each_tool_round": true,
+    "portable_checkpoint_markdown": true,
+    "write_requires_exact_user_approval": false,
+    "backup_before_overwrite": true,
+    "write_scope": "architecture_documentation_workspace_only"
+  },
+  "analysis": {
+    "large_system_mode": "layered_portfolio_system_domain_container",
+    "scale_thresholds": "evidence-based; no arbitrary element-count cutoffs",
+    "coverage": "complete inventory; disclose partial/deferred areas and owners"
+  },
+  "diagrams": {
+    "baseline": [
+      "system-context",
+      "container"
+    ],
+    "consider_all_official_c4_views": [
+      "system-context",
+      "container",
+      "component",
+      "code",
+      "system-landscape",
+      "dynamic",
+      "deployment"
+    ],
+    "selection_plan_required": true,
+    "component_and_code": "evidence-selected, not blanket-required",
+    "render_syntax_visual_validation": "when-supported; otherwise NOT_VERIFIED",
+    "legend_and_scope_required": true
+  },
+  "architecture_style": {
+    "microservices_default": false,
+    "compare": [
+      "modular-monolith",
+      "coarse-grained-services",
+      "microservices"
+    ],
+    "require_domain_boundary_evidence": true,
+    "require_operational_readiness_review": true,
+    "unknowns_lower_confidence": true,
+    "recommendation_status": "PROPOSED_until_stakeholder_acceptance"
+  }
+}
