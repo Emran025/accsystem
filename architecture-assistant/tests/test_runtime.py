@@ -66,6 +66,14 @@ class RuntimeTests(unittest.TestCase):
  def test_session_message_limit_is_bounded(self):
   s=SessionStore(self.root,'bounded-1');s.state['messages']=[{'role':'user','content':'x'}]*(s.MAX_MESSAGES+1)
   with self.assertRaises(AgentError):s.save()
+ def test_load_rejects_symlinked_or_mismatched_checkpoint(self):
+  original=SessionStore(self.root,'original-1');original.save([{'role':'user','content':'safe'}])
+  alias=SessionStore(self.root,'alias-1')
+  try:alias.path.symlink_to(original.path)
+  except OSError:self.skipTest('symlinks are unavailable on this filesystem')
+  with self.assertRaises(AgentError):alias.load()
+  alias.path.unlink();alias.path.write_text(json.dumps({'version':1,'session_id':'other-1','messages':[]}))
+  with self.assertRaises(AgentError):alias.load()
  def test_model_step_limit_cannot_be_unbounded(self):
   t=ArchitectureTools(self.root);c=FakeClient([])
   with self.assertRaises(AgentError):run_turn(c,t,'test-model',[{'role':'user','content':'x'}],max_steps=501)

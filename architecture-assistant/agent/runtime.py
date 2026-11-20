@@ -114,14 +114,22 @@ class SessionStore:
         }
 
     def load(self) -> dict[str, Any]:
+        if self.path.is_symlink() or (self.path.exists() and self.path.stat().st_nlink > 1):
+            raise AgentError("Session checkpoint must not be a symlink or hard-linked file")
         if not self.path.is_file():
             raise AgentError(f"Session checkpoint not found: {self.path}")
+        if self.path.stat().st_size > self.MAX_SESSION_BYTES:
+            raise AgentError(f"Session checkpoint exceeds {self.MAX_SESSION_BYTES} bytes")
         try:
             saved = json.loads(self.path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise AgentError(f"Cannot read session checkpoint {self.path}: {exc}") from None
-        if not isinstance(saved, dict) or saved.get("version") != self.VERSION or not isinstance(saved.get("messages"), list):
+        if (not isinstance(saved, dict) or saved.get("version") != self.VERSION
+                or saved.get("session_id") != self.session_id
+                or not isinstance(saved.get("messages"), list)):
             raise AgentError(f"Unsupported or malformed session checkpoint: {self.path}")
+        if len(saved["messages"]) > self.MAX_MESSAGES:
+            raise AgentError(f"Session checkpoint exceeds {self.MAX_MESSAGES} messages")
         self.state = saved
         return self.state
 

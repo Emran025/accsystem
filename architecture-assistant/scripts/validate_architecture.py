@@ -61,6 +61,10 @@ def validate_declared_schemas(root, regs, errors):
             errors.append(f'{schema_path}: invalid JSON Schema: {exc}'); continue
         if not isinstance(schema,dict) or schema.get('type') not in {'object','array'}:
             errors.append(f'{schema_path}: unsupported or malformed declared schema'); continue
+        if schema.get('$schema') != 'https://json-schema.org/draft/2020-12/schema':
+            errors.append(f'{schema_path}: schema dialect must be JSON Schema Draft 2020-12')
+        if schema.get('$id') != schema_name:
+            errors.append(f'{schema_path}: $id must match declared schema filename {schema_name!r}')
         try: records=select(regs[registry])
         except Exception as exc:
             errors.append(f'{registry}: cannot select schema records: {exc}'); continue
