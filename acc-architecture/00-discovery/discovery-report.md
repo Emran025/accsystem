@@ -15,14 +15,14 @@
 
 | File | Lines | Read Status | Notes |
 |---|---|---|---|
-| `idea.md` | 685 | FULLY READ (both byte ranges) | Primary source; all sections reviewed |
+| `idea.md` | 685 | REVIEWED IN PRIOR SOURCE CONTEXT; NOT BUNDLED IN THIS REPOSITORY | External primary source cited by section; independent re-verification requires the source artifact or an approved snapshot |
 | `architecture-assistant/AGENT.md` | 38 | FULLY READ | Operating rules and depth contract |
 | `architecture-assistant/OUTPUT-DEPTH-AND-AMPLIFIER.md` | 130 | FULLY READ | Authoring checklists |
 | `architecture-assistant/examples/sample-system/registry/` | 6 JSON files | STRUCTURE CONFIRMED | Used as structural template only |
 
 ### 1.2 Confirmed vs. Assumed
 
-- **CONFIRMED** items are directly stated in `idea.md` and cited by section.  
+- **CONFIRMED** items are reported as directly stated in the external `idea.md` source context and cited by section; because that source is not bundled here, they are not independently reproducible from this repository alone.
 - **ASSUMPTION** items are reasonable inferences not explicitly stated in `idea.md`.  
 - **PROPOSAL** items are architecture-assistant recommendations.  
 - **UNKNOWN** items are gaps that could block design decisions.

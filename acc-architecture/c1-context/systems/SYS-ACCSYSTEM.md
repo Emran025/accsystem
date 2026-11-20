@@ -49,7 +49,7 @@
 | System ID | Direction | Protocol | Purpose | Label |
 |-----------|-----------|----------|---------|-------|
 | SYS-ACCOMMERCE | Inbound | REST/HTTPS | Commerce APIs: catalog query, cart, checkout, order creation & tracking | CONFIRMED (idea.md §2.1) |
-| SYS-ACCORE | Inbound (sync + async) | REST+Events / TLS | Product publication events, reservation requests/responses, order events, license validation requests | CONFIRMED (idea.md §4.3, §6.2, §6.3) |
+| SYS-ACCORE | Logical bidirectional integration; transport is outbound-initiated by default, with optional protected inbound/polling per ADR-015 | REST+Events / TLS; exact mode is policy-gated | Product publication events, reservation requests/responses, order events, license validation requests | Capability CONFIRMED (idea.md §4.3, §6.2, §6.3); transport direction/mode PROPOSED/approval-required |
 | SYS-ACMANAGEMENT | Inbound | REST/HTTPS | Public software catalog & download APIs; protected license management, platform admin, support session APIs | CONFIRMED (idea.md §2.1.1, §3.1.1) |
 | SYS-ACCMARED-SUP | Inbound | REST+Events / TLS | Delivery dispatch commands, delivery status events | CONFIRMED (idea.md §2.1, ADR-008) |
 | SYS-ACCMARED-COU | Inbound | REST/HTTPS | Task assignment retrieval, status updates, proof-of-delivery upload | CONFIRMED (idea.md §2.1, ADR-008) |
