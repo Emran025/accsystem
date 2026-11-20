@@ -61,7 +61,16 @@
 - Each compensation step has an **independent outcome**. Independently safe progress may continue only if it does not violate ADR-018's conservative UNKNOWN guard or a dependency.
 - **Partial compensation** is supported: a delivery halt failure can be tracked separately while other eligible, evidenced steps proceed; unresolved steps keep the operation pending and visible.
 - The coordinator must track each step's result and persist it.
-- Cancellation of an order in `PendingReservation` or `PendingPayment` is handled by CMP-ORD-SAGA compensation; CMP-ORD-CANCEL handles post-`Confirmed` cancellations.
+- Cancellation of an order in `PendingReservation` or `PendingPayment` is handled by CMP-ORD-SAGA compensation; CMP-ORD-CANCEL handles authorized cancellation/return workflows after `Confirmed`. Return eligibility for `Delivered` or `Completed` is policy-gated and is not rejected merely because cancellation is no longer available.
+
+### 3.5 Lifecycle boundary
+
+| Situation | Owning workflow | Financial rule |
+|---|---|---|
+| Pre-confirmation saga failure | CMP-ORD-SAGA | Scoped void/refund compensation only after payment outcome resolution; `UNKNOWN` blocks unsafe repetition |
+| Confirmed-order downstream failure | Order/payment recovery path | No saga rollback of the committed order; retain the order and reconcile the payment exception and any independent effects |
+| Authorized cancellation after confirmation | CMP-ORD-CANCEL | Apply cancellation policy, then invoke CMP-PAY-REFUND and any Settlement/Ledger hold/reversal independently |
+| Authorized return request | CMP-ORD-CANCEL return flow | Evaluate return eligibility separately from cancellation; delivery, refund timing, partial amount, and post-settlement adjustment remain policy-gated |
 
 ### 3.4 Compensation Decision Table (§7.5)
 

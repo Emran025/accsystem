@@ -47,7 +47,7 @@
 | `UNMATCHED_INTERNAL` | Settlement line has no matching internal transaction | Alert; investigate potential duplicate payment or data gap |
 | `UNMATCHED_PROVIDER` | Internal transaction has no matching settlement line | Alert; payment may not have settled — investigate with provider |
 | `AMOUNT_MISMATCH` | Provider gross, fee, commission, or net differs from the allocation-level reconciliation basis; an aggregate mismatch is decomposed before classification | Alert; possible fee deduction, split-mapping gap, or error |
-| `STATUS_MISMATCH` | Internal status is `CAPTURED` but provider shows `REFUNDED` or vice versa | Alert; trigger corrective state sync via CMP-PAY-ORCHESTRATOR |
+| `STATUS_MISMATCH` | Provider and internal states disagree within the same operation dimension (capture, refund, or settlement) after provider-specific mapping is established | Alert; reconcile the scoped operation and use the owning component's corrective command; do not convert a captured attempt into a refund state |
 | `CURRENCY_MISMATCH` | Currencies differ | Alert; high severity |
 
 > [!WARNING] Settlement report format and delivery frequency are **UNKNOWN** — open decision (idea.md §12 — settlement/commissions). Consequence: reconciliation scheduling, ingest pipeline, and normalization logic cannot be finalized. Resolution evidence: provider contract / settlement API specification. Owner: OWNER_UNASSIGNED. Revisit trigger: provider selection (Phase 3).
@@ -136,8 +136,10 @@
 
 ### 8.1 Acceptance Test Scenarios
 
+These are planned contract scenarios, not execution evidence. The approved provider contract supplies the evidence mechanism and cadence; no daily file, API pull, webhook, or `SETTLED` transition is assumed here.
+
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
-| Daily settlement file matching | Provider settlement file received | Transactions matched against local payment records; status `SETTLED` |
-| Missing settlement record | Local payment record missing corresponding settlement entry | Discrepancy logged; flagged for financial operations review |
-| Amount discrepancy | Provider settled amount differs from authorized amount | Discrepancy record created; automated alert dispatched to finance team |
+| Approved settlement evidence matching | Provider settlement evidence received through the approved contract | Allocation-level provider references and gross/fee/commission/net/currency basis are matched; an approved settlement status is recorded only where the contract and policy support it |
+| Missing settlement evidence | Internal allocation lacks corresponding provider settlement evidence within the configured policy window | Discrepancy logged; flagged for financial operations review without assuming non-settlement |
+| Amount discrepancy | Provider allocation or aggregate amount differs from the approved allocation-level reconciliation basis | Discrepancy record created; alert dispatched to the authorized finance/operations path |

@@ -1,6 +1,8 @@
-# V2 Follow-up Audit — Timeout, Compensation, and Capture Consistency
+# HISTORICAL — NOT CURRENT CERTIFICATION — V2 Follow-up Audit — Timeout, Compensation, and Capture Consistency
 
 **Scope:** Entire `acc-architecture/` package after the `pasted_content_2.txt` follow-up pass.
+
+> Current status is governed by `validation/validation-status.md`, the architecture manifest, and later dated repair checkpoints. The classifications below are provenance for the V2 snapshot only.
 
 | Search area / hit class | Classification | Evidence / action |
 |---|---|---|

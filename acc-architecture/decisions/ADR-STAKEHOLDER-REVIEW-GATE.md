@@ -19,7 +19,15 @@ The original package covered fourteen Architectural Decision Records (ADR-001–
 
 ## 2. Priority Decision Tiers
 
-The original 14 ADRs are organized into three sequential evaluation tiers below. ADR-015–022 are included in the sign-off table, but assignment to these tiers has not been established:
+The original 14 ADRs are organized into three sequential evaluation tiers below. That diagram is a historical starting point. The current provisional mapping for ADR-015–022 is listed below; it is a review-sequencing aid, not approval evidence:
+
+| Provisional review tier | ADRs | Dependency / gate | Approval state |
+|---|---|---|---|
+| Tier 1 — boundaries and governance | ADR-015, ADR-020, ADR-021 | Connectivity/view scope and API governance establish interpretation boundaries | Proposed; owner review required |
+| Tier 2 — transaction and reservation integrity | ADR-018, ADR-019 | Reservation uncertainty, accounting trigger, and event contracts require institution/Finance/API review | Proposed; owner review required |
+| Tier 3 — policy and operational enablement | ADR-016, ADR-017, ADR-022 | Ledger/settlement, policy registry, and threshold values require Finance/Legal/Operations approval | Proposed; owner review required |
+
+No row below or above constitutes stakeholder approval; the registry remains the machine-readable status source and currently classifies these ADRs as proposed.
 
 ```
 +-----------------------------------------------------------------------------------+

@@ -1,4 +1,4 @@
-# Architecture Checkpoint — ACC Ecosystem
+# HISTORICAL — NOT CURRENT CERTIFICATION — Architecture Checkpoint — ACC Ecosystem
 
 **Checkpoint timestamp:** 2026-11-20T01:51:00Z V5.1  
 **Workflow completion:** Stage 7 of 7 (IN_PROGRESS — V5.1 remediation decisions applied; external stakeholder sign-off pending)

@@ -12,7 +12,17 @@ Ledger postings are append-only, balanced by currency, and idempotent. Correctio
 
 ## Ownership and executable boundary
 
-The payment domain owns payment-attempt and allocation state; a Settlement/Ledger boundary (owner to be assigned) owns seller-credit/transfer, commission payable, settlement reconciliation, and immutable ledger postings. It consumes `PaymentCaptured` or `RecordedOutsidePlatform` outcomes and emits allocation-scoped `SellerCreditPending`, `SellerCredited`, `SellerCreditUnknown`, `SettlementPending`, `SettlementReconciled`, and reversal/adjustment events through an outbox. `Confirmed` is not financial completion: each allocation independently progresses through `CAPTURED → CREDIT_PENDING → CREDITED/UNKNOWN → SETTLEMENT_PENDING → SETTLED/REVERSED`, subject to provider, institution, Finance and Legal policy.
+The payment domain owns payment-attempt, provider-operation, and allocation state. `CMP-PAY-RECONCILIATION` is the current payment/settlement-evidence matching capability: it ingests approved provider evidence, maintains reconciliation runs and discrepancy records, and raises corrective alerts; it does not post the ledger or mutate payment state directly. A future Settlement/Ledger boundary (owner to be assigned; PROPOSED) owns seller-credit/transfer, commission payable, settlement finality, and immutable ledger postings. It consumes `PaymentCaptured` or `RecordedOutsidePlatform` outcomes and emits allocation-scoped `SellerCreditPending`, `SellerCredited`, `SellerCreditUnknown`, `SettlementPending`, `SettlementReconciled`, and reversal/adjustment events through an outbox. `Confirmed` is not financial completion: each allocation independently progresses through `CAPTURED → CREDIT_PENDING → CREDITED/UNKNOWN → SETTLEMENT_PENDING → SETTLED/REVERSED`, subject to provider, institution, Finance and Legal policy.
+
+### Responsibility matrix (interim and target)
+
+| Responsibility | Current owner/status | Boundary rule |
+|---|---|---|
+| Payment-attempt and allocation state | Payment domain / CMP-PAY-ORCHESTRATOR | Owns capture/authorization facts and scoped operation identity; reconciliation is read-only for these records |
+| Provider-operation and webhook outcome reconciliation | CMP-PAY-RECONCILIATION with CMP-PAY-ADAPTER/CMP-PAY-ORCHESTRATOR | Maps provider evidence to the scoped operation; unresolved mapping remains `UNKNOWN` |
+| Settlement-report/evidence ingestion and discrepancy records | CMP-PAY-RECONCILIATION (interim) | Matches evidence and raises alerts; does not declare commercial settlement finality by itself |
+| Seller credit, commission, settlement finality, and immutable ledger posting | Future Settlement/Ledger boundary (PROPOSED; owner unassigned) | Requires provider, institution, Finance, and Legal policy; no implementation owner is implied |
+| Corrective financial command authority | Owning payment or future Settlement/Ledger component according to operation type (OPEN) | A discrepancy triggers an approved corrective command; it never authorizes an ad hoc mutation or retry |
 
 Direct seller credit, platform-central collection followed by controlled settlement, separate provider attempts, and externally completed or manual payments remain supported alternatives. The selected route, commission basis, provider report contract, accounting trigger, and reversal authority are approval gates; this boundary does not choose among them.
 

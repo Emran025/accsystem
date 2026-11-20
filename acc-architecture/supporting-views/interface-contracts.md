@@ -11,6 +11,8 @@
 >
 > This document does not represent stakeholder approval or production readiness. API schemas and versioning policies must be formally specified in OpenAPI/AsyncAPI before implementation.
 
+> **Status dimensions:** A `CONFIRMED` source capability or logical `IF-*` identity does not mean that its wire schema, transport modality, version mapping, or stakeholder approval is final. Those dimensions remain independently labelled `PROPOSED`, `UNKNOWN`, or `OWNER-REVIEW-REQUIRED` until API Governance and the relevant owners approve them. Illustrative shapes must not narrow supported polling/callback, aggregate/separate payment, or other documented alternatives.
+
 > [!NOTE]
 > **Document version: V5.1** — Reservation contradiction fix applied. §3.4, §3.6, §9.4, and §10 have been updated to align with ADR-018: timeout/elapsed time alone is never proof of a reservation outcome; `UNKNOWN` must be held, queried, and reconciled before any compensating action. See Change Log at the end of this document for a summary of all V5.1 changes.
 
@@ -456,8 +458,9 @@ If reservation is accepted but payment subsequently fails: reservation release i
 | Role | Element ID | Element Name |
 |---|---|---|
 | Provider | EXT-PAYMENT-PROVIDER | External Payment Provider(s) |
-| Consumer | CNT-ACC-PAYMENT | Payment Orchestration |
-| Consumer | CMP-PAY-ORCHESTRATOR | Payment Orchestrator |
+| Logical owner | CNT-ACC-PAYMENT | Payment Orchestration container |
+| First receiver | CMP-PAY-ADAPTER | Verifies signature, validates provider envelope, and translates the event |
+| Domain consumer | CMP-PAY-ORCHESTRATOR | Claims the durable inbox record, resolves scope, and applies payment-operation state |
 
 ### 4.3 Purpose
 
@@ -535,7 +538,8 @@ UNKNOWN — provider's webhook version/schema evolution policy is external.
 | Type | ID | Note |
 |---|---|---|
 | ADR | ADR-007 | Order domain coordinates payment |
-| Component | CMP-PAY-ORCHESTRATOR | Receives webhook; drives saga |
+| Component | CMP-PAY-ADAPTER | First receiver; verifies signature and translates provider schema |
+| Component | CMP-PAY-ORCHESTRATOR | Claims the durable translated event, resolves scope, and drives payment state/saga effects |
 | Component | CMP-PAY-RECONCILIATION | Reconciliation against provider statement |
 | Supporting view | security-view.md §6 | Webhook security controls |
 
@@ -596,9 +600,9 @@ CONFIRMED from idea.md §6.3:
 |---|---|---|---|
 | `OrderConfirmed` | CNT-ACC-ORDERS | CNT-ACC-PAYMENT, CNT-ACC-DELIVERY, CNT-ACC-INTEGRATION, CNT-ACC-LICENSE (software items), CNT-ACC-NOTIFICATIONS | Illustrative `order_id`, seller-order/line and buyer references; mapping and recipient scope: §2A |
 | `OrderCancelled` | CNT-ACC-ORDERS | CNT-ACC-INTEGRATION, CNT-ACC-PAYMENT, CNT-ACC-DELIVERY | `order_id`, `reason_code` — ASSUMPTION |
-| `PaymentAuthorized` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | `payment_id`, `order_id`, `amount`, `currency` — ASSUMPTION |
-| `PaymentCaptured` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | `payment_id`, `order_id` — ASSUMPTION |
-| `PaymentFailed` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | `payment_id`, `order_id`, `failure_reason` — ASSUMPTION |
+| `PaymentAuthorized` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | Illustrative scoped shape: `payment_attempt_id`, `seller_order_id`, `allocation_id`, `operation_id`, `operation_idempotency_key`, amount/currency, provider aggregate/allocation references when available, event identity/version — ASSUMPTION |
+| `PaymentCaptured` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | Same allocation- and operation-scoped identity; `order_id` is correlation only and is insufficient for mutation — ASSUMPTION |
+| `PaymentFailed` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | Same scoped identity plus failure evidence; an unmapped or ambiguous provider result remains `UNKNOWN` and is reconciled — ASSUMPTION |
 | `ShipmentCreated` | CNT-ACC-DELIVERY | CNT-ACC-ORDERS, CNT-ACC-NOTIFICATIONS | `shipment_id`, `order_id` — ASSUMPTION |
 | `ShipmentDelivered` | CNT-ACC-DELIVERY | CNT-ACC-ORDERS, CNT-ACC-NOTIFICATIONS | `shipment_id`, `order_id`, `proof_of_delivery_ref` — ASSUMPTION |
 | `ProductListingPublished` | CNT-ACC-INTEGRATION | CNT-ACC-CATALOG | `listing_id`, `seller_product_id`, `platform_institution_id`, `version` — ASSUMPTION |
