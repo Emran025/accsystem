@@ -17,10 +17,12 @@ For each SellerOrder, the Parent Saga Coordinator persists a stable scoped reque
 6. All required accepted holds and other guards permit payment. A definitive rejection or authoritative expiry blocks checkout; reconcile other UNKNOWN outcomes and compensate only eligible confirmed effects under ADR-018. Final closure waits for required compensation. Any unknown remains in reconciliation and blocks payment.
 
 ## States
-`REQUESTED` → `ACCEPTED/RESERVED` | `REJECTED` | `UNKNOWN`;  
-`ACCEPTED/RESERVED` → `RELEASE_REQUESTED` → `RELEASED` | `UNKNOWN`;  
-`ACCEPTED/RESERVED` → `CONSUMED/COMMITTED`;  
-`ACCEPTED/RESERVED` → `EXPIRED` only on authoritative ACCore expiry evidence, not elapsed local time alone. An unknown request is queried before a retry where the institution contract provides a trusted query; otherwise the saga waits/escalates and does not repeat a possible effect. An unknown release is reconciled before any further release.
+`REQUESTED` → `ACCEPTED` | `REJECTED` | `UNKNOWN`;
+`ACCEPTED` → `RELEASE_REQUESTED` → `RELEASED` | `UNKNOWN`;
+`ACCEPTED` → `CONSUMED/COMMITTED`;
+`ACCEPTED` → `EXPIRED` only on authoritative ACCore expiry evidence, not elapsed local time alone. An unknown request is queried before a retry where the institution contract provides a trusted query; otherwise the saga waits/escalates and does not repeat a possible effect. An unknown release is reconciled before any further release.
+
+`RESERVED` is a deprecated legacy synonym for `ACCEPTED`, and `INSUFFICIENT` is a deprecated legacy synonym for `REJECTED`; neither is a current wire or state-machine token (ADR-018 §3.3).
 
 ## Idempotency and retention
 The deduplication record is retained for a configurable operational period that covers retries and reconciliation and does not expire before the outcome is resolved or safely reconciled. No fixed duration is asserted. Duplicate requests return the original result. Release is idempotent and cannot release a consumed reservation or one linked to a confirmed order.

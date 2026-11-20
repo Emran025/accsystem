@@ -19,6 +19,7 @@
 | CMP-ORD-STATEMACHINE | Outbound (calls) | Checks if cancellation/return transition is allowed; requests state transition |
 | CMP-INT-RESERVATION | Outbound (calls) | Sends reservation release/cancel to ACCore seller |
 | CMP-PAY-REFUND | Outbound (calls) | Triggers void (pre-capture) or refund (post-capture) |
+| Settlement/Ledger boundary | Outbound (calls) | Reverses or holds seller credit, commission and settlement effects for each affected SellerOrder/allocation |
 | CNT-ACC-DELIVERY | Outbound (calls) | Requests shipment halt or return initiation |
 | Event Bus | Outbound | Publishes `OrderCancelled`, `ReturnRequested` events |
 | Outbox Table | Outbound | Persists event intent for recoverable asynchronous publication |
@@ -36,7 +37,8 @@
 4. Execute eligible compensation steps independently only where their guards and the conservative UNKNOWN rule permit:
    - **Step A:** Coordinate institution-owned stock handling. Do not release a consumed or confirmed-order-linked reservation; any post-confirmation reversal/return rule requires institutional and product approval.
    - **Step B:** Void or refund payment via CMP-PAY-REFUND.
-   - **Step C:** Halt or return shipment via CNT-ACC-DELIVERY.
+   - **Step C:** Where capture or external payment has already produced a seller-credit, commission or settlement effect, request the policy-authorized hold/reversal/adjustment through the Settlement/Ledger boundary; do not infer reversal from a refund alone.
+   - **Step D:** Halt or return shipment via CNT-ACC-DELIVERY.
 5. Record each step as succeeded, failed, skipped/not applicable or UNKNOWN with evidence and stable operation identity. Reconcile a possibly dispatched stock/financial effect before repeating it.
 6. Only when all required steps are definitively settled under policy transition to `Cancelled`; failure, UNKNOWN or exhausted retries remains pending with escalation.
 7. Publish `OrderCancelled` with `correlation_id` only on the final transition.
@@ -49,6 +51,7 @@
 4. Coordinate:
    - Initiate delivery return/collection via CNT-ACC-DELIVERY.
    - Trigger refund via CMP-PAY-REFUND (after delivery return confirmed, or immediately — per policy (OPEN: see idea.md §12, OWNER_UNASSIGNED)).
+   - Reconcile any seller-credit, commission or settlement reversal/hold for the affected allocation through the Settlement/Ledger boundary; retain `UNKNOWN` until authoritative provider/ledger evidence exists.
 5. Track each applicable return/collection, stock and refund operation with stable identity, evidence and succeeded/failed/skipped/UNKNOWN outcome. Reconcile possible dispatch before repeating; respect ADR-018 and approved dependencies. Only when all required steps are definitively settled under policy transition to `Returned`; otherwise remain pending/review and escalate.
 6. Preserve both `ReturnRequested` and `OrderReturned`; the audit table proposes request notification on validated initiation and final notification on completion. Event-contract owners must resolve the inconsistent request timing before implementation.
 
@@ -62,12 +65,12 @@
 
 ### 3.4 Compensation Decision Table (§7.5)
 
-| Order State at Cancel Request | Reservation Action | Payment Action | Delivery Action |
+| Order State at Cancel Request | Reservation Action | Payment / credit / settlement action | Delivery Action |
 |---|---|---|---|
-| PendingReservation / PendingPayment | Via saga compensation | Via saga compensation | N/A |
-| Confirmed (before dispatch) | Institution-approved post-confirmation handling; do not release confirmed-linked/consumed hold | Void (pre-capture) or refund where authorized and outcome known | Cancel shipment creation |
-| Processing / Dispatched | Institution-approved cancellation/return handling; do not release confirmed-linked/consumed hold | Refund where authorized and outcome known | Request delivery return where eligible |
-| Delivered | N/A | Refund | N/A (already delivered) |
+| PendingReservation / PendingPayment | Via saga compensation | Via saga compensation, including any known credit/settlement effect | N/A |
+| Confirmed (before dispatch) | Institution-approved post-confirmation handling; do not release confirmed-linked/consumed hold | Void (pre-capture) or refund where authorized and outcome known; hold/reverse any seller-credit or settlement effect per policy | Cancel shipment creation |
+| Processing / Dispatched | Institution-approved cancellation/return handling; do not release confirmed-linked/consumed hold | Refund where authorized and outcome known; reconcile credit, commission and settlement reversal independently | Request delivery return where eligible |
+| Delivered | N/A | Refund and any approved post-settlement adjustment | N/A (already delivered) |
 
 ---
 

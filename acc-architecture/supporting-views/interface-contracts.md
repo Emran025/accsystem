@@ -21,6 +21,7 @@
 - All IDs are taken from `registry/interfaces.json` and `registry/elements.json`; no IDs invented
 - Fields not specified in idea.md are labelled UNKNOWN with `owner=OWNER_UNASSIGNED` and revisit trigger
 - Interface version and exact field names require OpenAPI/AsyncAPI contract before implementation
+- ADR-021 is PROPOSED/approval-required: existing `IF-*` IDs have no implicit major version, and every `/v1/...` path or `v1` value below is an illustrative candidate example, not an assigned contract version
 - This document is a reference-level contract description, not an executable specification
 
 ---
@@ -49,7 +50,7 @@
 | Attribute | Value | Label |
 |---|---|---|
 | Interface ID | IF-ACC-CATALOG-QUERY | CONFIRMED — registry/interfaces.json |
-| Version | v1 (example; subject to OpenAPI contract) | ASSUMPTION |
+| Version | Candidate major (illustrated as v1; subject to ADR-021 and OpenAPI approval) | PROPOSAL |
 | Protocol | HTTPS REST / JSON | ASSUMPTION — idea.md §6.2 shows REST path style |
 | Contract type | Synchronous request/response | CONFIRMED — idea.md §6.1: "Synchronous API … search, view details" |
 

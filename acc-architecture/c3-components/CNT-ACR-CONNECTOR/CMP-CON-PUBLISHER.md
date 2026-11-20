@@ -97,10 +97,10 @@ retry_count         integer
 | Concern | Control |
 |---|---|
 | Authentication to ACCSystem | Policy-selected OAuth 2.0 Client Credentials or mTLS under ADR-015; the authenticated principal is bound to the institution. Exact method is an onboarding/security gate. |
-| Token renewal | CMP-CON-PUBLISHER caches the access token and refreshes it before expiry (standard OAuth 2.0 CC flow) |
-| Credential rotation | Client secret rotated via platform admin; no code changes required; CMP-CON-PUBLISHER re-authenticates with new secret after rotation |
+| Token renewal | If OAuth 2.0 Client Credentials is selected, CMP-CON-PUBLISHER caches the access token and refreshes it before expiry; mTLS mode follows its certificate lifecycle |
+| Credential rotation | The selected credential/certificate is rotated through the approved onboarding and platform-security process; no code changes are implied |
 | Payload integrity | HTTPS only; no HTTP fallback |
-| Credential storage | API key stored in ACCore secure config (ASSUMPTION — secret manager or env secret) |
+| Credential storage | Selected OAuth client secret or mTLS key/certificate reference is stored in ACCore secure configuration (ASSUMPTION — secret manager or equivalent); API keys are not a contract mechanism |
 | Principle of least privilege | CMP-CON-PUBLISHER has read access to Outbox only; cannot write to ACCore product data |
 
 ---

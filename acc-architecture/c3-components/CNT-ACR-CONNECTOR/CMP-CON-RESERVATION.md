@@ -8,7 +8,7 @@ Accept reservation and release commands through the approved connectivity mode. 
 ## Atomic reservation
 Within one local ACCore database transaction, validate the institution/product scope, lock or conditionally update the inventory row, verify available quantity, create the reservation record, and persist the idempotency result. The last-unit race therefore permits at most one successful reservation. A duplicate request returns the same result.
 
-Reservation record states are `REQUESTED`, `RESERVED/ACCEPTED`, `REJECTED`, `UNKNOWN`, `RELEASE_REQUESTED`, `RELEASED`, `EXPIRED`, and `CONSUMED/COMMITTED`. `UNKNOWN` is used when processing or response delivery cannot be established; it is reconciled by reservation ID/idempotency key. A release is idempotent, and a `CONSUMED/COMMITTED` reservation cannot be released.
+Reservation record states are `REQUESTED`, `ACCEPTED`, `REJECTED`, `UNKNOWN`, `RELEASE_REQUESTED`, `RELEASED`, `EXPIRED`, and `CONSUMED/COMMITTED`. `UNKNOWN` is used when processing or response delivery cannot be established; it is reconciled by reservation ID/idempotency key. A release is idempotent, and a `CONSUMED/COMMITTED` reservation cannot be released. The deprecated legacy token `RESERVED` maps to `ACCEPTED`; it is not a current wire/state token (ADR-018 §3.3).
 
 ## Timeout and expiry rules
 A timeout does not prove rejection and does not trigger release. A hold expires only under the configured reservation policy after the outcome is known or a safe reconciliation rule permits expiry. The deduplication record remains for the configured period required to cover retries/reconciliation; no fixed duration is assumed.

@@ -49,7 +49,7 @@
      items: [{seller_id, seller_product_id, title_at_purchase,
               quantity, unit_price_at_purchase, currency}],
      total_at_purchase,
-     payment_ref,
+     payment_ref: aggregate buyer-facing reference when one provider transaction is used; otherwise a stable collection of SellerOrder/allocation references,
      snapshot_at: timestamp
    }
    → Stored in Orders DB, immutable after write
@@ -68,7 +68,7 @@
      institution_ids: [seller_id, ...],
      items: [...],
      total,
-     payment_ref,
+     payment_ref: aggregate reference plus allocation references when applicable,
      confirmed_at
    }
 
@@ -77,7 +77,7 @@
    → CNT-ACC-LICENSE (triggers FN-LIC-ACTIVATE for software items)
    → CNT-ACC-NOTIFICATIONS (triggers buyer + seller notifications)
    → CNT-ACC-DELIVERY (triggers delivery job creation for physical items)
-   → CNT-ACC-PAYMENT (evaluate each allocation and approved later-capture trigger; already captured allocations require no second capture; UNKNOWN requires reconciliation)
+   → CNT-ACC-PAYMENT (evaluate each allocation and approved later-capture trigger; already captured allocations require no second capture; UNKNOWN requires reconciliation). Capture, void/refund, seller-credit, commission and settlement commands remain SellerOrder/allocation-scoped even when the buyer-facing reference is aggregated.
 
 6. CMP-ORD-SAGA signals SUCCESS → checkout response returned to buyer:
    {order_id, status: "CONFIRMED", confirmed_at}

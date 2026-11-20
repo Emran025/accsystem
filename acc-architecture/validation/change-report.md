@@ -1,6 +1,6 @@
-# Change Report — 2026-11-20 local remediation
+# Change Report — 2026-11-20 local remediation (historical snapshot)
 
-**Baseline:** repository `Emran025/accsystem`, branch `main`, HEAD `99e440dd55a7d3ff424fb207069ed23ae2563e05`. The working copy was cloned locally because no repository was present in the sandbox. No commit, push, visibility change, release, tag, or upload was performed.
+**Baseline:** repository `Emran025/accsystem`, branch `main`, HEAD `99e440dd55a7d3ff424fb207069ed23ae2563e05`. This is a historical remediation snapshot; current registry counts and readiness status are governed by `validation/validation-status.md`. No commit, push, visibility change, release, tag, or upload was performed for that snapshot.
 
 ## Changes applied
 
@@ -20,7 +20,7 @@
 - `python3 architecture-assistant/scripts/validate_architecture.py acc-architecture`: **PASS** after BOM-safe loading; this is structural registry/reference validation only.
 - `python3 architecture-assistant/scripts/validate_diagrams.py --help`: **PASS** and no longer crashes from missing `argv[1]`.
 - `manus-render-diagram` on the two previously failing dynamic views: **PASS** for both.
-- Canonical count script: 113 elements, 7 operations, 7 functions, 9 interfaces, 22 decisions, 7 systems, 30 containers, 28 components.
+- Canonical count script at that snapshot: 113 elements, 7 operations, 7 functions, 9 interfaces, 22 decisions, 7 systems, 30 containers, 28 components. This does not override the current registry snapshot.
 
 ## Not closed by this change
 

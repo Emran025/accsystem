@@ -48,7 +48,7 @@
 | System ID | Direction | Protocol | Purpose | Label |
 |-----------|-----------|----------|---------|-------|
 | SYS-ACCSYSTEM (CNT-ACC-INTEGRATION) | Outbound (async events) | TLS + Event / REST | Publish ProductListingPublished/Updated/Withdrawn events; send StockAvailabilityChanged events via Outbox/Connector | CONFIRMED (idea.md §6.3, §7.1, ADR-005) |
-| SYS-ACCSYSTEM (CNT-ACC-INTEGRATION) | Inbound to Connector endpoint (authorized commands/events) | TLS + REST / OAuth 2.0 CC | Receive ReservationRequested commands; receive OrderConfirmed events; receive return/cancellation commands — all routed via CNT-ACR-CONNECTOR inbound endpoint only; never to internal ACCore services | CONFIRMED (idea.md §6.3, §7.2) |
+| SYS-ACCSYSTEM (CNT-ACC-INTEGRATION) | Inbound to Connector endpoint (authorized commands/events) | TLS + REST / policy-selected OAuth 2.0 Client Credentials or mTLS | Receive ReservationRequested commands; receive OrderConfirmed events; receive return/cancellation commands — all routed via CNT-ACR-CONNECTOR inbound endpoint only; never to internal ACCore services. Exact mode is an onboarding/security gate under ADR-015. | CONFIRMED boundary; authentication mode PROPOSED/approval-required |
 | SYS-ACCSYSTEM (CNT-ACC-LICENSE) | Outbound (periodic sync) | REST / TLS | License validation requests; retrieve signed entitlement tokens for offline use | CONFIRMED (idea.md §4.3, ADR-014) |
 | SYS-ACCSYSTEM (CNT-ACC-CART / CNT-ACC-ORDERS) | Bidirectional (via Commerce Workspace) | REST/HTTPS | Institution employee browses catalog, creates cart/order through ACCSystem Commerce APIs | CONFIRMED (idea.md §4.1, ADR-003) |
 

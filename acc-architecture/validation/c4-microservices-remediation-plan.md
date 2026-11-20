@@ -39,7 +39,7 @@ The ticket proposals are evidence inputs, not approved architecture. The coordin
 ## Closure state and audit loop
 
 - No remaining MUST-FIX item may be marked closed without the evidence specified above. RP-01 technical source alignment is complete, but it remains open for versioned contract approval and executable acceptance evidence; interface-contracts.md §3.6 and §9 now preserve the safe UNKNOWN rule. The audit package **remains open** for items requiring external review.
-- **IC-001** (interface versioning): INTERIM RESOLVED by ADR-021 — URI path versioning (/v1/), additive-only expansion within major version, 6-month deprecation notice before breaking changes. PROPOSED/approval-required pending API governance formal approval.
+- **IC-001** (interface versioning): INTERIM/PROPOSED by ADR-021 — URI-major versioning is a candidate policy, not an approved `/v1/` assignment; existing `IF-*` IDs have no implicit major version. Additive compatibility and any deprecation interval remain subject to API governance and formal per-interface mappings.
 - RP-05, RP-06, RP-11, and RP-13 have implementation-level corrections/appends in this V5 work copy; RP-05 closure still needs contract/security confirmation, while RP-06/RP-11 have rendered output evidence and RP-13 has a registry cross-check.
 - RP-17 (Mermaid syntax): TECHNICALLY VERIFIED — both dynamic supporting views render successfully in the 2026-11-20 rerun after syntax-only corrections.
 - The other C1/C2 proposals are not applied because view scope, direction, directness, deployment mode, or owner acceptance is unresolved.

@@ -10,6 +10,12 @@ Every record carries `order_id`, `seller_order_id`, `payment_attempt_id`, provid
 
 Ledger postings are append-only, balanced by currency, and idempotent. Corrections use reversal/adjustment postings rather than mutation. Raw PAN/CVV/expiry are never stored. Provider webhooks, polling, settlement files, and manual evidence are adapter inputs. Manual-payment and commission-policy permissions are institution-scoped and approval-controlled. Reporting separates gross product price, tax lines, delivery charges, commission, provider fees, seller credit, and settlement status.
 
+## Ownership and executable boundary
+
+The payment domain owns payment-attempt and allocation state; a Settlement/Ledger boundary (owner to be assigned) owns seller-credit/transfer, commission payable, settlement reconciliation, and immutable ledger postings. It consumes `PaymentCaptured` or `RecordedOutsidePlatform` outcomes and emits allocation-scoped `SellerCreditPending`, `SellerCredited`, `SellerCreditUnknown`, `SettlementPending`, `SettlementReconciled`, and reversal/adjustment events through an outbox. `Confirmed` is not financial completion: each allocation independently progresses through `CAPTURED → CREDIT_PENDING → CREDITED/UNKNOWN → SETTLEMENT_PENDING → SETTLED/REVERSED`, subject to provider, institution, Finance and Legal policy.
+
+Direct seller credit, platform-central collection followed by controlled settlement, separate provider attempts, and externally completed or manual payments remain supported alternatives. The selected route, commission basis, provider report contract, accounting trigger, and reversal authority are approval gates; this boundary does not choose among them.
+
 ## External gates
 
 The selected provider must be tested for payment-code lookup, seller accounts/wallets, direct credit or split payment, webhook/reversal/refund support, reconciliation files, and legal/finance suitability. Tax liability, commission basis, settlement timing, and accounting recognition require finance/legal approval; no value is invented here.

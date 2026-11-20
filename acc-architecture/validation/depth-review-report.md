@@ -1,10 +1,10 @@
 # Artifact-depth outline review
 
-Overall: **BLOCKED_FOR_CONTENT_REVIEW**
+Overall: **STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW**
 
 This heuristic checks visible topic coverage and common unresolved placeholders only. It does not judge whether claims are correct, sufficiently specific, evidence-backed, internally consistent, secure, or implementation-ready. A structurally present outline always requires expert semantic review.
 
-Documents reviewed: 88; incomplete outlines: 4; registry/path findings: 0.
+Documents reviewed: 88; incomplete outlines: 0; registry/path findings: 0.
 
 | Level | IDs | Document | Outline status | Missing topics | Placeholder markers |
 |---|---|---|---|---|---|
@@ -80,13 +80,13 @@ Documents reviewed: 88; incomplete outlines: 4; registry/path findings: 0.
 | DECISION | ADR-012 | `decisions/ADR-012.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-013 | `decisions/ADR-013.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-014 | `decisions/ADR-014.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| DECISION | ADR-015 | `decisions/ADR-015.md` | INCOMPLETE_OUTLINE | confidence/reversibility/revisit | None |
-| DECISION | ADR-016 | `decisions/ADR-016.md` | INCOMPLETE_OUTLINE | alternatives/trade-offs | None |
-| DECISION | ADR-017 | `decisions/ADR-017.md` | INCOMPLETE_OUTLINE | alternatives/trade-offs | None |
+| DECISION | ADR-015 | `decisions/ADR-015.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-016 | `decisions/ADR-016.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-017 | `decisions/ADR-017.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-018 | `decisions/ADR-018.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-019 | `decisions/ADR-019.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-020 | `decisions/ADR-020.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| DECISION | ADR-021 | `decisions/ADR-021.md` | INCOMPLETE_OUTLINE | confidence/reversibility/revisit | None |
+| DECISION | ADR-021 | `decisions/ADR-021.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-022 | `decisions/ADR-022.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-INT-PUBLISH | `functions/specs/FN-INT-PUBLISH.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-LIC-ACTIVATE | `functions/specs/FN-LIC-ACTIVATE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |

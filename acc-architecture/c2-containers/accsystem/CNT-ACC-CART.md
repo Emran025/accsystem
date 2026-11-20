@@ -61,7 +61,7 @@ CONFIRMED (idea.md §8.3): At order confirmation, an immutable commercial snapsh
 |---|---|
 | Checkout session expires | Cart cleared; buyer must re-initiate (session TTL to be defined — UNKNOWN) |
 | Offer validation fails | Checkout blocked; buyer shown updated price/availability |
-| Order creation fails after checkout | Checkout session marked failed; no charge; buyer retries |
+| Order creation fails after checkout | If no external payment request was dispatched, mark the session failed and allow a safe retry. If authorization/capture may have been dispatched, do not promise “no charge”: persist recovery, reconcile the provider and reservation states, and use only an evidence-backed void/refund or resume path under the selected capture policy. |
 
 ---
 
