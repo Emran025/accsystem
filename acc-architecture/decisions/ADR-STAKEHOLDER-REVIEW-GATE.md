@@ -2,7 +2,7 @@
 
 **Artifact ID:** `decisions/ADR-STAKEHOLDER-REVIEW-GATE.md`  
 **Date:** 2026-11-16  
-**Status:** READY FOR STAKEHOLDER SIGN-OFF  
+**Status:** REVIEW PACKAGE — SIGN-OFF PENDING; NO STAKEHOLDER APPROVAL RECORDED
 **Governance Authority:** `architecture-assistant/AGENT.md`, `architecture-assistant/WORKFLOW.md`
 
 ---

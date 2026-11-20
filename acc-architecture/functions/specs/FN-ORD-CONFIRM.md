@@ -89,6 +89,10 @@
 
 This function defines the ACCSystem order commitment point, not a distributed atomic commit across ACCSystem, ACCore, and the payment provider.
 
+### SellerOrder and ParentOrder transition authority
+
+The order state machine owns and persists each SellerOrder transition. The confirmation coordinator must explicitly validate and record every required SellerOrder/allocation as part of the same local confirmation decision; it must not infer a seller transition solely from the aggregate ParentOrder status. ParentOrder `CONFIRMED` is an aggregate result computed from the required SellerOrder outcomes and immutable snapshot, while downstream integration, capture, delivery, accounting, and seller-credit transitions remain independently owned. Partial SellerOrder success cannot silently produce a product-visible partial order; any supported partial-order policy requires a separate approved decision.
+
 | Domain | Local transaction boundary | What is guaranteed | What is not guaranteed |
 |---|---|---|---|
 | ACCSystem order | `Orders DB`: write snapshot + `Order.status = CONFIRMED` + Outbox event in the same DB transaction | Once the transaction commits, ACCSystem has a durable confirmed order and an event to publish | No guarantee that downstream consumers (ACCore, payment capture, delivery) have processed it yet |

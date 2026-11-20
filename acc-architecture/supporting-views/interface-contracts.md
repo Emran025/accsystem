@@ -1125,6 +1125,8 @@ The ACCore seller's response to a reservation request initiated by the Order sag
 > [!NOTE]
 > This view cites idea.md §5.2 as ACCore-assigned `reservation_id`, while a previous `FN-ORD-RESERVE` draft described saga assignment. Creator, mapping and query modality require institution/API agreement; use a stable request key before dispatch even if the resulting ID is not yet known. ACCore remains authoritative for inventory decisions.
 
+> **Reservation identity gate:** ACCore is authoritative for the reservation outcome and is the candidate owner of any local `reservation_id`; `CMP-INT-RESERVATION` owns the ACCSystem request-key mapping and recovery record. The authoritative query/status operation, mapping when no ID is returned, release target, callback modality, and response schema remain institution/API approval gates. Until those are available, `UNKNOWN` remains pending and cannot be resolved by guessing an ID or releasing by elapsed time.
+
 > **Canonical status vocabulary (same as IF-ACC-RESERVE-SAGA):** immediate response `ACCEPTED` | `REJECTED` | `UNKNOWN`; authoritative resolution of the current uncertain outcome may return `ACCEPTED` | `REJECTED` | `EXPIRED`; an ACCEPTED active hold can later be consumed, validly released or authoritatively expire. Delivery mode and notification/callback behavior remain contract gates per ADR-015; do not infer them from this view. Cross-reference: ADR-018, ADR-015.
 
 ### 9.5 Reservation Expiry

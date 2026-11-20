@@ -89,7 +89,7 @@
 |---|---|---|
 | Cancellation / Return record | CMP-ORD-CANCEL | `{order_id, request_type, requester, reason, step_outcomes[], final_state, created_at}` |
 | Step outcome records | CMP-ORD-CANCEL | Per-step result: `{step, status, attempt_count, last_error}` |
-| `OrderCancelled` / `ReturnRequested` / `OrderReturned` events | Outbox → Event Bus | Final events on final transition; request-event timing is proposed at validated initiation and remains a contract decision |
+| `OrderCancelled` / `ReturnRequested` / `OrderReturned` events | Outbox → Event Bus | `ReturnRequested` is an initiation event after request validation; `OrderCancelled` and `OrderReturned` are final-transition events. Exact schemas, consumer mapping, and delivery channel remain API/contract gates. |
 
 - **Transaction boundary:** Cancellation record creation + order state transition to `CancellationPending` are atomic. Each compensation step outcome is written independently as it completes.
 - **Idempotency:** Deduplicate the same authorized request/operation and applicable order/seller/line scope, without treating a distinct authorized cancellation or return as a duplicate. Exact request key and multi-return eligibility remain OPEN.
@@ -127,7 +127,7 @@
 | `CancellationRequested` | Request received and validated |
 | `OrderCancellationStepCompleted` | Each compensation step completes |
 | `OrderCancelled` | Final Cancelled state reached |
-| `ReturnRequested` | Return request validated and initiated |
+| `ReturnRequested` | Return request validated and initiated; this is not evidence that the return or refund completed |
 | `OrderReturned` | Final Returned state reached |
 
 ---

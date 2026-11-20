@@ -6,7 +6,7 @@
 For every SellerOrder, create a payment allocation linked to seller, order, amount, transaction currency, tax/delivery basis, capture-policy ID, correlation ID, and idempotency key. The safe baseline is one payment record per SellerOrder. A single aggregated buyer-facing provider transaction is allowed only when all seller/agreement policies are compatible and the provider supports seller allocations; otherwise use separate attempts. An authorization is a reversible hold, capture is collection, seller credit/transfer is a separate state, and settlement is a later reconciliation event.
 
 ## Distinct executable paths
-- **Authorize-then-capture:** `PENDING_AUTHORIZATION → AUTHORIZED → PENDING_CAPTURE → CAPTURED`; capture occurs at the configured seller/agreement trigger and is not implied by authorization.
+- **Authorize-then-capture:** `PENDING_AUTHORIZATION → AUTHORIZED → CAPTURE_REQUESTED → CAPTURED`; `CAPTURE_REQUESTED` is the canonical state while the later capture operation is pending. Capture occurs at the configured seller/agreement trigger and is not implied by authorization.
 - **Immediate/contract-defined capture:** `PENDING_AUTHORIZATION → CAPTURE_REQUESTED → CAPTURED` when the approved policy and provider support immediate capture. If multiple SellerOrders use one transaction, incompatible policies force separate attempts or block checkout.
 
 Seller configuration is constrained by platform, risk, legal, and provider policy. A timeout or missing response is `UNKNOWN`; reconciliation queries status before retrying or compensating. Capture failure after confirmation leaves the order confirmed with an explicit payment exception and reconciliation workflow. Capture success does not by itself prove seller credit or settlement.
