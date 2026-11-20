@@ -1,5 +1,7 @@
 # Missing and Incomplete Diagram Item Ticket Results
 
+> **Historical ticket record:** These classifications were captured before the focused 2026-11-20 corrections. Rows saying `NO CHANGE`, `not-run`, or describing duplicate aliases are historical evidence and are not a current assertion that the same defect remains. Current status is governed by `validation-status.md`; no owner approval or readiness is implied.
+
 **Ticket status:** 16 independent item tickets completed; all agents returned `files_touched: []`. No source diagrams, registry entries, or architecture decisions were modified by the agents. The coordinator has not applied proposed repairs. The result classifications below therefore remain current-state findings, not post-edit closure claims.
 
 ## Summary

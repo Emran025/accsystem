@@ -2,7 +2,7 @@
 
 Architecture documentation for the ACC Ecosystem: a central marketplace and platform-management control plane integrated with a separate ERP instance operated by each institution, plus the client applications and external services around them. This repository describes the intended system boundaries, interfaces, decisions, flows, and validation status; it is **not application source code or a deployable implementation**.
 
-> **Status — V5 audit, 20 November 2026:** The package contains C1–C3 architecture views and a registry-first audit. Its semantic review is **incomplete**. In particular, the reservation timeout/expiry contract contains a critical contradiction, and several connectivity, interface, accounting, and diagram-scope questions remain open. This documentation does not establish stakeholder approval, security or legal compliance, production readiness, or implemented behavior.
+> **Status — current snapshot, 20 November 2026:** The package contains C1–C3 architecture views and a registry-first audit. Its semantic review is **incomplete**. The reservation contract now consistently preserves `UNKNOWN` after elapsed time or a lost response; only authoritative `EXPIRED` or trusted reconciliation may resolve expiry, and no numeric TTL is asserted. Connectivity, interface modality, accounting, diagram-scope, security, operations, and ownership questions remain open. Historical audit findings are retained in validation reports and are not current closure claims. This documentation does not establish stakeholder approval, security or legal compliance, production readiness, or implemented behavior.
 
 ## Start here
 
@@ -81,7 +81,7 @@ The following issues remain open and materially affect implementation or interpr
 - **Reservation response contract:** response terms and synchronous-versus-callback delivery differ across interface and component documents.
 - **Accounting trigger:** reservation consumption, SalesOrder creation, and financial journal posting are not established as one universal event; the accounting trigger is institution-dependent or unresolved.
 - **Diagram scope and direction:** some C1/C2 views may be intentionally partial, two ACCSystem C2 views have no declared precedence, and arrow meaning is not consistently distinguished from caller, data-flow direction, or dependency.
-- **Supporting diagram rendering:** the two previously failing supporting sequence diagrams now render successfully with the available Mermaid renderer after syntax-only corrections. Rendering is tool evidence, not semantic approval.
+- **Supporting diagram rendering:** the two previously failing supporting sequence diagrams now render successfully; the full Mermaid validator also renders the discovered Mermaid blocks with the available renderer. Rendering is tool evidence, not semantic approval. Any older report saying those two blocks still fail is historical.
 - **Decision-gate count:** the current decision registry and numbered ADR files each contain 22 entries. Any older report citing 17 or 14 is historical/stale and must not be used as the current denominator.
 
 See the [cross-level consistency report](acc-architecture/validation/c4-diagram-consistency-report.md), [completeness audit](acc-architecture/validation/c4-completeness-audit.md), and [testable remediation plan](acc-architecture/validation/c4-microservices-remediation-plan.md) for evidence, owners, approval gates, and acceptance criteria. The remediation plan is the appropriate place to track closure; this README does not mark open items resolved.

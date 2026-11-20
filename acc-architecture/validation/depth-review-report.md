@@ -1,10 +1,10 @@
 # Artifact-depth outline review
 
-Overall: **STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW**
+Overall: **BLOCKED_FOR_CONTENT_REVIEW**
 
 This heuristic checks visible topic coverage and common unresolved placeholders only. It does not judge whether claims are correct, sufficiently specific, evidence-backed, internally consistent, secure, or implementation-ready. A structurally present outline always requires expert semantic review.
 
-Documents reviewed: 80; incomplete outlines: 0; registry/path findings: 0.
+Documents reviewed: 88; incomplete outlines: 9; registry/path findings: 0.
 
 | Level | IDs | Document | Outline status | Missing topics | Placeholder markers |
 |---|---|---|---|---|---|
@@ -48,24 +48,24 @@ Documents reviewed: 80; incomplete outlines: 0; registry/path findings: 0.
 | C3 | CMP-INT-GATEWAY | `c3-components/CNT-ACC-INTEGRATION/CMP-INT-GATEWAY.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-INT-ORDERNOTIFY | `c3-components/CNT-ACC-INTEGRATION/CMP-INT-ORDERNOTIFY.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-INT-PUBLICATION | `c3-components/CNT-ACC-INTEGRATION/CMP-INT-PUBLICATION.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| C3 | CMP-INT-RESERVATION | `c3-components/CNT-ACC-INTEGRATION/CMP-INT-RESERVATION.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| C3 | CMP-INT-RESERVATION | `c3-components/CNT-ACC-INTEGRATION/CMP-INT-RESERVATION.md` | INCOMPLETE_OUTLINE | interfaces/collaborators, verification/tests | None |
 | C3 | CMP-LIC-ENTITLEMENT | `c3-components/CNT-ACC-LICENSE/CMP-LIC-ENTITLEMENT.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-LIC-ISSUANCE | `c3-components/CNT-ACC-LICENSE/CMP-LIC-ISSUANCE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-LIC-LIFECYCLE | `c3-components/CNT-ACC-LICENSE/CMP-LIC-LIFECYCLE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-LIC-OFFLINE | `c3-components/CNT-ACC-LICENSE/CMP-LIC-OFFLINE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-ORD-CANCEL | `c3-components/CNT-ACC-ORDERS/CMP-ORD-CANCEL.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-ORD-MULTISELLER | `c3-components/CNT-ACC-ORDERS/CMP-ORD-MULTISELLER.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| C3 | CMP-ORD-SAGA | `c3-components/CNT-ACC-ORDERS/CMP-ORD-SAGA.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| C3 | CMP-ORD-SAGA | `c3-components/CNT-ACC-ORDERS/CMP-ORD-SAGA.md` | INCOMPLETE_OUTLINE | verification/tests | None |
 | C3 | CMP-ORD-SNAPSHOT | `c3-components/CNT-ACC-ORDERS/CMP-ORD-SNAPSHOT.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-ORD-STATEMACHINE | `c3-components/CNT-ACC-ORDERS/CMP-ORD-STATEMACHINE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-PAY-ADAPTER | `c3-components/CNT-ACC-PAYMENT/CMP-PAY-ADAPTER.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| C3 | CMP-PAY-ORCHESTRATOR | `c3-components/CNT-ACC-PAYMENT/CMP-PAY-ORCHESTRATOR.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| C3 | CMP-PAY-ORCHESTRATOR | `c3-components/CNT-ACC-PAYMENT/CMP-PAY-ORCHESTRATOR.md` | INCOMPLETE_OUTLINE | identity, parent, scope and purpose, verification/tests | None |
 | C3 | CMP-PAY-RECONCILIATION | `c3-components/CNT-ACC-PAYMENT/CMP-PAY-RECONCILIATION.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-PAY-REFUND | `c3-components/CNT-ACC-PAYMENT/CMP-PAY-REFUND.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-CON-LICENSECHECK | `c3-components/CNT-ACR-CONNECTOR/CMP-CON-LICENSECHECK.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-CON-ORDERRECEIVER | `c3-components/CNT-ACR-CONNECTOR/CMP-CON-ORDERRECEIVER.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | CMP-CON-PUBLISHER | `c3-components/CNT-ACR-CONNECTOR/CMP-CON-PUBLISHER.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| C3 | CMP-CON-RESERVATION | `c3-components/CNT-ACR-CONNECTOR/CMP-CON-RESERVATION.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| C3 | CMP-CON-RESERVATION | `c3-components/CNT-ACR-CONNECTOR/CMP-CON-RESERVATION.md` | INCOMPLETE_OUTLINE | interfaces/collaborators | None |
 | DECISION | ADR-001 | `decisions/ADR-001.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-002 | `decisions/ADR-002.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-003 | `decisions/ADR-003.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
@@ -80,12 +80,20 @@ Documents reviewed: 80; incomplete outlines: 0; registry/path findings: 0.
 | DECISION | ADR-012 | `decisions/ADR-012.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-013 | `decisions/ADR-013.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | DECISION | ADR-014 | `decisions/ADR-014.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-015 | `decisions/ADR-015.md` | INCOMPLETE_OUTLINE | confidence/reversibility/revisit | None |
+| DECISION | ADR-016 | `decisions/ADR-016.md` | INCOMPLETE_OUTLINE | alternatives/trade-offs | None |
+| DECISION | ADR-017 | `decisions/ADR-017.md` | INCOMPLETE_OUTLINE | alternatives/trade-offs | None |
+| DECISION | ADR-018 | `decisions/ADR-018.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-019 | `decisions/ADR-019.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-020 | `decisions/ADR-020.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| DECISION | ADR-021 | `decisions/ADR-021.md` | INCOMPLETE_OUTLINE | confidence/reversibility/revisit | None |
+| DECISION | ADR-022 | `decisions/ADR-022.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-INT-PUBLISH | `functions/specs/FN-INT-PUBLISH.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-LIC-ACTIVATE | `functions/specs/FN-LIC-ACTIVATE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-LIC-VALIDATE | `functions/specs/FN-LIC-VALIDATE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-ORD-CHECKOUT | `functions/specs/FN-ORD-CHECKOUT.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C3 | FN-ORD-CONFIRM | `functions/specs/FN-ORD-CONFIRM.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
-| C3 | FN-ORD-RESERVE | `functions/specs/FN-ORD-RESERVE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
+| C3 | FN-ORD-RESERVE | `functions/specs/FN-ORD-RESERVE.md` | INCOMPLETE_OUTLINE | interfaces/collaborators | None |
 | C3 | FN-PAY-AUTHORIZE | `functions/specs/FN-PAY-AUTHORIZE.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 | C2 | IF-ACC-CATALOG-QUERY, IF-ACC-ORDER-CREATE, IF-ACC-RESERVE-SAGA, IF-ACC-PAYMENT-WEBHOOK, IF-ACC-EVENT-ENVELOPE, IF-ACC-LICENSE-VALIDATE, IF-ACC-SOFTDL, IF-ACR-PUBLISH-EVENT, IF-ACR-RESERVATION-RESP | `supporting-views/interface-contracts.md` | STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW | None | None |
 

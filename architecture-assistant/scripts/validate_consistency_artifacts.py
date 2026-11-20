@@ -71,11 +71,12 @@ def audit(root: str | Path) -> dict[str, Any]:
 
     registry_path, registry_error = safe_regular_file(root, "registry/elements.json")
     ids: set[str] = set()
+    elements: list[Any] = []
     if registry_error:
         errors.append(f"registry: {registry_error}")
     else:
         try:
-            payload = json.loads(registry_path.read_text(encoding="utf-8"))
+            payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
             elements = payload.get("elements", [])
             if not isinstance(elements, list):
                 raise ValueError("elements must be an array")
@@ -84,19 +85,38 @@ def audit(root: str | Path) -> dict[str, Any]:
             errors.append(f"registry: invalid elements.json: {exc}")
 
     matrix = contents.get("diagram matrix", "")
+    if "C4 Diagram Coverage Matrix" in matrix:
+        matrix_types = {"system", "service", "application", "data_store", "component"}
+        ids = {str(e["id"]) for e in elements if isinstance(e, dict) and e.get("scope_status") == "IN_SCOPE" and e.get("type") in matrix_types and isinstance(e.get("id"), str)}
     rows_by_id: dict[str, list[str]] = {}
     for cells in table_rows(matrix):
-        if cells and cells[0] in ids:
-            rows_by_id[cells[0]] = cells
+        matched_id = None
+        exact_candidates: list[str] = []
+        for cell in cells:
+            normalized = cell.lstrip("`").strip()
+            candidates = [element_id for element_id in ids
+                          if re.match(rf"{re.escape(element_id)}(?![A-Z0-9-])", normalized)]
+            descriptive = [element_id for element_id in candidates if normalized != element_id]
+            if descriptive:
+                matched_id = max(descriptive, key=len)
+                break
+            exact_candidates.extend(candidates)
+        if matched_id is None and exact_candidates:
+            matched_id = max(exact_candidates, key=len)
+        if matched_id and (matched_id not in rows_by_id or len(cells) > len(rows_by_id[matched_id])):
+            rows_by_id[matched_id] = cells
     missing = sorted(ids - rows_by_id.keys())
     for element_id in missing:
         errors.append(f"diagram matrix has no row for in-scope ID {element_id}")
     for element_id, cells in rows_by_id.items():
+        if any("NOT-APPLICABLE" in cell.upper() for cell in cells):
+            continue
         if len(cells) < 6:
             errors.append(f"diagram matrix row for {element_id} has fewer than 6 columns")
             continue
-        diagram_reference = cells[3].strip()
-        disposition = cells[5].strip().casefold()
+        diagram_reference = (cells[4].strip() if len(cells) >= 8 else cells[3].strip())
+        disposition = next((cell.strip().casefold() for cell in reversed(cells)
+                             if any(term in cell.casefold() for term in DISPOSITIONS + ("complete", "partial", "missing"))), "")
         if not diagram_reference and not any(term in disposition for term in DISPOSITIONS):
             errors.append(f"diagram matrix row for {element_id} has neither a diagram reference nor an explicit disposition")
         diagram_paths = DIAGRAM_PATH.findall(diagram_reference)

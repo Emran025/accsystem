@@ -1,5 +1,7 @@
 # Remediation Audit — 2026-11-20
 
+> **Historical audit record:** This report records the prior remediation pass and its baseline. It is retained for provenance; current runtime hardening, schema/Mermaid checks, and documentation status are reported in `validation-status.md` and the current diff. It does not claim owner approval, security/finance/operations clearance, production readiness, or release readiness.
+
 ## Revision and preservation
 
 The audited repository is `Emran025/accsystem`, branch `main`, baseline/current starting HEAD `99e440dd55a7d3ff424fb207069ed23ae2563e05`. No pre-existing working-tree changes were present. Work was performed in a newly cloned local working copy because the sandbox initially contained no repository. The remote was not changed and no commit/push/tag/release/upload was made.

@@ -2,6 +2,8 @@
 
 **Status:** PROPOSED documentation overlay on ACC Final-v3; Mermaid source only. The registry and source documents are authoritative. This file does not change system membership or ownership.
 
+**C1 scope note:** The portfolio diagram below uses the registered system nodes directly. It is a landscape view, not an approval of a new ownership or transport relationship. The separate focal-system context sections are intentionally partial views of their named system and must be read with their cited source records.
+
 ## Evidence and modeling notes
 
 - Canonical IDs come from `registry/elements.json`; registered systems, containers, and components are not inferred from folder names.
@@ -27,14 +29,14 @@ flowchart LR
   ACT["ACTORS — buyers, institution users, platform/support, delivery roles"]
   PAY["EXT-PAYMENT-PROVIDER — external payment provider(s)"]
   CDN["EXT-PACKAGE-CDN — package CDN/object storage"]
-  ACT -->|documented user interactions| COM["SYS-ACCOMMERCE boundary"]
+  ACT -->|documented user interactions| SYS_ACCOMMERCE
   SYS_ACCOMMERCE -->|marketplace/order logical integration| SYS_ACCSYSTEM
   SYS_ACCSYSTEM -->|connector/API/event logical integration| SYS_ACCORE
   SYS_ACCSYSTEM -->|platform management interfaces| SYS_ACMANAGEMENT
   SYS_ACCSYSTEM -->|delivery/order interfaces| SYS_ACCMARED_SUP
   SYS_ACCSYSTEM -->|delivery/order interfaces| SYS_ACCMARED_COU
   SYS_ACCSYSTEM -->|payment interface| PAY
-  MGT -->|software distribution links| CDN
+  SYS_ACMANAGEMENT -->|software distribution links| CDN
 ```
 
 **Sources:** `registry/elements.json`, `registry/decomposition-map.json`, `decisions/ADR-001.md`, `ADR-002.md`, `ADR-004.md`, `ADR-005.md`, `ADR-008.md`, `ADR-009.md`, `supporting-views/interface-contracts.md`.
@@ -179,6 +181,8 @@ flowchart LR
 
 Each view is registry-derived. Containers are shown inside the owning system boundary; a co-deployment or shared platform does not imply shared data ownership.
 ### C2-SYS-ACCSYSTEM — containers of ACCSystem Platform
+
+This overlay is a **registry-derived internal container view**: it shows the 17 registered ACCSystem containers and a limited set of source-supported logical interactions. It is not declared authoritative over the separate [ACCSystem container diagram](../c2-containers/accsystem/container-diagram.md), which includes broader client/external context and a different relationship selection. The two views are retained as complementary candidates pending an explicit owner/architecture decision on precedence or reconciliation; no such decision is recorded here.
 
 ```mermaid
 flowchart TB

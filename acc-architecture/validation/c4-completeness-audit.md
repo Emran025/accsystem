@@ -1,5 +1,7 @@
 # ACC Diagram Completeness Audit
 
+> **Historical finding set:** This audit predates the 2026-11-20 focused corrections and current renderer/schema checks. Its counts and findings are retained for provenance; do not read them as the current diagram state or as owner approval/release readiness. Consult `validation-status.md` for the current snapshot.
+
 **Audit date:** 2026-11-19. **Source archive:** `acc-architecture.zip`, SHA-256 `806faea3966d0abb0b3b955360bee2529d3bd9238e5b265862ed82da76bc45ac`. **Method:** an independent reviewer started from `registry/elements.json`, cross-checked `registry/decomposition-map.json`, interfaces, functions and decisions, then inspected actual Mermaid blocks and local file paths. It did not treat the coverage matrix or plausible filenames as proof. No files were edited by the auditor.
 
 ## Registry-derived counts

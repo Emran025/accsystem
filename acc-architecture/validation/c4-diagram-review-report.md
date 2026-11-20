@@ -1,5 +1,7 @@
 # C4 Diagram Review Report — ACC Final-v4 Overlay
 
+> **Historical finding set:** This report describes an earlier overlay review. Later focused corrections and the current full Mermaid run supersede its pre-correction diagram findings; unresolved semantic and owner gates remain open.
+
 ## Input identity and safe handling
 
 Input was the ACC Final-v3 package identified by its contents: `validation/v3-audit.md`, `validation/change-report.md` titled V3, and the 131 regular-file/156-entry v3 archive delivered in the preceding pass. A fresh backup was created at `/tmp/acc-architecture/acc-architecture.v4-backup/` before edits. The original and earlier archives were not used as replacements.

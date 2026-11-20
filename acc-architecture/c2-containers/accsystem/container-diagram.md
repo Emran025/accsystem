@@ -4,6 +4,8 @@
 **Audience:** Architects and developers  
 **Label convention:** `CONFIRMED` = sourced from idea.md | `ASSUMPTION` = inferred | `UNKNOWN` = open
 
+**Relationship to the registry overlay:** This is the separate detailed C2 view for ACCSystem. It adds selected client/system and external context around the internal containers and shows a broader set of primary relationships. The registry-derived [overlay view](../../c1-context/c4-context-and-container-overlays.md#c2-sys-accsystem--containers-of-accsystem-platform) is retained separately; neither view is declared authoritative over the other, and the choice between complementary views or an accepted reconciliation remains an owner/architecture gate.
+
 ---
 
 ## Container Diagram

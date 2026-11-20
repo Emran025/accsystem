@@ -1,5 +1,7 @@
 # ACC C1–C3 Cross-Level Consistency Report
 
+> **Historical review record:** Dated 2026-11-19. Findings below are retained for provenance and must be read with the corrected `UNKNOWN`/no-numeric-TTL contract in current artifacts. They do not claim current failure, owner approval, or release readiness.
+
 **Review date:** 2026-11-19. **Baseline:** supplied archive SHA-256 `806faea3966d0abb0b3b955360bee2529d3bd9238e5b265862ed82da76bc45ac`. Reviewers compared registry/decomposition/interface records with actual diagrams, specifications, ADRs, and dynamic flows. The observations below preserve conflicts; this report does not resolve them or attribute proposals to the owner.
 
 ## Verified alignments

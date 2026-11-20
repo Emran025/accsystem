@@ -1,5 +1,7 @@
 
 
+> **Historical audit record:** The ticket observations below were captured before the coordinator's focused corrections. They are retained as evidence, not as a current closure/readiness statement. Current status is governed by `validation-status.md`.
+
 ## Round 2 — Independent adversarial critique (completed 2026-11-20)
 
 An independent critic reviewed the consolidated findings, completeness/consistency reports, standards review, and all ticket results against extracted package sources. Critic results were received before the coordinator's V5 diagram edits; its observation that tickets made no edits describes the ticket phase, not the later coordinator corrections recorded below. The critic's full distinctions are integrated here; the structured 16 ticket reports remain in `c4-missing-items-agent-results.md`.

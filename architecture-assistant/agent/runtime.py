@@ -13,6 +13,7 @@ import os
 import re
 import shutil
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 import uuid
@@ -78,12 +79,16 @@ class SessionStore:
 
     VERSION = 1
     STAGE_STATUSES = {"NOT_STARTED", "IN_PROGRESS", "BLOCKED", "COMPLETE"}
+    MAX_MESSAGES = 2000
+    MAX_SESSION_BYTES = 10_000_000
 
     def __init__(self, system_root: Path, session_id: str | None = None):
         self.root = system_root.resolve()
         if not self.root.is_dir():
             raise AgentError(f"Architecture directory does not exist: {self.root}")
         self.state_dir = self.root / ".assistant-state"
+        if self.state_dir.exists() and (self.state_dir.is_symlink() or not self.state_dir.is_dir()):
+            raise AgentError("Session state directory must be a real directory")
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.session_id = session_id or (dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8])
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", self.session_id):
@@ -121,9 +126,25 @@ class SessionStore:
         return self.state
 
     def _atomic_write(self, path: Path, text: str) -> None:
-        temp = path.with_name(path.name + f".tmp-{os.getpid()}")
-        temp.write_text(text, encoding="utf-8")
-        os.replace(temp, path)
+        if path.is_symlink() or (path.exists() and not path.is_file()):
+            raise AgentError(f"Refusing to write through non-regular path: {path}")
+        mode = path.stat().st_mode & 0o777 if path.exists() else 0o600
+        fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+                os.fchmod(handle.fileno(), mode)
+                handle.write(text)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_name, path)
+            dir_fd = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+        finally:
+            if os.path.exists(temp_name):
+                os.unlink(temp_name)
 
     def save(self, messages: list[dict[str, Any]] | None = None, model: str | None = None,
              status: str | None = None) -> None:
@@ -134,7 +155,12 @@ class SessionStore:
         if status is not None:
             self.state["status"] = status
         self.state["updated_at"] = utc_now()
-        self._atomic_write(self.path, json.dumps(self.state, ensure_ascii=False, indent=2) + "\n")
+        if len(self.state.get("messages", [])) > self.MAX_MESSAGES:
+            raise AgentError(f"Session message limit exceeded ({self.MAX_MESSAGES}); start a new session or summarize externally.")
+        payload = json.dumps(self.state, ensure_ascii=False, indent=2) + "\n"
+        if len(payload.encode("utf-8")) > self.MAX_SESSION_BYTES:
+            raise AgentError(f"Session checkpoint exceeds {self.MAX_SESSION_BYTES} bytes")
+        self._atomic_write(self.path, payload)
         latest = {"session_id": self.session_id, "updated_at": self.state["updated_at"]}
         self._atomic_write(self.state_dir / "latest.json", json.dumps(latest, ensure_ascii=False, indent=2) + "\n")
         self._write_portable_checkpoint()
@@ -211,6 +237,8 @@ class ArchitectureTools:
             raise AgentError("Parent-directory traversal is not allowed.")
         if any(part.startswith(".") for part in raw.parts):
             raise AgentError("Hidden/internal paths are not accessible to agent tools.")
+        if not raw.parts and rel != ".":
+            raise AgentError("A file or directory path is required.")
         probe = self.root
         for part in raw.parts:
             probe = probe / part
@@ -220,6 +248,27 @@ class ArchitectureTools:
         if not candidate.is_relative_to(self.root):
             raise AgentError("Path escapes the system architecture directory.")
         return candidate
+
+    def _atomic_write(self, path: Path, text: str) -> None:
+        if path.is_symlink() or (path.exists() and not path.is_file()):
+            raise AgentError(f"Refusing to write through non-regular path: {path}")
+        mode = path.stat().st_mode & 0o777 if path.exists() else 0o600
+        fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+                os.fchmod(handle.fileno(), mode)
+                handle.write(text)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_name, path)
+            dir_fd = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+        finally:
+            if os.path.exists(temp_name):
+                os.unlink(temp_name)
 
     def list_files(self, subdir: str = ".") -> list[str]:
         folder = self._path(subdir)
@@ -309,11 +358,25 @@ class ArchitectureTools:
         backup = None
         if old is not None:
             backup_dir = self.root / ".assistant-backups"
+            if backup_dir.exists() and (backup_dir.is_symlink() or not backup_dir.is_dir()):
+                raise AgentError("Backup directory must be a real directory")
             backup_dir.mkdir(exist_ok=True)
             stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
             backup = backup_dir / (stamp + "-" + path.name)
-            shutil.copy2(path, backup)
-        path.write_text(content, encoding="utf-8")
+            if backup.exists() or backup.is_symlink():
+                raise AgentError("Refusing to overwrite an existing backup")
+            fd, temp_name = tempfile.mkstemp(prefix=f".{backup.name}.", dir=backup_dir)
+            try:
+                with os.fdopen(fd, "wb") as handle:
+                    with path.open("rb") as source:
+                        shutil.copyfileobj(source, handle)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temp_name, backup)
+            finally:
+                if os.path.exists(temp_name):
+                    os.unlink(temp_name)
+        self._atomic_write(path, content)
         return {"status": "WRITTEN", "path": rel,
                 "backup": str(backup.relative_to(self.root)) if backup is not None else None}
 
@@ -400,6 +463,10 @@ def run_turn(client: OpenAICompatibleClient, tools: ArchitectureTools, model: st
              messages: list[dict[str, Any]], skill_ids: list[str] | None = None,
              max_steps: int = 64, effort: str = "high", max_tokens: int = 10000,
              session: SessionStore | None = None) -> str:
+    if max_steps < 1 or max_steps > SessionStore.MAX_MESSAGES // 4:
+        raise AgentError(f"max_steps must be between 1 and {SessionStore.MAX_MESSAGES // 4}")
+    if max_tokens < 1 or max_tokens > 20000:
+        raise AgentError("max_tokens must be between 1 and 20000")
     if not any(message.get("role") == "system" for message in messages):
         messages.insert(0, {"role": "system", "content": load_instructions(skill_ids)})
     specs = tools.tool_specs()
@@ -495,8 +562,8 @@ def main() -> int:
     parser.add_argument("--skills", help="Comma-separated manifest skill IDs; default loads all skills")
     parser.add_argument("task", nargs="*")
     args = parser.parse_args()
-    if args.max_tool_steps < 1 or args.max_completion_tokens < 1 or args.timeout < 1:
-        parser.error("step, token and timeout limits must all be positive")
+    if args.max_tool_steps < 1 or args.max_tool_steps > SessionStore.MAX_MESSAGES // 4 or args.max_completion_tokens < 1 or args.max_completion_tokens > 20000 or args.timeout < 1:
+        parser.error("step limit must be 1..500, completion tokens 1..20000, and timeout must be positive")
     if args.resume and not args.session_id:
         parser.error("--resume requires --session-id")
     if args.resume and args.task:
