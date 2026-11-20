@@ -1,8 +1,14 @@
 # ACCSystem Container Diagram
 
-**Viewpoint:** C2 — ACCSystem Platform internal containers and their primary relationships  
-**Audience:** Architects and developers  
+**Viewpoint:** C2 — ACCSystem Platform internal containers and their primary relationships
+**Audience:** Architects and developers
 **Label convention:** `CONFIRMED` = sourced from idea.md | `ASSUMPTION` = inferred | `UNKNOWN` = open
+
+> [!NOTE]
+> **Scope declaration — Internal view:** This diagram shows the internal container decomposition of ACCSystem Platform. It adds selected external context for readability but does not claim context-completeness. The C1 system context, container records, and [relationship/data-boundary view](../../supporting-views/context-relationship-map.md) remain authoritative for external collaborators, ownership, and interface alternatives.
+
+> [!NOTE]
+> **Arrow convention:** Arrows show the control/data-flow initiator direction. Responses, callbacks, and events may flow in either direction and are shown only when explicitly labelled.
 
 **Relationship to the registry overlay:** This is the separate detailed C2 view for ACCSystem. It adds selected client/system and external context around the internal containers and shows a broader set of primary relationships. The registry-derived [overlay view](../../c1-context/c4-context-and-container-overlays.md#c2-sys-accsystem--containers-of-accsystem-platform) is retained separately; neither view is declared authoritative over the other, and the choice between complementary views or an accepted reconciliation remains an owner/architecture gate.
 

@@ -12,6 +12,9 @@
 - Logical relationships are labeled only where the source views/specifications document them; concrete transport is left unspecified unless documented.
 - A relationship shown as `logical integration` is not a synchronous or deployment guarantee.
 
+> [!NOTE]
+> **Arrow convention:** Arrows show the **control/data-flow initiator direction**. An arrow from A to B means A initiates the call, message, or connection to B. Response data, callbacks, and events may flow in either direction and are not separately depicted unless explicitly labelled. This convention follows ADR-020 and the C4 Model.
+
 ## C1 — System Landscape
 
 ### C1-LANDSCAPE — ACC Ecosystem Portfolio
@@ -72,7 +75,14 @@ flowchart LR
 ```mermaid
 flowchart LR
   SYS_ACCSYSTEM["SYS-ACCSYSTEM\nACCSystem Platform"]
-  ACT["ACTORS — relevant registry-listed roles"]
+  BUYER["ACT-INDIVIDUAL — Individual Buyer"]
+  EMP["ACT-INST-EMPLOYEE — Institution Employee / Seller"]
+  IADMIN["ACT-INST-ADMIN — Institution Administrator"]
+  PADMIN["ACT-PLATFORM-ADMIN — Platform Administrator"]
+  SUPPORT["ACT-SUPPORT-STAFF — Platform Support Staff"]
+  SUP["ACT-DELIVERY-SUPERVISOR — Delivery Supervisor"]
+  COURIER["ACT-COURIER — Courier / Delivery Agent"]
+  VISITOR["ACT-VISITOR — Public Portal Visitor"]
   CORE["SYS-ACCORE — ACCore (per-institution ERP)"]
   COM["SYS-ACCOMMERCE — ACCommerce"]
   MGT["SYS-ACMANAGEMENT — ACManagement Portal"]
@@ -80,9 +90,22 @@ flowchart LR
   MC["SYS-ACCMARED-COU — ACCMared Courier"]
   PAY["EXT-PAYMENT-PROVIDER — External Payment Provider(s)"]
   CDN["EXT-PACKAGE-CDN — Software Package CDN/Object Storage"]
-  ACT -->|actors| SYS_ACCSYSTEM
-  SYS_ACCSYSTEM -->|logical connector/API/event integration| CORE
-  SYS_ACCSYSTEM -->|logical payment interface| PAY
+  BUYER -->|browse/cart/checkout/order interaction| SYS_ACCSYSTEM
+  EMP -->|publish products and receive order events| SYS_ACCSYSTEM
+  IADMIN -->|listing, order and license management| SYS_ACCSYSTEM
+  PADMIN -->|platform administration and license issuance| SYS_ACCSYSTEM
+  SUPPORT -->|scoped support sessions| SYS_ACCSYSTEM
+  SUP -->|delivery dispatch and status| SYS_ACCSYSTEM
+  COURIER -->|assignment/status/proof of delivery| SYS_ACCSYSTEM
+  VISITOR -->|public catalog and download| SYS_ACCSYSTEM
+  COM -->|catalog/order/cart APIs| SYS_ACCSYSTEM
+  CORE -->|publication events and license validation| SYS_ACCSYSTEM
+  SYS_ACCSYSTEM -->|reservation/order commands; mode policy-gated| CORE
+  MGT -->|management and software catalog APIs| SYS_ACCSYSTEM
+  SYS_ACCSYSTEM -->|delivery/order APIs| MS
+  SYS_ACCSYSTEM -->|delivery/order APIs| MC
+  SYS_ACCSYSTEM -->|payment authorization/capture/refund| PAY
+  SYS_ACCSYSTEM -->|signed package distribution| CDN
 ```
 **System:** `SYS-ACCSYSTEM` — `ACCSystem Platform`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCSYSTEM.md`.
 
