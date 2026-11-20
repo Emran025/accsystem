@@ -5,7 +5,7 @@
 **Label convention:** `CONFIRMED` = sourced from idea.md | `ASSUMPTION` = inferred | `UNKNOWN` = open
 
 > [!NOTE]
-> **Scope declaration — Internal view:** This diagram shows the internal container decomposition of ACCSystem Platform. It adds selected external context for readability but does not claim context-completeness. The C1 system context, container records, and [relationship/data-boundary view](../../supporting-views/context-relationship-map.md) remain authoritative for external collaborators, ownership, and interface alternatives.
+> **Scope declaration — Internal view:** This diagram shows the internal container decomposition of ACCSystem Platform. It adds selected external context for readability but does not claim context-completeness. The C1 system context and container records remain authoritative for external collaborators, ownership, and interface alternatives.
 
 > [!NOTE]
 > **Arrow convention:** Arrows show the control/data-flow initiator direction. Responses, callbacks, and events may flow in either direction and are shown only when explicitly labelled.

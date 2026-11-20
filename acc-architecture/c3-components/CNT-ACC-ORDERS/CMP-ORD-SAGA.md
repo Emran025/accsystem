@@ -2,6 +2,13 @@
 
 **Status:** PROPOSED MVP BASELINE — multi-seller checkout required; owner direction recorded in ADR-016.
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_ORD_SAGA["CMP-ORD-SAGA"]
+    CMP_ORD_SAGA ---|no explicit peer ID in this record| CMP_ORD_SAGA
+```
 ## Responsibility
 Coordinate one ParentOrder and its SellerOrders across ACCore reservations, payment allocations, confirmation, and post-confirmation effects. A local transaction never spans ACCSystem and ACCore.
 

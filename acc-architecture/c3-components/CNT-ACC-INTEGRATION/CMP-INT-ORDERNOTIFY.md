@@ -22,6 +22,22 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_INT_ORDERNOTIFY["CMP-INT-ORDERNOTIFY"]
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CNT_ACC_EVENTBUS -->|documented collaborator| CMP_INT_ORDERNOTIFY
+    CNT_ACR_CONNECTOR["CNT-ACR-CONNECTOR"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACR_CONNECTOR
+    IF_ACC_ORDER_CONFIRM["IF-ACC-ORDER-CONFIRM"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| IF_ACC_ORDER_CONFIRM
+    CNT_ACC_INSTREG["CNT-ACC-INSTREG"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACC_INSTREG
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 The existing `event_id + institution_id` logical dispatch work scope must preserve every authorized buyer and seller effect. Whether a single projection carries both roles or multiple role-specific operations are needed, and any corresponding key change, are API/institution decisions; do not let the coarse key suppress a distinct legitimate role.

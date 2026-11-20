@@ -22,6 +22,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_LIC_LIFECYCLE["CMP-LIC-LIFECYCLE"]
+    CNT_ACM_ADMIN["CNT-ACM-ADMIN"]
+    CNT_ACM_ADMIN -->|documented collaborator| CMP_LIC_LIFECYCLE
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CMP_LIC_LIFECYCLE -->|documented collaborator| CNT_ACC_EVENTBUS
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_LIC_LIFECYCLE -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 **License state machine:**

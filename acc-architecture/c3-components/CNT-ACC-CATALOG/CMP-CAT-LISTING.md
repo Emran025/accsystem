@@ -33,6 +33,22 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CAT_LISTING["CMP-CAT-LISTING"]
+    CMP_INT_PUBLICATION["CMP-INT-PUBLICATION"]
+    CMP_INT_PUBLICATION -->|documented collaborator| CMP_CAT_LISTING
+    CMP_CAT_VALIDATION["CMP-CAT-VALIDATION"]
+    CMP_CAT_VALIDATION -->|documented collaborator| CMP_CAT_LISTING
+    CMP_CAT_SEARCHSYNC["CMP-CAT-SEARCHSYNC"]
+    CMP_CAT_LISTING -->|documented collaborator| CMP_CAT_SEARCHSYNC
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CMP_CAT_LISTING -->|documented collaborator| CNT_ACC_EVENTBUS
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_CAT_LISTING -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Data Owned
 
 **Listing Entity:**

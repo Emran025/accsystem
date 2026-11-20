@@ -24,6 +24,20 @@ CONFIRMED (idea.md §14, ADR-014): Signed entitlement tokens for offline validat
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_LIC_OFFLINE["CMP-LIC-OFFLINE"]
+    CMP_LIC_ENTITLEMENT["CMP-LIC-ENTITLEMENT"]
+    CMP_LIC_ENTITLEMENT -->|documented collaborator| CMP_LIC_OFFLINE
+    CMP_LIC_ISSUANCE["CMP-LIC-ISSUANCE"]
+    CMP_LIC_ISSUANCE -->|documented collaborator| CMP_LIC_OFFLINE
+    CNT_ACR_CONNECTOR["CNT-ACR-CONNECTOR"]
+    CNT_ACR_CONNECTOR -->|documented collaborator| CMP_LIC_OFFLINE
+    CMP_CON_LICENSECHECK["CMP-CON-LICENSECHECK"]
+    CMP_CON_LICENSECHECK -->|documented collaborator| CMP_LIC_OFFLINE
+```
 ## 3. Behavior, Rules, and State
 
 **Token structure (PROPOSAL — exact format UNKNOWN):** See the two valid illustrative workflow-specific examples in ADR-014: institutional `institution_id + product_code`; marketplace `buyer_id + product_id`. Each includes `workflow`, `license_id`, issue/expiry and signature; institutional module/seat claims remain supported. Grant validity and token TTL are separate. Both workflows need authenticated, locally verifiable grant bounds or equivalent evidence for offline use; missing required evidence cannot grant access. Perpetual/null-expiry semantics, claim encoding and JWT mapping require approval.

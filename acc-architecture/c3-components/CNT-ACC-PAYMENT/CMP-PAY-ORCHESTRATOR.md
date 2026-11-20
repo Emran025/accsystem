@@ -2,6 +2,16 @@
 
 **Status:** PROPOSED MVP BASELINE — provider capabilities and commercial values require external gates.
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_PAY_ORCHESTRATOR["CMP-PAY-ORCHESTRATOR"]
+    CNT_ACC_PAYMENT["CNT-ACC-PAYMENT"]
+    CMP_PAY_ORCHESTRATOR -->|documented collaborator| CNT_ACC_PAYMENT
+    CMP_PAY_ADAPTER["CMP-PAY-ADAPTER"]
+    CMP_PAY_ORCHESTRATOR -->|documented collaborator| CMP_PAY_ADAPTER
+```
 ## Payment policy and records
 For every SellerOrder, create a payment allocation linked to seller, order, amount, transaction currency, tax/delivery basis, capture-policy ID, correlation ID, and idempotency key. The safe baseline is one payment record per SellerOrder. A single aggregated buyer-facing provider transaction is allowed only when all seller/agreement policies are compatible and the provider supports seller allocations; otherwise use separate attempts. An authorization is a reversible hold, capture is collection, seller credit/transfer is a separate state, and settlement is a later reconciliation event.
 

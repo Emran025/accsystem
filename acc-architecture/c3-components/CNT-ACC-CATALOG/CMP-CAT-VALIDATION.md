@@ -30,6 +30,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CAT_VALIDATION["CMP-CAT-VALIDATION"]
+    CMP_CAT_LISTING["CMP-CAT-LISTING"]
+    CMP_CAT_LISTING -->|documented collaborator| CMP_CAT_VALIDATION
+    CNT_ACC_SOFTCAT["CNT-ACC-SOFTCAT"]
+    CMP_CAT_VALIDATION -->|documented collaborator| CNT_ACC_SOFTCAT
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_CAT_VALIDATION -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Data Owned
 
 **No persistent entities owned.** Stateless per-request validation.

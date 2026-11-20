@@ -23,6 +23,16 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_ORD_STATEMACHINE["CMP-ORD-STATEMACHINE"]
+    CMP_ORD_SAGA["CMP-ORD-SAGA"]
+    CMP_ORD_SAGA -->|documented collaborator| CMP_ORD_STATEMACHINE
+    CMP_ORD_CANCEL["CMP-ORD-CANCEL"]
+    CMP_ORD_CANCEL -->|documented collaborator| CMP_ORD_STATEMACHINE
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Order States (§7.6)

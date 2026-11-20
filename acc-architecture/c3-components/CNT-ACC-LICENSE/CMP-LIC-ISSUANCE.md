@@ -24,6 +24,22 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_LIC_ISSUANCE["CMP-LIC-ISSUANCE"]
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CNT_ACC_EVENTBUS -->|documented collaborator| CMP_LIC_ISSUANCE
+    CNT_ACM_ADMIN["CNT-ACM-ADMIN"]
+    CNT_ACM_ADMIN -->|documented collaborator| CMP_LIC_ISSUANCE
+    CMP_LIC_LIFECYCLE["CMP-LIC-LIFECYCLE"]
+    CMP_LIC_ISSUANCE -->|documented collaborator| CMP_LIC_LIFECYCLE
+    CMP_LIC_OFFLINE["CMP-LIC-OFFLINE"]
+    CMP_LIC_ISSUANCE -->|documented collaborator| CMP_LIC_OFFLINE
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_LIC_ISSUANCE -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 **Issuance steps:**

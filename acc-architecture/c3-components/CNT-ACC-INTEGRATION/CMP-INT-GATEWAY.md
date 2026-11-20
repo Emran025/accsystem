@@ -25,6 +25,24 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_INT_GATEWAY["CMP-INT-GATEWAY"]
+    CMP_CON_PUBLISHER["CMP-CON-PUBLISHER"]
+    CMP_CON_PUBLISHER -->|documented collaborator| CMP_INT_GATEWAY
+    CMP_CON_RESERVATION["CMP-CON-RESERVATION"]
+    CMP_CON_RESERVATION -->|documented collaborator| CMP_INT_GATEWAY
+    CMP_CON_ORDERRECEIVER["CMP-CON-ORDERRECEIVER"]
+    CMP_CON_ORDERRECEIVER -->|documented collaborator| CMP_INT_GATEWAY
+    CMP_INT_PUBLICATION["CMP-INT-PUBLICATION"]
+    CMP_INT_GATEWAY -->|documented collaborator| CMP_INT_PUBLICATION
+    CMP_INT_RESERVATION["CMP-INT-RESERVATION"]
+    CMP_INT_GATEWAY -->|documented collaborator| CMP_INT_RESERVATION
+    CMP_INT_ORDERNOTIFY["CMP-INT-ORDERNOTIFY"]
+    CMP_INT_GATEWAY -->|documented collaborator| CMP_INT_ORDERNOTIFY
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Inbound Validation Steps

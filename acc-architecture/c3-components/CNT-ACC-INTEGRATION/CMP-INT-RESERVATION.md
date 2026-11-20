@@ -25,5 +25,17 @@ Authentication uses the method selected by ADR-015 policy. Numeric retry, timeou
 - Consumes `IF-ACC-RESERVE-SAGA` from the Order Saga and relays to ACCore through `CMP-CON-RESERVATION`.
 - Returns outcomes through `IF-ACR-RESERVATION-RESP`; exact delivery modality remains open under ADR-015.
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_INT_RESERVATION["CMP-INT-RESERVATION"]
+    IF_ACC_RESERVE_SAGA["IF-ACC-RESERVE-SAGA"]
+    IF_ACC_RESERVE_SAGA -->|documented collaborator| CMP_INT_RESERVATION
+    CMP_CON_RESERVATION["CMP-CON-RESERVATION"]
+    CMP_CON_RESERVATION -->|documented collaborator| CMP_INT_RESERVATION
+    IF_ACR_RESERVATION_RESP["IF-ACR-RESERVATION-RESP"]
+    CMP_INT_RESERVATION -->|documented collaborator| IF_ACR_RESERVATION_RESP
+```
 ## Verification references
 Existing acceptance scenarios in `FN-ORD-RESERVE` and `validation/acceptance-test-plan.md` cover accepted/rejected/unknown outcomes, query-before-retry, and idempotent release. These are documented scenarios, not executed-test results.

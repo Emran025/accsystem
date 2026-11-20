@@ -30,6 +30,20 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CON_PUBLISHER["CMP-CON-PUBLISHER"]
+    CNT_ACR_OUTBOX["CNT-ACR-OUTBOX"]
+    CNT_ACR_OUTBOX -->|documented collaborator| CMP_CON_PUBLISHER
+    CNT_ACR_PRODUCTMASTER["CNT-ACR-PRODUCTMASTER"]
+    CNT_ACR_PRODUCTMASTER -->|documented collaborator| CMP_CON_PUBLISHER
+    CNT_ACC_INTEGRATION["CNT-ACC-INTEGRATION"]
+    CMP_CON_PUBLISHER -->|documented collaborator| CNT_ACC_INTEGRATION
+    IF_ACR_PUBLISH_EVENT["IF-ACR-PUBLISH-EVENT"]
+    CMP_CON_PUBLISHER -->|documented collaborator| IF_ACR_PUBLISH_EVENT
+```
 ## 3. Data Owned
 
 **No persistent entities owned beyond Outbox interaction.**

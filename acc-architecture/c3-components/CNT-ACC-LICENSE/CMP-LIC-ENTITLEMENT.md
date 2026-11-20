@@ -21,6 +21,20 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_LIC_ENTITLEMENT["CMP-LIC-ENTITLEMENT"]
+    CNT_ACR_CONNECTOR["CNT-ACR-CONNECTOR"]
+    CNT_ACR_CONNECTOR -->|documented collaborator| CMP_LIC_ENTITLEMENT
+    CMP_CON_LICENSECHECK["CMP-CON-LICENSECHECK"]
+    CMP_CON_LICENSECHECK -->|documented collaborator| CMP_LIC_ENTITLEMENT
+    IF_ACC_LICENSE_VALIDATE["IF-ACC-LICENSE-VALIDATE"]
+    IF_ACC_LICENSE_VALIDATE -->|documented collaborator| CMP_LIC_ENTITLEMENT
+    CNT_ACC_IDENTITY["CNT-ACC-IDENTITY"]
+    CMP_LIC_ENTITLEMENT -->|documented collaborator| CNT_ACC_IDENTITY
+```
 ## 3. Behavior, Rules, and State
 
 **Validation flow:**

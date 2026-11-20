@@ -23,3 +23,16 @@ Atomic last-unit race; duplicate request; accepted response lost; timeout/unknow
 - Consumes the logical reservation/release contract from `CMP-INT-RESERVATION` through `IF-ACC-RESERVE-SAGA` semantics.
 - Returns `ACCEPTED`, `REJECTED`, `UNKNOWN`, or authoritative `EXPIRED` through `IF-ACR-RESERVATION-RESP`.
 - ACCore inventory storage is the local source of truth; ADR-015 governs connectivity/authentication.
+
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CON_RESERVATION["CMP-CON-RESERVATION"]
+    CMP_INT_RESERVATION["CMP-INT-RESERVATION"]
+    CMP_INT_RESERVATION -->|documented collaborator| CMP_CON_RESERVATION
+    IF_ACC_RESERVE_SAGA["IF-ACC-RESERVE-SAGA"]
+    IF_ACC_RESERVE_SAGA -->|documented collaborator| CMP_CON_RESERVATION
+    IF_ACR_RESERVATION_RESP["IF-ACR-RESERVATION-RESP"]
+    CMP_CON_RESERVATION -->|documented collaborator| IF_ACR_RESERVATION_RESP
+```

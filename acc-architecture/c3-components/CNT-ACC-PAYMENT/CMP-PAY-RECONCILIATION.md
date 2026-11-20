@@ -22,6 +22,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_PAY_RECONCILIATION["CMP-PAY-RECONCILIATION"]
+    CMP_PAY_ORCHESTRATOR["CMP-PAY-ORCHESTRATOR"]
+    CMP_PAY_ORCHESTRATOR -->|documented collaborator| CMP_PAY_RECONCILIATION
+    EXT_PAYMENT_PROVIDER["EXT-PAYMENT-PROVIDER"]
+    EXT_PAYMENT_PROVIDER -->|documented collaborator| CMP_PAY_RECONCILIATION
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_PAY_RECONCILIATION -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Reconciliation Process

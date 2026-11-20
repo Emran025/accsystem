@@ -30,6 +30,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CON_LICENSECHECK["CMP-CON-LICENSECHECK"]
+    CNT_ACC_LICENSE["CNT-ACC-LICENSE"]
+    CMP_CON_LICENSECHECK -->|documented collaborator| CNT_ACC_LICENSE
+    CMP_LIC_ENTITLEMENT["CMP-LIC-ENTITLEMENT"]
+    CMP_CON_LICENSECHECK -->|documented collaborator| CMP_LIC_ENTITLEMENT
+    IF_ACC_LICENSE_VALIDATE["IF-ACC-LICENSE-VALIDATE"]
+    CMP_CON_LICENSECHECK -->|documented collaborator| IF_ACC_LICENSE_VALIDATE
+```
 ## 3. Data Owned
 
 **Token Cache Entry (local, ephemeral):**

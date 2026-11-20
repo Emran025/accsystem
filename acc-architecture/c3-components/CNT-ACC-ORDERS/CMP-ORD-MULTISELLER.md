@@ -4,6 +4,18 @@
 **Parent:** CNT-ACC-ORDERS  
 **Status:** PROPOSED MVP BASELINE — multi-seller support is required in MVP; owner direction is recorded in ADR-016.
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_ORD_MULTISELLER["CMP-ORD-MULTISELLER"]
+    CNT_ACC_ORDERS["CNT-ACC-ORDERS"]
+    CMP_ORD_MULTISELLER -->|documented collaborator| CNT_ACC_ORDERS
+    CMP_ORD_SAGA["CMP-ORD-SAGA"]
+    CMP_ORD_MULTISELLER -->|documented collaborator| CMP_ORD_SAGA
+    CMP_ORD_STATEMACHINE["CMP-ORD-STATEMACHINE"]
+    CMP_ORD_MULTISELLER -->|documented collaborator| CMP_ORD_STATEMACHINE
+```
 ## Responsibility and boundary
 When a validated cart contains products from multiple sellers/categories, this component creates one `ParentOrder` and one `SellerOrder` per seller/institution. It owns grouping, stable seller-order identifiers, and the atomic local write of the parent, seller orders, and `SellerOrderCreated` outbox events. Reservation, payment, delivery, and inventory business logic remain in their owning domains.
 

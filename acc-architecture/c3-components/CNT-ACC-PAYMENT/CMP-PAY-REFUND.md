@@ -23,6 +23,22 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_PAY_REFUND["CMP-PAY-REFUND"]
+    CMP_ORD_CANCEL["CMP-ORD-CANCEL"]
+    CMP_ORD_CANCEL -->|documented collaborator| CMP_PAY_REFUND
+    CMP_ORD_SAGA["CMP-ORD-SAGA"]
+    CMP_ORD_SAGA -->|documented collaborator| CMP_PAY_REFUND
+    CMP_PAY_ADAPTER["CMP-PAY-ADAPTER"]
+    CMP_PAY_REFUND -->|documented collaborator| CMP_PAY_ADAPTER
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CMP_PAY_REFUND -->|documented collaborator| CNT_ACC_EVENTBUS
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_PAY_REFUND -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 - Receives a scoped refund/void command with `{order_id, payment_id, seller_order_id, allocation_id, amount, currency, operation_id, reason}` plus the authoritative provider authorization/capture reference when known; if the reference is not present, the coordinator loads it atomically from the payment record and rejects/quarantines when it cannot establish the correct scope. This is an internal command shape, not a new external wire contract.

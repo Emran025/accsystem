@@ -31,6 +31,24 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CON_ORDERRECEIVER["CMP-CON-ORDERRECEIVER"]
+    CNT_ACC_INTEGRATION["CNT-ACC-INTEGRATION"]
+    CNT_ACC_INTEGRATION -->|documented collaborator| CMP_CON_ORDERRECEIVER
+    CMP_INT_ORDERNOTIFY["CMP-INT-ORDERNOTIFY"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CMP_CON_ORDERRECEIVER
+    IF_ACC_ORDER_CONFIRM["IF-ACC-ORDER-CONFIRM"]
+    IF_ACC_ORDER_CONFIRM -->|documented collaborator| CMP_CON_ORDERRECEIVER
+    CNT_ACR_OUTBOX["CNT-ACR-OUTBOX"]
+    CMP_CON_ORDERRECEIVER -->|documented collaborator| CNT_ACR_OUTBOX
+    CNT_ACR_SALES["CNT-ACR-SALES"]
+    CMP_CON_ORDERRECEIVER -->|documented collaborator| CNT_ACR_SALES
+    CNT_ACR_INVENTORY["CNT-ACR-INVENTORY"]
+    CMP_CON_ORDERRECEIVER -->|documented collaborator| CNT_ACR_INVENTORY
+```
 ## 3. Data Owned
 
 **Inbox Record:**

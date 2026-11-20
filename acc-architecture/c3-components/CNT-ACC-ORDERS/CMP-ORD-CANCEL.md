@@ -26,6 +26,20 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_ORD_CANCEL["CMP-ORD-CANCEL"]
+    CMP_ORD_STATEMACHINE["CMP-ORD-STATEMACHINE"]
+    CMP_ORD_CANCEL -->|documented collaborator| CMP_ORD_STATEMACHINE
+    CMP_INT_RESERVATION["CMP-INT-RESERVATION"]
+    CMP_ORD_CANCEL -->|documented collaborator| CMP_INT_RESERVATION
+    CMP_PAY_REFUND["CMP-PAY-REFUND"]
+    CMP_ORD_CANCEL -->|documented collaborator| CMP_PAY_REFUND
+    CNT_ACC_DELIVERY["CNT-ACC-DELIVERY"]
+    CMP_ORD_CANCEL -->|documented collaborator| CNT_ACC_DELIVERY
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Cancellation Flow

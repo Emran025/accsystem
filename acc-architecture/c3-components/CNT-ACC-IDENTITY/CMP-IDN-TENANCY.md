@@ -24,6 +24,20 @@ CONFIRMED (idea.md §2.1.1): "وإذا احتاج موظف المؤسسة إلى
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_IDN_TENANCY["CMP-IDN-TENANCY"]
+    CMP_IDN_AUTH["CMP-IDN-AUTH"]
+    CMP_IDN_AUTH -->|documented collaborator| CMP_IDN_TENANCY
+    CNT_ACC_INSTREG["CNT-ACC-INSTREG"]
+    CMP_IDN_TENANCY -->|documented collaborator| CNT_ACC_INSTREG
+    CNT_ACC_PLATFORMADMIN["CNT-ACC-PLATFORMADMIN"]
+    CNT_ACC_PLATFORMADMIN -->|documented collaborator| CMP_IDN_TENANCY
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_IDN_TENANCY -->|documented collaborator| CNT_ACC_AUDIT
+```
 ## 3. Behavior, Rules, and State
 
 **Membership resolution:**

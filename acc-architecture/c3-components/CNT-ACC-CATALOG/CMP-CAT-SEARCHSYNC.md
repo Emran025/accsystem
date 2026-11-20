@@ -30,6 +30,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_CAT_SEARCHSYNC["CMP-CAT-SEARCHSYNC"]
+    CMP_CAT_LISTING["CMP-CAT-LISTING"]
+    CMP_CAT_LISTING -->|documented collaborator| CMP_CAT_SEARCHSYNC
+    CNT_ACC_SEARCH["CNT-ACC-SEARCH"]
+    CMP_CAT_SEARCHSYNC -->|documented collaborator| CNT_ACC_SEARCH
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CNT_ACC_EVENTBUS -->|documented collaborator| CMP_CAT_SEARCHSYNC
+```
 ## 3. Data Owned
 
 **Sync State Record (operational state, not business entity):**

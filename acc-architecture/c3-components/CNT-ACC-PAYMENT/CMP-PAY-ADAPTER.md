@@ -24,6 +24,20 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_PAY_ADAPTER["CMP-PAY-ADAPTER"]
+    CMP_PAY_ORCHESTRATOR["CMP-PAY-ORCHESTRATOR"]
+    CMP_PAY_ORCHESTRATOR -->|documented collaborator| CMP_PAY_ADAPTER
+    CMP_PAY_REFUND["CMP-PAY-REFUND"]
+    CMP_PAY_REFUND -->|documented collaborator| CMP_PAY_ADAPTER
+    EXT_PAYMENT_PROVIDER["EXT-PAYMENT-PROVIDER"]
+    CMP_PAY_ADAPTER -->|documented collaborator| EXT_PAYMENT_PROVIDER
+    IF_ACC_PAYMENT_WEBHOOK["IF-ACC-PAYMENT-WEBHOOK"]
+    IF_ACC_PAYMENT_WEBHOOK -->|documented collaborator| CMP_PAY_ADAPTER
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Operations Provided

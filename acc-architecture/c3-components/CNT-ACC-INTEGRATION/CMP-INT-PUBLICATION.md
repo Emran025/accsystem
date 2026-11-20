@@ -24,6 +24,18 @@
 
 ---
 
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_INT_PUBLICATION["CMP-INT-PUBLICATION"]
+    CMP_INT_GATEWAY["CMP-INT-GATEWAY"]
+    CMP_INT_GATEWAY -->|documented collaborator| CMP_INT_PUBLICATION
+    CMP_CAT_LISTING["CMP-CAT-LISTING"]
+    CMP_INT_PUBLICATION -->|documented collaborator| CMP_CAT_LISTING
+    CMP_CAT_VALIDATION["CMP-CAT-VALIDATION"]
+    CMP_INT_PUBLICATION -->|documented collaborator| CMP_CAT_VALIDATION
+```
 ## 3. Behavior, Rules, and State
 
 ### 3.1 Processing Steps
