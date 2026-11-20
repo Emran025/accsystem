@@ -23,7 +23,7 @@
 
 | Collaborator | Direction | Interface / Event | Purpose |
 |---|---|---|---|
-| CNT-ACC-INTEGRATION (CMP-INT-ORDERNOTIFY) | Inbound | HTTP POST or message delivery | Receives `OrderConfirmed` event payload |
+| CNT-ACC-INTEGRATION (CMP-INT-ORDERNOTIFY) | Inbound | IF-ACC-ORDER-CONFIRM asynchronous delivery | Receives `OrderConfirmed` event payload |
 | ACCore Inbox (CNT-ACR-OUTBOX/Inbox) | Write | Local DB | Persists incoming event before processing (Inbox pattern) |
 | CNT-ACR-SALES | Outbound | Internal API | Creates institution sales order from confirmed marketplace order |
 | CNT-ACR-INVENTORY | Outbound | Internal API | Transitions inventory reservation → `CONFIRMED` (committed sale) |
@@ -57,7 +57,7 @@ retry_count         integer
 4. Mark Inbox `status=PROCESSING`
 5. Call CNT-ACR-SALES: create SalesOrder `{accore_order_id, acc_order_id=order_id, items, total}`
 6. Call CNT-ACR-INVENTORY: confirm reservation for each item (transitions `ACCEPTED → CONFIRMED`)
-7. Mark Inbox `status=PROCESSED`; store `order_id` in idempotency store
+7. Mark Inbox `status=PROCESSED`; store the scoped key `institution_id + order_id` and `event_id` in the idempotency store
 
 ### Error Handling
 - If CNT-ACR-SALES fails: mark Inbox `FAILED`; retry after backoff
@@ -109,7 +109,7 @@ retry_count         integer
 |---|---|
 | Inbox pattern for reliable event consumption | CONFIRMED (idea.md §4.3, ADR-005) |
 | Sales order creation triggered by order confirmation | CONFIRMED (idea.md §4 — ACCore manages institution's sales records) |
-| Idempotency on order_id | CONFIRMED (functions.json — FN-ORD-CONFIRM idempotency) |
+| Idempotency on `institution_id + order_id` (with `event_id` for delivery tracing) | CONFIRMED — IF-ACC-ORDER-CONFIRM (functions.json — FN-ORD-CONFIRM idempotency) |
 | Financial record commitment point | UNKNOWN (idea.md §12 — open decision; this is one candidate) |
 
 ---

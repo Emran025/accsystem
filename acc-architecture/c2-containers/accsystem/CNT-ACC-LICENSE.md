@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Container ID** | CNT-ACC-LICENSE |
-| **Purpose** | Issues, activates, manages, and validates licenses for ACC software products. Manages the full license lifecycle (Active, Suspended, Expired, Revoked) and can issue short-lived signed entitlement tokens for offline validation by ACCore. |
+| **Purpose** | Issues, activates, manages, and validates licenses for ACC software products. Manages institutional `ISSUED → ACTIVATED → ACTIVE` and `ACTIVE → Suspended/Expired/Revoked` lifecycles, plus marketplace post-purchase `ACTIVE` licenses and can issue short-lived signed entitlement tokens for offline validation by ACCore. |
 | **Scope Boundary** | Owns license records and entitlement state. Does NOT own user identity/permissions (CNT-ACC-IDENTITY) or platform admin workflows (CNT-ACC-PLATFORMADMIN). License ≠ permission. |
 
 CONFIRMED (idea.md §3.1): "License & Entitlement Management — إصدار التراخيص وربطها بالمؤسسة/التثبيت والمنتج، وتفعيلها وتجديدها وتعليقها وإلغاؤها."
@@ -24,7 +24,7 @@ CONFIRMED (idea.md §1.1): "فصل ترخيص استخدام المنتج عن �
 |---|---|---|
 | CNT-ACC-ORDERS | Inbound (via event) | OrderConfirmed event triggers license issuance for software products |
 | CNT-ACM-ADMIN | Inbound | Admin console issues/renews/manages licenses via API |
-| CNT-ACR-CONNECTOR / CMP-CON-LICENSECHECK | Inbound | License validation requests (IF-ACC-LICENSE-VALIDATE) — online and offline token issuance |
+| CNT-ACR-CONNECTOR / CMP-CON-LICENSECHECK | Inbound | License validation requests (IF-ACC-LICENSE-VALIDATE); token issuance/refresh is a separate license-owned operation |
 | CNT-ACC-EVENTBUS | Bidirectional | Subscribes to OrderConfirmed; publishes LicenseIssued/Activated/Renewed/Suspended/Revoked/Expired |
 | CNT-ACC-IDENTITY | Outbound | Validates requesting user/service identity |
 | CNT-ACC-AUDIT | Outbound | Logs all license lifecycle events |
@@ -43,7 +43,7 @@ CONFIRMED (idea.md §1.1): "فصل ترخيص استخدام المنتج عن �
 
 ## 4. Data Owned
 
-- License records: `{license_id, institution_id, product_id, units/seats, status, valid_from, valid_until, grace_period}`
+- License records: `{license_id, workflow, institution_id + product_code OR buyer_id + product_id, publisher_institution_id (marketplace), units/seats, status, valid_from, valid_until, grace_policy_ref}`
 - Activation records: `{activation_id, license_id, installation_id, activated_at}`
 - Usage tracking records (UNKNOWN: specific usage metrics captured)
 - Entitlement token issuance log

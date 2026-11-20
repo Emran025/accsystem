@@ -23,7 +23,7 @@ CONFIRMED (idea.md §14, ADR-007): "Order Domain ينسق الدفع والتو�
 |---|---|---|
 | CNT-ACC-CART | Inbound | Triggers order creation on checkout completion |
 | CNT-ACC-PAYMENT | Bidirectional (via Saga) | Saga triggers payment authorization; receives PaymentAuthorized/Failed events |
-| CNT-ACC-INTEGRATION | Bidirectional | Sends reservation requests; receives ReservationAccepted/Rejected |
+| CNT-ACC-INTEGRATION | Bidirectional | Sends reservation requests; receives ACCEPTED/REJECTED/UNKNOWN and authoritative EXPIRED outcomes; UNKNOWN is reconciled before payment or release |
 | CNT-ACC-DELIVERY | Outbound | Triggers shipment creation after OrderConfirmed |
 | CNT-ACC-LICENSE | Outbound (event) | OrderConfirmed event triggers license activation for software products |
 | CNT-ACC-NOTIFICATIONS | Outbound | Publishes order status events for buyer/seller notification |
@@ -66,9 +66,9 @@ CONFIRMED (idea.md §5.2): Reference IDs — order_id, seller_order_id, correlat
 
 | Failure | Response |
 |---|---|
-| ACCore reservation fails | Saga compensates; order state → Failed; no payment triggered |
-| Payment authorization fails | Saga releases reservation; order state → Failed |
-| Order confirmation write fails | Saga voids/refunds payment; order state → Failed |
+| ACCore definitive reservation rejection | Release only confirmed accepted holds; no payment; order fails. Timeout/lost response/circuit-open after possible dispatch → `ReservationUnknown`; query/reconcile; no payment or release solely from elapsed time. |
+| Payment definitive decline | Release only confirmed reservations; order fails. Timeout/lost response → `PaymentUnknown`; reconcile provider before retry, void, or release. |
+| Confirmation write fails | Retry local commit if no commit; otherwise query local snapshot/outbox and external states, then resume or compensate only on definitive evidence; never blanket void/refund. |
 | Delivery creation fails | Order remains Confirmed; delivery state → PendingDelivery; retry |
 
 CONFIRMED (idea.md §7.5): Full failure mode table with responses.

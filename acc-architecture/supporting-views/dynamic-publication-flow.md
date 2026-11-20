@@ -19,7 +19,7 @@ This view documents the product publication flow from ACCore's Product Master to
 
 **Postconditions (success):**
 - Product Listing exists in Catalog with assigned `listing_id`
-- Search index includes new listing
+- Publication event is durable; search synchronization is asynchronous and may lag
 - ACCore holds `listing_id` as marketplace reference
 - `ProductListingPublished` event is on the Event Bus
 
@@ -184,7 +184,7 @@ sequenceDiagram
 | Direction | ACCore → ACCSystem | Outbox-driven async event delivery |
 | Interaction pattern | Event/message with idempotency key and retry | Not a synchronous guarantee of final processing |
 | Acknowledgment semantics | Acceptance receipt only | `200 OK` means the publication command was accepted and `listing_id` was assigned/retained. It does not guarantee search indexing or downstream processing has finished |
-| Rejection outcomes | Validation error, permission error, or duplicate event is rejected without creating a new listing | Rejected events remain visible to operations; ACCore may correct and retry |
+| Rejection outcomes | Validation error, permission error, or duplicate event is acknowledged idempotently (no new listing/effect); validation and permission errors are rejected | Rejected events remain visible to operations; ACCore may correct and retry |
 | Duplicate delivery | Same `event_id`/`idempotency_key` must be processed once only | No duplicate listing, no duplicate version increment |
 | Out-of-order updates | Stale versions are not applied if they are older than the current stored version | `version` is used for ordering; later updates can be replayed or reconciled as needed |
 | `listing_id` lifecycle | `listing_id` is assigned on first accepted publication and retained across subsequent updates | Withdrawn listings keep the historical `listing_id` for traceability while their status becomes `WITHDRAWN` |

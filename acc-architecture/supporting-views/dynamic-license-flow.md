@@ -188,7 +188,7 @@ sequenceDiagram
   "valid_until": "2027-01-01T00:00:00Z",
   "issued_at": "2026-01-01T00:00:00Z",
   "issuer": "accsystem.license",
-  "grace_period_days": 7
+  "grace_policy_ref": "policy-controlled"
 }
 ```
 *Signed with RS256 using platform License & Entitlement signing key. ACCore holds platform public key for offline verification.*

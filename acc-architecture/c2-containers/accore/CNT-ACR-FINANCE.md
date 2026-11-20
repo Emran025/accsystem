@@ -73,7 +73,7 @@ Journal entries, invoices, payable/receivable ledgers, financial reports. Instit
 ## 8. Operations and Reliability
 
 - **Monitoring:** Daily automated reconciliation jobs emit pass/fail metrics to operational dashboard.
-- **Retention:** Financial records retained for 7 years per regulatory compliance requirements.
+- **Retention:** Financial-record retention is governed by `policy:financial.retention`; value is institution/jurisdiction-specific and requires Finance, Legal/Compliance approval before production. Records required for reconciliation, audit, or statutory obligations must not be deleted early.
 
 ---
 

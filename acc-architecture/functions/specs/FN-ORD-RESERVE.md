@@ -39,3 +39,8 @@ A connector interruption creates `UNKNOWN`, not `REJECTED`. Release is not issue
 - Outbox publish failure is replayed without duplicate reservation.
 
 **References:** ADR-015, ADR-016, ADR-017, CMP-INT-RESERVATION, CMP-CON-RESERVATION.
+
+## Interfaces and collaborators
+- Caller: `CMP-ORD-SAGA` within `CNT-ACC-ORDERS`.
+- Command path: `IF-ACC-RESERVE-SAGA` → `CMP-INT-RESERVATION` → `CMP-CON-RESERVATION`.
+- Outcome path: `IF-ACR-RESERVATION-RESP` → relay → parent saga. Exact schema/version and delivery modality remain contract gates.

@@ -6,7 +6,7 @@
 |---|---|
 | **Component ID** | CMP-LIC-ENTITLEMENT |
 | **Parent Container** | CNT-ACC-LICENSE |
-| **Purpose** | Answers online license validation queries: given a {license_id or buyer_id + product_id}, returns whether the entitlement is valid, what units/modules are licensed, and the license state. |
+| **Purpose** | Answers online license validation queries: given an institutional {institution_id + product_code} or marketplace {buyer_id + product_id/license_id} request, returns whether the entitlement is valid, what units/modules are licensed, and the license state. |
 | **Scope Boundary** | Read-only entitlement evaluation. Does NOT modify license state (CMP-LIC-LIFECYCLE). |
 
 ---
@@ -24,7 +24,7 @@
 ## 3. Behavior, Rules, and State
 
 **Validation flow:**
-1. Receive validation request `{license_id OR (institution_id + product_id), modules_requested}`
+1. Receive validation request `{institution_id + product_code, modules_requested} for institutional validation OR {buyer_id + product_id/license_id, modules_requested} for marketplace validation`
 2. Load license record; check: status=Active, not Expired, not Revoked
 3. Check modules/units requested ≤ licensed capacity
 4. Check validity period (valid_from ≤ today ≤ valid_until + grace_period)
@@ -49,7 +49,7 @@ Read-only consumer of License records owned by CMP-LIC-ISSUANCE and CMP-LIC-LIFE
 |---|---|
 | License DB unavailable (online path) | Return error; ACCore falls back to cached offline token (ADR-014) |
 | License not found | Return valid=false |
-| Ambiguous query (product_id matches multiple licenses) | Return most recent active license; log warning |
+| Ambiguous query | Apply the workflow-specific selection order: institutional `valid_from`, marketplace `issued_at`; use a deterministic identifier tie-break only after eligibility; log ambiguity. |
 
 ---
 

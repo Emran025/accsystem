@@ -6,7 +6,7 @@
 |---|---|
 | **Component ID** | CMP-INT-PUBLICATION |
 | **Parent Container** | CNT-ACC-INTEGRATION (Institution Integration Domain — ACCSystem) |
-| **Purpose** | Receives product publication events from ACCore instances (via CMP-INT-GATEWAY) and routes them to CNT-ACC-CATALOG for listing creation, update, or withdrawal. Guarantees exactly-once processing via Inbox pattern and at-least-once delivery to Catalog via Outbox. |
+| **Purpose** | Receives product publication events from ACCore instances (via CMP-INT-GATEWAY) and routes them to CNT-ACC-CATALOG for listing creation, update, or withdrawal. Uses at-least-once processing/delivery with Inbox/Outbox deduplication and idempotent effects; duplicate deliveries may occur but must not duplicate side effects. |
 | **Scope Boundary** | Owns event deduplication and routing to Catalog. Does NOT own listing business logic (CMP-CAT-LISTING owns that) or schema validation (CMP-CAT-VALIDATION owns that). |
 
 ---

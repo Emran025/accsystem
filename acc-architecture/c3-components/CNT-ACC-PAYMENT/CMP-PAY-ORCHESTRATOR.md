@@ -18,3 +18,9 @@ The adapter exposes authorize, capture, void, refund, payment-code lookup, selle
 Every operation is keyed by payment allocation/SellerOrder and operation-specific idempotency key. Ledger and reconciliation link provider reference, order, seller, currency, amount, commission, and reversal/duplicate relationships. Outbox/Inbox delivers `PaymentAuthorized`, `PaymentCaptured`, `PaymentUnknown`, `SellerCreditPending/Credited/Unknown`, and reconciliation events at least once.
 
 **References:** ADR-016, ADR-017, financial-ledger-and-settlement.md, FN-PAY-AUTHORIZE.
+
+## Identity, parent, and scope
+The orchestrator is `CMP-PAY-ORCHESTRATOR` under `CNT-ACC-PAYMENT`. Its payment allocation identity is scoped to SellerOrder and operation-specific idempotency key; it does not own order state, inventory, accounting policy, or settlement finality.
+
+## Verification references
+Existing payment authorization, UNKNOWN reconciliation, capture exception, and idempotency scenarios are documented in `FN-PAY-AUTHORIZE`, `CMP-PAY-ADAPTER`, and `validation/acceptance-test-plan.md`. No execution result is claimed.

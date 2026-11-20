@@ -34,7 +34,7 @@
 
 **Token Cache Entry (local, ephemeral):**
 ```
-cache_key           string ("{buyer_id}:{product_id}")
+cache_key           string (workflow-scoped identity)
 token               string (JWT or signed blob — ADR-014)
 token_expiry        timestamp
 last_validated_at   timestamp
@@ -56,11 +56,11 @@ valid_until         timestamp (nullable)
 ### Validation Logic (ADR-014)
 
 ```
-function validate(buyer_id, product_id, token):
+function validate(workflow_context, token):
   if token is null or not present:
     return INVALID (no entitlement token)
   
-  parse token claims: {buyer_id, product_id, issued_at, expires_at, signature}
+  parse workflow-appropriate token claims: institutional `{institution_id, product_code, ...}` or marketplace `{buyer_id, product_id, ...}`, plus issued/expires/signature
   
   step 1 — signature check:
     verify signature using platform public key
@@ -76,8 +76,7 @@ function validate(buyer_id, product_id, token):
         → return EXPIRED_OFFLINE (use grace period if configured — UNKNOWN)
   
   step 3 — claims check:
-    verify token.buyer_id == requested buyer_id
-    verify token.product_id == requested product_id
+    verify token claims match the selected workflow context; institutional uses `institution_id + product_code`; marketplace uses `buyer_id + product_id`
     if mismatch → return INVALID
   
   → return VALID

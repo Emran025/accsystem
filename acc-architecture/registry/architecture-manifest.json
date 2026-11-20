@@ -8,7 +8,7 @@
     "scope": "PASSED",
     "C1": "PASSED",
     "C2": "PASSED",
-    "C3": "PASSED",
+    "C3": "IN_PROGRESS",
     "C4": "NOT_STARTED",
     "validation": "IN_PROGRESS"
   },
@@ -20,15 +20,15 @@
     "elements_count": 113,
     "open_decisions": 24,
     "adrs_status": "PROPOSED_WITH_OWNER_DECISIONS_LABELLED",
-    "incomplete_outlines": 0,
+    "incomplete_outlines": 4,
     "adrs_review_package": "decisions/ADR-STAKEHOLDER-REVIEW-GATE.md",
     "operations_count": 7,
     "functions_count": 7,
-    "interfaces_count": 9,
+    "interfaces_count": 10,
     "decisions_count": 22,
     "systems_count": 7,
     "containers_count": 30,
     "components_count": 28,
-    "baseline_commit": "99e440dd55a7d3ff424fb207069ed23ae2563e05"
+    "baseline_commit": "06cbbc084728ca4af530d08444d3780628f70d51"
   }
 }

@@ -10,7 +10,7 @@ The earlier V5 narrative is retained as historical audit context; its stale stat
 |---|---|---|---|---|
 | Gate 7 | Structural registry/reference validation | **IN_PROGRESS** | `validate_architecture.py` and declared-schema checks PASS; full Mermaid validator/render run PASS | Structural and syntax/render results only; semantic review, owner approval, security/legal review, and production readiness remain unverified |
 
-Canonical registry counts at this snapshot are 113 elements, 7 operations, 7 functions, 9 interfaces, 22 decisions, 6 system records, 30 container records, and 28 component records. The counts are inventory denominators, not completion claims.
+Canonical registry counts at this snapshot are 113 elements, 7 operations, 7 functions, 10 interfaces, 22 decisions, 7 registry system records (6 system documentation files), 30 container records, and 28 component records. The counts are inventory denominators, not completion claims.
 
 The reservation source row is conservative: elapsed time alone leaves the state `UNKNOWN`; only authoritative ACCore `EXPIRED` or trusted reconciliation may resolve expiry. No numeric reservation TTL is asserted. The institutional/versioned contract, callback/connectivity policy, and executable acceptance evidence remain external gates.
 

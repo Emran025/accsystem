@@ -16,7 +16,7 @@
 | Collaborator | Direction | Role |
 |---|---|---|
 | CNT-ACC-EVENTBUS | Inbound | Subscribes to OrderConfirmed, OrderCancelled, ReturnRequested events |
-| CNT-ACR-CONNECTOR | Outbound | Sends order event to relevant institution ACCore via IF-ACR-PUBLISH-EVENT channel |
+| CNT-ACR-CONNECTOR | Outbound | Sends order event to relevant institution ACCore via IF-ACC-ORDER-CONFIRM channel |
 | CNT-ACC-INSTREG | Outbound | Looks up institution connector endpoint and auth credentials |
 | CNT-ACC-AUDIT | Outbound | Logs dispatch attempts and results |
 

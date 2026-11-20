@@ -31,6 +31,7 @@
 |---|---|---|---|
 | IF-ACC-CATALOG-QUERY | CNT-ACC-CATALOG | Synchronous REST | §1 |
 | IF-ACC-ORDER-CREATE | CNT-ACC-ORDERS | Synchronous REST | §2 |
+| IF-ACC-ORDER-CONFIRM | CNT-ACC-INTEGRATION | Async event / outbound delivery | §2A |
 | IF-ACC-RESERVE-SAGA | CNT-ACC-INTEGRATION | Synchronous REST (saga step) | §3 |
 | IF-ACC-PAYMENT-WEBHOOK | EXT-PAYMENT-PROVIDER | Inbound webhook (async) | §4 |
 | IF-ACC-EVENT-ENVELOPE | CNT-ACC-EVENTBUS | Async event (message bus) | §5 |
@@ -271,8 +272,25 @@ UNKNOWN — not specified in idea.md.
 | Function | FN-ORD-CONFIRM | Order confirmation function spec |
 
 ---
+## 2A. IF-ACC-ORDER-CONFIRM
+### 2A.1 Identity and direction
+| Attribute | Value | Label |
+|---|---|---|
+| Interface ID | IF-ACC-ORDER-CONFIRM | PROPOSAL — retained because ADR-019 and ADR-021 already reference this ID |
+| Provider | CNT-ACC-INTEGRATION (ACCSystem outbound handoff) | PROPOSAL — registry/interfaces.json |
+| Consumers | CNT-ACR-CONNECTOR / CMP-CON-ORDERRECEIVER (ACCore inbound receiver) | PROPOSAL — registry/interfaces.json |
+| Delivery | Asynchronous, at-least-once; Outbox/Inbox and idempotent effects | CONFIRMED — ADR-005, ADR-019 |
 
-## 3. IF-ACC-RESERVE-SAGA
+### 2A.2 Payload and processing contract
+The event carries one immutable commercial snapshot for the confirmed ParentOrder and its SellerOrders:
+`event_id`, `event_type=OrderConfirmed`, `event_version`, `occurred_at`, `order_id`, `seller_order_ids[]`, `institution_id`, `buyer_id`, `line_items[]` (including seller/product references, quantity, and price snapshot), `payment_reference`, `policy_snapshot`, `correlation_id`, and `idempotency_key`.
+
+`event_id` identifies the delivery event; the stable business deduplication key is `institution_id + order_id` for the receiver, with the event ID retained for delivery tracing. A duplicate delivery is acknowledged without repeating local business effects. A timeout or lost response does not imply rejection; the Outbox relay retries, and the receiver Inbox records the key before effects. Exact field constraints and version schema remain an API Governance/OpenAPI/AsyncAPI gate.
+
+`OrderConfirmed` is an operational handoff, not a universal instruction to post a financial journal entry. ACCore may create local inventory/SalesOrder effects and separately apply its institution-local, approval-gated accounting policy under ADR-019.
+
+---
+## 2. IF-ACC-RESERVE-SAGA
 
 ### 3.1 Identity
 
@@ -339,6 +357,26 @@ POST /v1/integration/reservations
 }
 ```
 
+**Response body — `ReservationUnknown` (ASSUMPTION):**
+```json
+{
+  "reservation_id": "string | null",
+  "status": "UNKNOWN",
+  "idempotency_key": "string",
+  "correlation_id": "string"
+}
+```
+
+**Authoritative resolution — `ReservationExpired` (ASSUMPTION):**
+```json
+{
+  "reservation_id": "string",
+  "status": "EXPIRED",
+  "idempotency_key": "string",
+  "correlation_id": "string"
+}
+```
+
 **Response body — `ReservationRejected` (ASSUMPTION):**
 
 ```json
@@ -362,7 +400,7 @@ If reservation is accepted but payment subsequently fails: reservation release i
 
 | Scenario | Handling |
 |---|---|
-| ACCore unreachable | Retry with same `idempotency_key`; exponential backoff; query existing reservation outcome | CONFIRMED — idea.md §7.5 |
+| ACCore unreachable | Preserve `UNKNOWN` when dispatch may have occurred; query by reservation ID/idempotency key; retry only after authoritative resolution or durable non-dispatch evidence, using the same key | PROPOSAL — ADR-018 |
 | Timeout before response (no response received by saga) | Persist `UNKNOWN` on saga reservation state; block payment step; query ACCore using `idempotency_key` / `reservation_id`; do not compensate or release until a definitive `ACCEPTED`, `REJECTED`, or `EXPIRED` outcome is confirmed by ACCore query or reconciliation | PROPOSAL — aligns with ADR-006 §3.2, ADR-013 §4, ADR-018 |
 | Invalid institution_id | Return 404/422 from Integration Gateway | ASSUMPTION |
 | Reservation TTL policy reached / possible expiry | Persist `UNKNOWN` unless ACCore authoritatively reports `EXPIRED` or a trusted query/reconciliation resolves the state; do not release, compensate, charge, or repeat the effect from elapsed time alone | OPEN POLICY — configurable TTL/reconciliation/notification behavior requires ACCore and institutional approval |
@@ -376,7 +414,7 @@ If reservation is accepted but payment subsequently fails: reservation release i
 | Control | Detail | Label |
 |---|---|---|
 | Transport | TLS between CNT-ACC-ORDERS → CNT-ACC-INTEGRATION → CNT-ACR-CONNECTOR | CONFIRMED — idea.md §4.3 |
-| Service-to-service auth | OAuth 2.0 Client Credentials | CONFIRMED — idea.md §9: "OAuth 2.0 Client Credentials with rotatable secrets" |
+| Service-to-service auth | Per-institution policy under ADR-015: OAuth 2.0 Client Credentials and/or mTLS; API keys are not implied | PROPOSAL — final mode requires onboarding/security approval |
 | `institution_id` validation | Integration Gateway validates that the seller institution is active | CONFIRMED — idea.md §7.1 |
 
 ### 3.9 Cross-References
@@ -630,7 +668,6 @@ POST /v1/licenses/validate
 
 ```json
 {
-  "idempotency_key": "string",
   "institution_id": "string",
   "product_code": "string",
   "module_codes": ["string"],
@@ -653,10 +690,9 @@ POST /v1/licenses/validate
     "capacity_limit": "object | null",
     "valid_from": "ISO-8601",
     "valid_until": "ISO-8601",
-    "grace_period_days": "integer"
+    "grace_policy_ref": "string | null"
   },
-  "signed_entitlement_token": "string (JWT or similar)",
-  "token_expires_at": "ISO-8601"
+  "token_reference": "string | null (issued by separate token operation)"
 }
 ```
 
@@ -667,9 +703,11 @@ POST /v1/licenses/validate
   "license_id": "string | null",
   "status": "SUSPENDED | REVOKED | EXPIRED | NOT_FOUND",
   "reason": "string",
-  "grace_period_remaining_days": "integer | null"
+  "grace_policy_ref": "string | null"
 }
 ```
+
+Validation is read-only; token issuance/refresh is a separate operation owned by the license domain.
 
 ### 6.5 Offline Validation Path
 
@@ -677,7 +715,7 @@ CONFIRMED — idea.md §4.3, ADR-014: "ACCore validates locally from a short-to-
 
 ### 6.6 Idempotency
 
-CONFIRMED — idea.md §6.5. `idempotency_key` required for validation requests. Online validation may be safely retried.
+Read-only validation has no mandatory idempotency key. An optional correlation or client deduplication key may be supplied; fresh-token issuance is not part of this read-only operation and remains governed by activation/token operations.
 
 ### 6.7 Error Cases
 
@@ -1078,7 +1116,7 @@ The ACCore seller's response to a reservation request initiated by the Order sag
 
 | Scenario | Handling |
 |---|---|
-| Connector unreachable | Saga retries with same `idempotency_key` | CONFIRMED — idea.md §7.5 |
+| Connector unreachable | Preserve `UNKNOWN` when dispatch may have occurred; query by reservation ID/idempotency key; retry only after authoritative resolution or durable non-dispatch evidence, using the same key | PROPOSAL — ADR-018 |
 | Timeout — ACCore slow to respond | Query existing reservation status; retain UNKNOWN until definitive state or approved safe-expiry rule; compensate only after resolution | PROPOSAL |
 | Invalid `order_id` / `seller_order_id` | ACCore returns 400; saga logs error |
 | Duplicate response delivery | Integration Gateway deduplicates via `idempotency_key` / `event_id` |

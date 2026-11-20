@@ -493,7 +493,8 @@
     {
       "parent_id": "CNT-ACC-INTEGRATION",
       "child_ids": [
-        "IF-ACC-RESERVE-SAGA"
+        "IF-ACC-RESERVE-SAGA",
+        "IF-ACC-ORDER-CONFIRM"
       ],
       "kind": "CONTAINER_TO_COMPONENT",
       "status": "COMPLETE",

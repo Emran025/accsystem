@@ -32,7 +32,7 @@
 For every inbound request:
 
 1. **TLS validation:** Enforce TLS 1.2+. Reject any non-TLS connection.
-2. **Service credential validation:** Validate OAuth2 `client_credentials` token (or equivalent — PROPOSAL). Token must be valid, not expired, and issued to a recognized `client_id`.
+2. **Service credential validation:** Apply the per-institution authentication mode selected under ADR-015: OAuth2 Client Credentials and/or mTLS; API keys are not implied. Token must be valid, not expired, and issued to a recognized `client_id`.
 3. **Institution identity check:** Extract `institution_id` from token claims. Validate that `institution_id` matches the request body/path parameter. If mismatch → reject with `403 Forbidden`.
 4. **Schema validation:** Validate event payload against the registered schema for the declared `event_type`. If schema fails → return structured validation error.
 5. **Route:** Forward validated payload to the appropriate downstream handler based on `event_type`.
@@ -84,7 +84,7 @@ For every inbound request:
 
 ### 5.2 Security
 
-- **PROPOSAL:** OAuth2 `client_credentials` grant with rotating secrets per institution.
+- **POLICY-CONTROLLED:** OAuth2 Client Credentials and/or mTLS per ADR-015; onboarding and security approval select the institution mode.
 - Institution identity is derived from token, **not** from request body. The request body `institution_id` is cross-validated against token claim.
 - WAF and rate limiting enforced at edge layer before gateway (§10.1).
 - No institution can send events on behalf of another institution.
@@ -118,7 +118,7 @@ For every inbound request:
 
 | Item | Status | Owner / Action |
 |---|---|---|
-| Exact auth mechanism: OAuth2 client_credentials vs mTLS vs API key | PROPOSAL — needs decision | Architecture + Security team; before Phase 1 |
+| Exact auth mechanism: OAuth2 Client Credentials and/or mTLS per institution | UNKNOWN — ADR-015 owner/security approval required | Architecture + Security team; before Phase 1 |
 | Schema registry: which service owns event schemas? | UNKNOWN | Architecture team; define before Phase 1 |
 | Fail-open vs fail-closed when schema registry unavailable | UNKNOWN | Architecture + Product; before Phase 1 |
 

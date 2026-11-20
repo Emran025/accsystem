@@ -26,7 +26,7 @@ flowchart LR
 
     %% Event Bus → Order Notify
     EVENTBUS -->|OrderConfirmed\nOrderCancelled| NOTIFY
-    NOTIFY -->|order dispatch| ACR_CON
+    NOTIFY -->|IF-ACC-ORDER-CONFIRM\nasync, at-least-once| ACR_CON
 
     %% Publication → Catalog
     PUB -->|validated listing| CATALOG

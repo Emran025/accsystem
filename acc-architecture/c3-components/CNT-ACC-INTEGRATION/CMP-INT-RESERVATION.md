@@ -19,3 +19,10 @@ The relay writes an Outbox entry before sending. Responses are Inbox-deduplicate
 | Duplicate command/event | Return stored result; no duplicate side effect. |
 
 Authentication uses the method selected by ADR-015 policy. Numeric retry, timeout, hold, and deduplication values are deployment configuration owned by operations and must be consistent with reconciliation coverage.
+
+## Interfaces and collaborators
+- Consumes `IF-ACC-RESERVE-SAGA` from the Order Saga and relays to ACCore through `CMP-CON-RESERVATION`.
+- Returns outcomes through `IF-ACR-RESERVATION-RESP`; exact delivery modality remains open under ADR-015.
+
+## Verification references
+Existing acceptance scenarios in `FN-ORD-RESERVE` and `validation/acceptance-test-plan.md` cover accepted/rejected/unknown outcomes, query-before-retry, and idempotent release. These are documented scenarios, not executed-test results.

@@ -31,7 +31,9 @@
 |---|---|
 | `PendingValidation` | Checkout received; validating buyer eligibility, items, and price |
 | `PendingReservation` | Independent reservation requests sent to every seller ACCore |
-| `PendingPayment` | Reservation accepted; awaiting payment authorization |
+| `PendingPayment` | All required reservations authoritatively accepted; awaiting payment authorization |
+| `ReservationUnknown` | A reservation outcome may have been dispatched but is not authoritative; non-terminal and payment-blocking |
+| `PaymentUnknown` | Payment outcome may have been dispatched but is not authoritative; non-terminal and compensation-blocking |
 | `Confirmed` | Payment authorized; order commercially confirmed |
 | `Processing` | Seller preparing order |
 | `PartiallyFulfilled` | Partial shipment dispatched (multi-seller or multi-shipment) |
@@ -43,7 +45,7 @@
 | `ReturnPending` | Return request in-flight |
 | `Returned` | Return and refund fully processed |
 | `Failed` | Terminal failure (checkout expired, saga compensation complete) |
-| `Expired` | Checkout or reservation expired before confirmation |
+| `Expired` | An authoritative ACCore `EXPIRED` reservation outcome or approved expiry rule resolved before confirmation; elapsed time alone is insufficient |
 
 ### 3.2 Allowed Transition Graph
 
@@ -51,11 +53,16 @@
 PendingValidation → PendingReservation
 PendingValidation → Failed | Expired
 
-PendingReservation → PendingPayment (only after every required SellerOrder reservation is ACCEPTED)
-PendingReservation → ReservationUnknown | Failed | Expired
+PendingReservation → PendingPayment (only after every required SellerOrder reservation is authoritatively ACCEPTED)
+PendingReservation → ReservationUnknown | Failed
+ReservationUnknown → PendingPayment (only after all required reservations resolve ACCEPTED)
+ReservationUnknown → Failed | Expired (only from authoritative REJECTED/EXPIRED evidence)
 
 PendingPayment → Confirmed
 PendingPayment → PaymentUnknown | Failed
+PaymentUnknown → Confirmed (only after authoritative payment success and confirmation commit)
+PaymentUnknown → Failed (only after definitive decline/failure and valid compensation)
+ReservationUnknown | PaymentUnknown → PendingReview (when policy escalation is required)
 
 Confirmed → Processing | Dispatched | CancellationPending
 Processing → PartiallyFulfilled | Dispatched | CancellationPending
@@ -64,7 +71,7 @@ Dispatched → Delivered | ReturnPending
 Delivered → Completed | ReturnPending
 Completed → ReturnPending
 
-CancellationPending → Cancelled | Confirmed  (if cancellation fails, revert)
+CancellationPending → Cancelled | Confirmed (revert only if explicitly rejected before irreversible compensation; otherwise remain pending/review)
 ReturnPending → Returned | Delivered  (if return rejected, revert)
 ```
 
@@ -96,7 +103,7 @@ When an order is split (§8.2), each Seller Order has its own independent state 
 - State is the **single authoritative field** for order status. No component should infer order status from payment or delivery state directly.
 - Transitions are **append-only** to the history log; past transitions are never modified.
 - The state machine does not enforce business meaning (e.g., it does not know what "PaymentAuthorized" means) — it only enforces the graph.
-- An order in `Failed` or `Expired` or `Cancelled` or `Returned` or `Completed` is in a **terminal state** and accepts no further transitions.
+- Unknown/review states are non-terminal and recoverable. An order in `Failed` or `Expired` or `Cancelled` or `Returned` or `Completed` is in a **terminal state** and accepts no further transitions.
 
 ---
 

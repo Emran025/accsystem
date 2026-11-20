@@ -1467,6 +1467,17 @@
                          "decomposition_status":  "COMPLETE"
                      },
                      {
+                         "id":  "IF-ACC-ORDER-CONFIRM",
+                         "name":  "Order Confirm Handoff Interface",
+                         "type":  "interface",
+                         "level":  "C2",
+                         "parent_id":  "CNT-ACC-INTEGRATION",
+                         "doc":  "supporting-views/interface-contracts.md",
+                         "children_expected":  false,
+                         "scope_status":  "IN_SCOPE",
+                         "decomposition_status":  "COMPLETE"
+                     },
+                     {
                          "id":  "IF-ACC-EVENT-ENVELOPE",
                          "name":  "Event Envelope Interface",
                          "type":  "interface",

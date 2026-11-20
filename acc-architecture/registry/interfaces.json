@@ -2,6 +2,7 @@
   "interfaces": [
     {"id":"IF-ACC-CATALOG-QUERY","provider_id":"CNT-ACC-CATALOG","consumer_ids":["CNT-ACE-MOBILEAPP","CNT-ACR-COMMERCE","CNT-ACC-APIGATEWAY"],"contract_ref":"supporting-views/interface-contracts.md"},
     {"id":"IF-ACC-ORDER-CREATE","provider_id":"CNT-ACC-ORDERS","consumer_ids":["CNT-ACE-MOBILEAPP","CNT-ACR-COMMERCE","CNT-ACC-APIGATEWAY"],"contract_ref":"supporting-views/interface-contracts.md"},
+    {"id":"IF-ACC-ORDER-CONFIRM","provider_id":"CNT-ACC-INTEGRATION","consumer_ids":["CNT-ACR-CONNECTOR","CMP-CON-ORDERRECEIVER"],"contract_ref":"supporting-views/interface-contracts.md"},
     {"id":"IF-ACC-RESERVE-SAGA","provider_id":"CNT-ACC-INTEGRATION","consumer_ids":["CNT-ACC-ORDERS","CMP-ORD-SAGA"],"contract_ref":"supporting-views/interface-contracts.md"},
     {"id":"IF-ACC-PAYMENT-WEBHOOK","provider_id":"EXT-PAYMENT-PROVIDER","consumer_ids":["CNT-ACC-PAYMENT","CMP-PAY-ORCHESTRATOR"],"contract_ref":"supporting-views/interface-contracts.md"},
     {"id":"IF-ACC-EVENT-ENVELOPE","provider_id":"CNT-ACC-EVENTBUS","consumer_ids":["CNT-ACC-ORDERS","CNT-ACC-PAYMENT","CNT-ACC-DELIVERY","CNT-ACC-INTEGRATION","CNT-ACC-LICENSE","CNT-ACC-NOTIFICATIONS"],"contract_ref":"supporting-views/interface-contracts.md"},

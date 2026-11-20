@@ -25,3 +25,6 @@ Coordinate one ParentOrder and its SellerOrders across ACCore reservations, paym
 | Capture failure after confirmation | Keep order confirmed with payment exception; retry/reconcile/void/refund according to policy. |
 
 All steps are at-least-once and idempotent. Saga state is persisted and recovery resumes from the last known state. Numeric retry/timeout/expiry values are configuration, not asserted targets.
+
+## Verification references
+Existing scenarios in `FN-ORD-CHECKOUT`, `FN-ORD-RESERVE`, `FN-PAY-AUTHORIZE`, and `validation/acceptance-test-plan.md` cover reservation-before-payment, UNKNOWN blocking, idempotent confirmation, and outbox recovery. These references do not claim runtime execution.

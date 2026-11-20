@@ -126,7 +126,7 @@ This function defines the ACCSystem order commitment point, not a distributed at
 | **Behavior on duplicate** | Return `{order_id, status: CONFIRMED, confirmed_at}` without re-writing snapshot or re-publishing event |
 
 > [!IMPORTANT]
-> The Outbox pattern guarantees exactly-once delivery of `OrderConfirmed` to downstream consumers even if the saga step is retried — the Outbox record is deduplicated by order_id.
+> The Outbox pattern provides at-least-once delivery of `OrderConfirmed`; duplicate delivery is suppressed by the consumer Inbox/idempotency rule keyed by the scoped `institution_id + order_id`, with `event_id` retained for delivery tracing.
 
 ---
 
@@ -176,7 +176,7 @@ The table below distinguishes **pre-confirmation failures** (still within saga, 
 | Commercial snapshot at confirmation | CONFIRMED (CMP-ORD-SNAPSHOT — idea.md §8.2) |
 | OrderConfirmed triggers downstream activations | CONFIRMED (idea.md §7.3 — license activation; §4.3 — ACCore order receipt) |
 | Outbox pattern for event delivery | CONFIRMED (ADR-005) |
-| Financial commitment point | ASSUMPTION — confirmation is the commitment point; payment capture timing UNKNOWN (idea.md §12) |
+| Financial commitment point | ADR-019 baseline: no universal financial trigger; institution Finance/Legal/Compliance approval remains required |
 
 ---
 

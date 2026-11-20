@@ -18,3 +18,8 @@ Transport and authentication follow ADR-015's controlled policy. The handler is 
 
 ## Tests
 Atomic last-unit race; duplicate request; accepted response lost; timeout/unknown; definitive rejection; idempotent release; release of consumed reservation rejected; outbox/inbox replay; credential rotation and revocation.
+
+## Interfaces and collaborators
+- Consumes the logical reservation/release contract from `CMP-INT-RESERVATION` through `IF-ACC-RESERVE-SAGA` semantics.
+- Returns `ACCEPTED`, `REJECTED`, `UNKNOWN`, or authoritative `EXPIRED` through `IF-ACR-RESERVATION-RESP`.
+- ACCore inventory storage is the local source of truth; ADR-015 governs connectivity/authentication.

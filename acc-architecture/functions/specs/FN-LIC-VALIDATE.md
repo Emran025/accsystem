@@ -41,7 +41,7 @@
 | # | Precondition | Checked By | On Failure |
 |---|---|---|---|
 | P1 | Caller is authenticated | CNT-ACC-IDENTITY | 401 |
-| P2 | Query specifies `{buyer_id, product_id}` or `license_id` | CMP-LIC-ENTITLEMENT | 400 |
+| P2 | Institutional query specifies `{institution_id, product_code}`; marketplace query specifies `{buyer_id, product_id}` or `license_id` | CMP-LIC-ENTITLEMENT | 400 |
 | P3 | ACCSystem is reachable | Network layer | Falls back to offline path if token available |
 
 ### Offline Path
@@ -99,7 +99,7 @@
         status,
         expires_at,
         product_scope: {product_id, features_included},
-        new_token: (if requested, generate fresh offline token — ASSUMPTION)
+        token_reference: (issued only by separate token operation)
       }
 
 4. Caller caches result per TTL (ASSUMPTION: caller-side caching; TTL = UNKNOWN)
@@ -130,7 +130,7 @@
 | # | Postcondition |
 |---|---|
 | Q1 | Caller receives definitive validation result: VALID, EXPIRED, INVALID, or NOT_FOUND |
-| Q2 | (Online path only) Fresh offline token optionally returned for subsequent offline use |
+| Q2 | Validation returns entitlement status only; token issuance/refresh is a separate retriable operation, not a side effect of this read-only query. |
 | Q3 | (Online path) Validation event written to CNT-ACC-AUDIT (ASSUMPTION — rate-limited) |
 
 ---
@@ -138,7 +138,7 @@
 ## 6. Data, Side Effects, and Idempotency
 
 ### 6.1 Data Persisted and Side Effects
-- **Data Read/Persisted:** Read-only query against License DB for entitlement records. If fresh offline token is requested, token issuance timestamp is persisted.
+- **Data Read/Persisted:** Read-only query against License DB for entitlement records. Token issuance is excluded from this function and is handled by a separate license-owned operation.
 - **Side Effects:** Emits validation telemetry event (rate-limited); logs failed validation attempts to security audit log. No business state side effect.
 - **Transaction Boundary:** Non-transactional read query with read-committed isolation.
 
@@ -146,7 +146,7 @@
 
 This is a **read-only query** — inherently idempotent. No state mutations occur.
 
-Exception: if online validation also generates a fresh offline token, that token generation follows FN-LIC-ACTIVATE token generation idempotency rules.
+Token generation and its idempotency rules belong to the activation/token-issuance operation; validation remains read-only.
 
 ---
 
@@ -168,7 +168,7 @@ No rollback required (read-only).
 | Concern | Control |
 |---|---|
 | Online caller auth | JWT required; ACT-INST-EMPLOYEE or ACT-INDIVIDUAL or ACCore service identity |
-| Result scope | Validation result scoped to `{buyer_id, product_id}`; cannot query other buyers' licenses |
+| Result scope | Institutional result scoped to `{institution_id, product_code}`; marketplace result scoped to `{buyer_id, product_id/license_id}`; cannot cross workflow or beneficiary scope |
 | Token non-transferability | Token claims include buyer_id; mis-matched buyer → INVALID |
 | Audit (online) | High-volume; ASSUMPTION: audit at sampling rate or only for INVALID results to manage volume |
 

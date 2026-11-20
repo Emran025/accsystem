@@ -4,7 +4,7 @@
 **Status:** PROPOSED MVP BASELINE — multi-seller carts are required; operational thresholds are configurable.
 
 ## Purpose and preconditions
-Create one ParentOrder and one SellerOrder per seller, reserve inventory at every seller ACCore, then proceed to payment only after every required reservation has a definitive accepted or rejected outcome. ACCore is the inventory source of truth. All commands/events use Outbox/Inbox, at-least-once delivery, correlation IDs, and idempotency keys.
+Create one ParentOrder and one SellerOrder per seller, reserve inventory at every seller ACCore, then proceed to payment only after every required reservation is authoritatively `ACCEPTED`; definitive `REJECTED` fails checkout after conditional compensation, while `UNKNOWN` blocks payment and enters reconciliation. ACCore is the inventory source of truth. All commands/events use Outbox/Inbox, at-least-once delivery, correlation IDs, and idempotency keys.
 
 ## Executable flow
 

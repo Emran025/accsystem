@@ -6,7 +6,7 @@
 |---|---|
 | **Component ID** | CMP-LIC-ISSUANCE |
 | **Parent Container** | CNT-ACC-LICENSE (License & Entitlement Management — ACCSystem) |
-| **Purpose** | Triggered by OrderConfirmed events for software products. Creates license records, activates entitlements, and coordinates the initial optional issuance of an offline entitlement token. |
+| **Purpose** | Triggered by OrderConfirmed events for software products. Creates license records, activates entitlements, and coordinates the initial issuance of an offline entitlement token as a separate retriable follow-up. |
 | **Scope Boundary** | License creation and activation only. Does NOT manage license lifecycle transitions (CMP-LIC-LIFECYCLE) or ongoing validation (CMP-LIC-ENTITLEMENT). |
 
 ---
@@ -17,7 +17,7 @@
 |---|---|---|
 | CNT-ACC-EVENTBUS | Inbound | Subscribes to OrderConfirmed events |
 | CMP-LIC-LIFECYCLE | Outbound | Hands off newly created license for lifecycle registration |
-| CMP-LIC-OFFLINE | Outbound | Triggers initial signed entitlement token issuance (optional) |
+| CMP-LIC-OFFLINE | Outbound | Receives a separate retriable token-issuance request after license activation |
 | CNT-ACC-EVENTBUS | Outbound | Publishes LicenseIssued, LicenseActivated events |
 | CNT-ACC-AUDIT | Outbound | Logs issuance events |
 
@@ -28,8 +28,8 @@
 **Issuance steps:**
 1. Receive OrderConfirmed event; check if order contains a software/licensed product
 2. If not a software product → skip (no license needed)
-3. If software product → create License record with status=Active
-4. Associate license with: institution_id, product_id, units/seats (from order), validity period
+3. Institutional license issuance creates `ISSUED`; activation advances it to `ACTIVATED` then `ACTIVE`. Marketplace post-purchase issuance creates the license directly `ACTIVE`.
+4. Associate institutional records with `institution_id + product_code`; associate marketplace records with `buyer_id + product_id` and retain `publisher_institution_id` as seller identity. Units/seats and validity remain workflow-specific.
 5. Publish LicenseIssued + LicenseActivated events via Outbox
 
 **Rules:**
@@ -43,7 +43,7 @@
 
 | Data | Owned |
 |---|---|
-| License record: `{license_id, institution_id, product_id, units, status=Active, valid_from, valid_until, grace_period}` | CMP-LIC-ISSUANCE |
+| License record: `{license_id, workflow, institution_id + product_code OR buyer_id + product_id, publisher_institution_id (marketplace), units, status, valid_from, valid_until, grace_policy_ref}` | CMP-LIC-ISSUANCE |
 | Activation record: `{activation_id, license_id, activated_at}` | CMP-LIC-ISSUANCE |
 
 ---
