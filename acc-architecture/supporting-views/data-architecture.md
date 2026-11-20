@@ -30,7 +30,7 @@ This view documents the data entities, ownership boundaries, consistency models,
 | **SellerOrder** | ACCSystem Order Management domain | IS the record (sub-entity of ParentOrder) | Seller institution via Integration | Created on order split per seller; closed on fulfillment or cancellation | Same as ParentOrder |
 | **OrderLine** | ACCSystem Order Management domain | IS the record; snapshot of price/product at confirmation time | Same as ParentOrder/SellerOrder | Immutable after confirmation per idea.md 8.3 — commercial snapshot | Same as ParentOrder |
 | **Reservation** | ACCore at selling institution (authoritative decision) | ACCSystem holds request/response state only | Order domain (write); Integration Gateway (relay) | Request may resolve ACCEPTED (active hold), REJECTED or UNKNOWN; an accepted hold may be consumed, validly released or authoritatively EXPIRED. Elapsed local time alone proves none of these outcomes | Controlled policy — owner and jurisdiction dependent; configure before production|
-| **PaymentAttempt** | ACCSystem Payment Orchestration domain | IS the record (references provider record) | Payment domain internal; Order domain reads status | Created on payment initiation; terminal on capture, void, or refund | Controlled policy — owner and jurisdiction dependent; configure before production|
+| **PaymentAttempt** | ACCSystem Payment Orchestration domain | IS the record (references provider record) | Payment domain internal; Order domain reads status | Created on payment initiation; terminal for the authorization/capture attempt on a definitive capture, void, authorization decline/failure, or capture failure. `UNKNOWN` remains non-terminal until reconciled. A refund is a separate scoped operation and may coexist with a captured attempt; financial closure/exhaustion of an eligible refundable balance remains policy-gated | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **Shipment** | ACCSystem Delivery Management domain | IS the record | Delivery domain internal; ACCMared Supervisor/Courier (operational); buyer (read-only status) | Created on `OrderConfirmed`; closed on `ShipmentDelivered` or cancellation | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **Institution** | ACCSystem Institution Registry | IS the central record (non-ERP data only: ID, status, integration config) | Platform admin (write); integration services (read) | Registered on onboarding; deactivated/archived on offboarding | UNKNOWN |
 | **License** | ACCSystem License & Entitlement Management | IS the record; scoped reference shared through applicable path | Authorized admin/license service (write); authorized ACCore institutional and ACCommerce marketplace readers | Institutional ISSUED → ACTIVATED → ACTIVE; marketplace post-purchase ACTIVE; both retain renewal/suspension/revocation/expiry paths | Controlled policy — owner and jurisdiction dependent; configure before production|
@@ -126,10 +126,10 @@ Order Domain
   │  → Instructs Payment Orchestration to authorize
   ▼
 Payment Orchestration → Payment Provider
-  │  Authorization request
-  │  → PaymentAuthorized or PaymentFailed
+  │  Scoped allocation authorization/capture results per SellerOrder or approved aggregate
+  │  → definitive success for every required allocation, or UNKNOWN requiring reconciliation
   ▼
-Order Domain (on PaymentAuthorized)
+Order Domain (only after all allocations succeed and all holds remain accepted)
   │  Transitions to Confirmed
   │  → Publishes OrderConfirmed to Event Bus
   │    Consumers: ACCore seller (commit sale), Payment (capture), Delivery (create shipment)

@@ -9,7 +9,7 @@
 7. **Connectivity loss:** failed health/connector policy removes institution listings from search/promotion or labels them unavailable; local ACCore ERP functions permitted by license continue; open carts revalidate.
 8. **License offline:** signed token verifies locally, key rotation is accepted, revocation propagates when connected, configurable grace expires into restriction without corrupting local ERP data.
 9. **Currency/tax snapshot:** order retains transaction currency, exchange source/time, rounding, ordered tax lines and rule version; later admin changes do not alter confirmed order.
-10. **Package provenance:** digest mismatch, invalid signature, invalid attestation, or changed build fingerprint blocks availability or raises an auditable alert; a digest alone is not accepted as source provenance.
+10. **Package provenance:** digest/signature or required provenance verification failure prevents publication as Available; a deployed fingerprint mismatch raises an auditable alert and institution response follows approved policy; a digest alone is not source provenance.
 11. **Tenant/support security:** cross-institution reads fail; support access is purpose/institution scoped, least privilege, time-bound, audited, and cannot grant RBAC or license entitlement.
 12. **Recovery:** outbox/inbox replay, DLQ redelivery, saga restart, provider reconciliation, search reindex, and backup/restore preserve idempotency and correlation IDs.
 
