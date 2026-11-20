@@ -23,7 +23,7 @@
 
 | Collaborator | Direction | Interface / Event | Purpose |
 |---|---|---|---|
-| ACCore application layer | Inbound | Internal call (library or service) | Requests license validation for a buyer + product |
+| ACCore application layer | Inbound | Internal call (library or service) | Requests validation in institutional or marketplace workflow-specific identity context |
 | Platform Public Key Store | Read | Config file or certificate store | Verifies token signature (public key) |
 | CNT-ACC-LICENSE (CMP-LIC-ENTITLEMENT) | Outbound (conditional) | IF-ACC-LICENSE-VALIDATE | Online fallback when offline token expired |
 | Token Cache | Read/Write | Local cache | Caches last validated token and result |
@@ -66,25 +66,29 @@ function validate(workflow_context, token):
     verify signature using platform public key
     if invalid → return INVALID (tampered or wrong key)
   
-  step 2 — expiry check:
+  step 2 — identity and grant evidence:
+    verify workflow, license reference and expected authenticated scope; institutional uses `institution_id + product_code`; marketplace uses `buyer_id + product_id`
+    if mismatch → return INVALID; invalid signature, missing key or wrong scope never enters token-derived grace
+    verify authenticated grant bounds or equivalent local evidence under approved policy
+    if required authenticated grant evidence is absent or unverifiable → restrict; it cannot grant token-derived access. If evidence is present but a time bound is not satisfied, apply only a specifically approved applicable grace policy; otherwise restrict
+
+  step 3 — known negative status and credential expiry:
+    if locally observed suspension or revocation applies → return INVALID/RESTRICTED; do not return VALID
+
+    step 3 — credential expiry:
     if expires_at < now:
       if network available:
-        → online fallback (IF-ACC-LICENSE-VALIDATE)
-        if online says ACTIVE → refresh token (new token returned)
-        → return online result
+        → online fallback (IF-ACC-LICENSE-VALIDATE), using independently authenticated and authorized request context
+        → return the online result for that scope, not a claim that the expired token is valid; request token refresh separately if supported
       else:
-        → return EXPIRED_OFFLINE (use grace period if configured — UNKNOWN)
-  
-  step 3 — claims check:
-    verify token claims match the selected workflow context; institutional uses `institution_id + product_code`; marketplace uses `buyer_id + product_id`
-    if mismatch → return INVALID
-  
-  → return VALID
+        → return EXPIRED_OFFLINE; restrict unless an applicable grace policy is explicitly approved
+
+  → return VALID only when signature, identity, grant and credential checks pass
 ```
 
 ### Token Refresh
-- When online fallback succeeds: ACCSystem returns new signed token with fresh expiry
-- New token stored in Token Cache for subsequent offline use
+- Online validation is read-only; requesting a fresh signed token is a separate retriable license-owned operation. Its delivery/availability contract remains OPEN.
+- If a separately issued token is delivered, store it in Token Cache for subsequent offline use.
 - ASSUMPTION: token TTL is configured by platform (UNKNOWN — exact TTL; idea.md §12)
 
 ### Grace Period (UNKNOWN)
@@ -98,10 +102,10 @@ function validate(workflow_context, token):
 | Failure | Detection | Mitigation |
 |---|---|---|
 | Token signature invalid | Crypto verification fails | Return INVALID immediately; log anomaly |
-| Token expired, no network | Expiry + network check | Return EXPIRED_OFFLINE; application decides behavior (ASSUMPTION: allow limited access during grace period) |
+| Token expired, no network | Expiry + network check | Return EXPIRED_OFFLINE; restrict licensed functions unless applicable grace is approved. Preserve independently permitted local ERP operation. |
 | Public key unavailable | Key store read fails | FAIL-CLOSED: return INVALID; alert operations |
 | Public key expired (rotation) | valid_until < now | Load next valid key; ASSUMPTION: multiple keys supported for rotation overlap |
-| Online fallback unavailable | Connection timeout | Return EXPIRED_OFFLINE; application decides behavior |
+| Online fallback unavailable | Connection timeout | Return EXPIRED_OFFLINE; restrict licensed features unless applicable grace is approved, preserving separately permitted local ERP operation |
 | Tampered token | Signature mismatch | Return INVALID; log with token metadata for security audit |
 
 ---
@@ -113,7 +117,7 @@ function validate(workflow_context, token):
 | Public key integrity | Public key distributed at ACCore instance provisioning; signed by platform (ASSUMPTION) |
 | Key rotation | Platform rotates key pair periodically; ACCSystem signs new tokens with new key; both keys valid during overlap |
 | No private key at ACCore | ACCore NEVER receives or stores the platform private key — offline validation uses public key only (ADR-014 core constraint) |
-| Token replay | Tokens are buyer + product specific; non-transferable; replay by different buyer → claims check fails |
+| Token replay | Verify institutional institution/product or marketplace buyer/product scope; a different authorized context must not reuse the token |
 | Audit | All INVALID results logged with token metadata (without full token) |
 
 ---
@@ -124,7 +128,7 @@ function validate(workflow_context, token):
 |---|---|
 | Key distribution | Platform must have operational procedure for distributing updated public keys to all ACCore instances |
 | Token TTL tuning | Short TTL = more online calls (connectivity requirement); long TTL = slower revocation propagation. Currently UNKNOWN. |
-| Offline duration | Directly tied to token TTL + grace period. Must be decided by business. |
+| Offline duration | Subject to credential and grant validity, observed revocation, and any approved applicable grace; must be decided by Business/Security. |
 
 ---
 

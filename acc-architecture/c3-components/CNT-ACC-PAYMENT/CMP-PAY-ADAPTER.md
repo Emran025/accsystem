@@ -74,9 +74,9 @@
 | Failure | Response Strategy |
 |---|---|
 | Provider API timeout | Return `TIMEOUT`/UNKNOWN with provider reference status; circuit policy records health, but the orchestrator reconciles before retry, void, capture, or release |
-| Provider returns 5xx | Return `PROVIDER_ERROR`; circuit breaker increments; caller decides retry policy |
+| Provider returns 5xx | Return `PROVIDER_ERROR` with outcome UNKNOWN if a financial effect may have occurred; circuit breaker records health. Reconcile provider state before any financial retry, void, capture or dependent release; locally proven non-dispatch is distinct. |
 | Webhook signature invalid | Return `{valid: false}`; CMP-PAY-ORCHESTRATOR discards; security alert emitted |
-| Provider returns ambiguous status | Return `PROVIDER_ERROR` with raw response logged; CMP-PAY-RECONCILIATION must resolve |
+| Provider returns ambiguous status | Return `PROVIDER_ERROR` with UNKNOWN outcome; record appropriately protected evidence and have CMP-PAY-RECONCILIATION resolve before repeating effects |
 | Circuit breaker open | No new network call; callers receive `PROVIDER_CIRCUIT_OPEN`. The orchestrator records local non-dispatch only when durable evidence proves no command was sent; otherwise it records UNKNOWN and reconciles. |
 | Provider credential expiry | UNKNOWN — secret rotation mechanism not defined; consequence: all provider calls fail. Owner: OWNER_UNASSIGNED; revisit trigger: secret management design |
 
@@ -90,7 +90,7 @@
 | Credential isolation | Provider API keys referenced via external secret store; never logged or embedded in payloads |
 | TLS enforcement | All outbound calls to EXT-PAYMENT-PROVIDER over TLS. CONFIRMED (idea.md §9) |
 | PCI scope | Adapter never receives or stores raw card numbers; uses provider-issued tokens/references |
-| Replay protection on webhooks | Passes `provider_event_id` to CMP-PAY-ORCHESTRATOR for deduplication |
+| Replay protection on webhooks | Passes `provider_event_id` to CMP-PAY-ORCHESTRATOR, which durably records receipt/claim state. A webhook is ACKed only after atomic effect-and-dedup completion or durable acceptance with owned crash recovery; in-progress, completed duplicate, and conflicting records remain distinct and provider retry behavior is contract-gated. |
 
 ---
 

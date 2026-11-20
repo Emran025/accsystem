@@ -2,7 +2,7 @@
 
 ## State model
 
-`PaymentIntentCreated` → `CodeIssued` → `ProviderLookupVerified` → `Authorized`/`Captured`/`UNKNOWN`/`Declined`; seller credit/transfer is tracked separately as `Pending`, `Credited`, `Failed`, `Reversed`, or `Reconciled`. Commission is a separate payable record linked to the SellerOrder and ledger postings. A manual payment is `RecordedOutsidePlatform` and never masquerades as a provider capture.
+Where a selected provider supports and policy enables payment-code lookup, an illustrative branch is `PaymentIntentCreated` → `CodeIssued` → `ProviderLookupVerified` → `Authorized`/`Captured`/`UNKNOWN`/`Declined`. Other approved supported provider paths need not issue or look up a code; see `CMP-PAY-ORCHESTRATOR`. In all branches, seller credit/transfer is tracked separately as `Pending`, `Credited`, `Failed`, `Reversed`, or `Reconciled`. Commission is a separate payable record linked to the SellerOrder and ledger postings. A manual payment is `RecordedOutsidePlatform` and never masquerades as a provider capture.
 
 Every record carries `order_id`, `seller_order_id`, `payment_attempt_id`, provider/external reference when available, currency, amount, exchange-rate source and timestamp when conversion occurs, actor/source, correlation ID, idempotency key, policy snapshot ID, and immutable timestamps. Unknown, duplicate, reversal, and unmatched records enter reconciliation queues; no timeout is treated as a negative result.
 

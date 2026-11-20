@@ -29,15 +29,15 @@
 > **SCOPE NOTE:** Two distinct license workflows coexist. Their lifecycle state machines are **separate and must not be conflated:**
 >
 > - **Marketplace Software License** — created directly in `ACTIVE` status (no `ISSUED` or `ACTIVATED` intermediate state). CMP-LIC-LIFECYCLE manages ongoing transitions after ACTIVE.
-> - **Institutional Subscription License** — created in `ISSUED` status via admin-initiated flow, then transitions `ISSUED -> ACTIVATED -> ACTIVE`. See `supporting-views/dynamic-license-flow.md` Section 4A and Section 7.
+> - **Institutional Subscription License** — created in `ISSUED` status via admin-initiated flow, then transitions `ISSUED -> ACTIVATED -> ACTIVE`. See `supporting-views/dynamic-license-flow.md` Sections 3 and 7.
 
 **Marketplace Software License state machine (after ACTIVE):**
 ```
 [ACTIVE] -> Suspended (admin action)
 [SUSPENDED] -> Active (admin reactivation)
-[ACTIVE] -> Expired (validity_until + grace_period passes)
-[ACTIVE/SUSPENDED] -> Revoked (admin action, permanent)
-[ACTIVE] -> Renewed (validity_until extended)
+[ACTIVE] -> Expired (trigger relative to validity end and any approved grace is OPEN)
+[ISSUED/ACTIVATED/ACTIVE/SUSPENDED/EXPIRED] -> Revoked (admin action, permanent)
+[ACTIVE/EXPIRED] -> Renewed (validity_until extended) -> Active after authorized delivery/reactivation
 ```
 
 **Institutional Subscription License state machine (full):**
@@ -46,15 +46,15 @@
 [ACTIVATED] -> Active (activation confirmed)
 [ACTIVE] -> Suspended (admin action)
 [SUSPENDED] -> Active (admin reactivation)
-[ACTIVE] -> Expired (subscription period ends + grace period)
+[ACTIVE] -> Expired (trigger relative to validity end and any approved grace is OPEN)
 [ACTIVE/SUSPENDED] -> Revoked (admin action, permanent)
-[ACTIVE] -> Renewed (subscription period extended)
+[ACTIVE/EXPIRED] -> Renewed (subscription period extended) -> Active after authorized delivery/reactivation
 ```
 
 **Rules (both workflows):**
 - Revocation is permanent - no transition back to Active
-- Expiry is schedule-driven; grace period allows continued operation before hard expiry
-- Renewal extends valid_until; resets grace period counter
+- Expiry scheduling and the relationship of status timing to any approved grace remain OPEN; grace is not automatic.
+- Renewal extends validity as authorized; any grace reset follows the approved policy.
 - All transitions require actor_id and reason (for audit trail)
 - Institutional ISSUED -> ACTIVATED -> ACTIVE transitions apply only to institutional subscriptions; marketplace licenses start ACTIVE directly (no intermediate state)
 
@@ -99,5 +99,5 @@ Modifies License records owned by CMP-LIC-ISSUANCE. Maintains transition history
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
 | Admin license suspension | Platform admin requests suspension | License state transitions to `SUSPENDED`; `LicenseSuspended` event published |
-| License renewal extension | Renewal event processed | `valid_until` extended; grace period counter reset; license remains `ACTIVE` |
-| Scheduled expiry transition | License validity plus grace period passes | Scheduled job transitions state to `EXPIRED`; audit trail logged |
+| License renewal extension | Approved renewal processed | Validity extended and any grace handling follows approved policy; audit retained |
+| Scheduled expiry transition | Approved expiry/status policy trigger | Transition and audit follow the approved rule; no automatic grace is assumed |

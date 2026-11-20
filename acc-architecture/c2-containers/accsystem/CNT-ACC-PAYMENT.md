@@ -33,7 +33,7 @@ CONFIRMED (idea.md §3.1): "Payment Orchestration — إنشاء محاولات 
 |---|---|---|
 | Provider integration | CONFIRMED (idea.md §9) | No card data storage; Tokenization/Hosted Checkout from provider |
 | Webhook security | CONFIRMED (idea.md §9) | Signature verification + timing check + replay protection |
-| Payment model | CONFIRMED (idea.md §12 recommendation) | Auth-then-capture; UNKNOWN: exact trigger for capture |
+| Payment model | PROPOSED / policy- and provider-gated | Auth-then-capture or supported approved immediate/contract-defined capture; exact capture trigger remains UNKNOWN |
 
 ---
 
@@ -60,7 +60,7 @@ CONFIRMED (idea.md §3.1): "سجلات معاملات الدفع ومراجع ا
 | Failure | Response |
 |---|---|
 | Provider unreachable or timeout without final answer | Circuit breaker in CMP-PAY-ADAPTER; `PaymentUnknown` event published instead of a final failure until reconciliation confirms the provider outcome |
-| Duplicate webhook received | Idempotency check on payment_id; no double-capture |
+| Duplicate webhook received | Deduplicate delivery by provider event identity under its contract; guard business operations separately. Distinct lifecycle events for the same payment must not be suppressed. |
 | Reconciliation discrepancy | CONFIRMED (idea.md §11): "Payment Reconciliation" metrics flagged; ops alert |
 | Refund failure | RefundFailed event published; ops investigation required |
 

@@ -8,7 +8,7 @@
 | Field | Value |
 |---|---|
 | **Container ID** | CNT-ACM-PUBLIC |
-| **Purpose** | Unauthenticated public-facing web portal where visitors can browse ACC system/product catalog, view release notes and version information, and obtain signed download links for installation packages. |
+| **Purpose** | Unauthenticated public-facing web portal where visitors can browse ACC system/product catalog, view release notes and version information, and obtain public HTTPS or appropriately authorized signed download links for installation packages. |
 | **Scope Boundary** | Unauthenticated zone only. Strictly separated from admin console (CNT-ACM-ADMIN). No admin APIs exposed in public zone. |
 
 CONFIRMED (idea.md §2.1.1): "منطقة عامة للزوار لعرض تعريفات أنظمة ACC والميزات والإصدارات ومتطلبات التشغيل وروابط التنزيل."
@@ -47,7 +47,7 @@ CONFIRMED (idea.md §9): WAF protection, rate limiting, login attempt logging ap
 ## 6. Data Ownership and Consistency
 
 - **Data Owned:** Read-only cached marketing content, institutional portal news, and public catalog highlights; owns no transactional data.
-- **Consistency Model:** Cache-aside pattern with short TTL (5 minutes) and cache-invalidation events on content updates.
+- **Consistency Model:** Cache-aside pattern with policy-controlled TTL and cache-invalidation events on content updates; numeric TTL requires Operations/Product approval.
 
 ---
 
@@ -56,7 +56,7 @@ CONFIRMED (idea.md §9): WAF protection, rate limiting, login attempt logging ap
 | Failure Scenario | Mitigation Strategy |
 |---|---|
 | Origin application container cluster failure | Edge CDN continues serving cached pages using `stale-while-revalidate` policy |
-| Traffic spike (promotional event) | CDN absorbs 95%+ of traffic; origin auto-scales container instances based on CPU utilization |
+| Traffic spike (promotional event) | CDN caching and origin auto-scaling are options; actual capacity and targets require Operations evidence and approval |
 | Content rendering exception | User presented with friendly fallback error page; origin error logged to monitoring stack |
 
 ---
@@ -64,7 +64,7 @@ CONFIRMED (idea.md §9): WAF protection, rate limiting, login attempt logging ap
 ## 8. Operations and Reliability
 
 - **Deployment:** Static assets and server-side rendered pages distributed globally via CDN edge network.
-- **Availability Target:** 99.9% uptime SLA for public-facing institution portals.
+- **Availability Target:** UNKNOWN; proposed SLA/SLI values require workload evidence and owner approval.
 
 ---
 

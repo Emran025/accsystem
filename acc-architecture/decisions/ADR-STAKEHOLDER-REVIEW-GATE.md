@@ -13,13 +13,13 @@ In accordance with strict architectural governance rules:
 > **"AI-generated approval is never stakeholder approval."**  
 > An automated assistant or language model cannot self-approve architectural decisions, commit an enterprise to operational risk, or declare production readiness.
 
-For this reason, all fourteen Architectural Decision Records (ADRs) have been methodically authored and maintained in **`PROPOSED`** status. This document serves as the formal **Stakeholder Decision Gate**. It provides human decision-makers (Lead Architects, Product Owners, Security Officers, and Operations Leads) with a structured evaluation framework, risk summary, and formal sign-off protocol to review, adjust, and advance each ADR from `PROPOSED` to `ACCEPTED`.
+The original package covered fourteen Architectural Decision Records (ADR-001–014). The sign-off inventory below now includes ADR-001–022, with review still pending as recorded. Individual ADRs also contain narrower owner-direction or accepted-principle labels; governance must reconcile their meaning with the registry/sign-off table rather than treating any label as evidence of formal stakeholder approval. This document serves as the formal **Stakeholder Decision Gate**. It provides human decision-makers (Lead Architects, Product Owners, Security Officers, and Operations Leads) with a structured evaluation framework, risk summary, and formal sign-off protocol to review, adjust, and advance each ADR from `PROPOSED` to `ACCEPTED`.
 
 ---
 
 ## 2. Priority Decision Tiers
 
-The 14 ADRs are organized into three sequential evaluation tiers based on architectural impact and dependency order:
+The original 14 ADRs are organized into three sequential evaluation tiers below. ADR-015–022 are included in the sign-off table, but assignment to these tiers has not been established:
 
 ```
 +-----------------------------------------------------------------------------------+

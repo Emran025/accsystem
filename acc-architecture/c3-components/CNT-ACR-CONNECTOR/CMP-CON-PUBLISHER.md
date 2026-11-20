@@ -64,13 +64,13 @@ retry_count         integer
 1. Poll CNT-ACR-OUTBOX for `PENDING` messages of type `ProductPublication` (or use CDC — ASSUMPTION: polling; CDC requires additional infrastructure)
 2. For each message: prepare IF-ACR-PUBLISH-EVENT request
 3. Send to CNT-ACC-INTEGRATION endpoint
-4. On HTTP 200/201 or idempotent-success response: mark Outbox message as `SENT`
+4. On contract-valid HTTP 200/202 acceptance or recorded idempotent outcome: mark Outbox message as `SENT`; ID/receipt timing remains open per IF-ACR-PUBLISH-EVENT. Any 201 usage needs contract agreement.
 5. On failure: increment retry_count; exponential backoff; mark `FAILED` after N retries
 
 ### Idempotency
 - Idempotency key sent in HTTP header: `Idempotency-Key: {institution_id}:{seller_product_id}:{version}`
 - ACCSystem must honor this key — duplicate requests with same key are no-ops
-- Local: Outbox marks SENT only after confirmed ACK — prevents double-send on crash
+- Local: mark SENT only after a contract-valid ACK. A crash or lost ACK can cause resend with the same event ID and scoped key; receiver guards prevent repeated business effects, not physical resend.
 
 ### Does NOT:
 - Validate product content (not its responsibility)
@@ -84,10 +84,10 @@ retry_count         integer
 | Failure | Detection | Mitigation |
 |---|---|---|
 | CNT-ACC-INTEGRATION unreachable | Connection timeout | Retry with configured backoff; retain an explicit delivery state and reconcile after retry exhaustion. No fixed schedule or attempt count is asserted. |
-| ACCSystem returns 4xx (bad payload) | HTTP 4xx | Mark FAILED immediately (no retry); alert institution admin — content must be fixed |
+| ACCSystem returns 4xx | HTTP 4xx | Definitive malformed/forbidden input is FAILED and corrected by the institution; 429 uses policy-governed backoff; permitted auth renewal is retried; dependency/unavailability remains retryable or UNKNOWN, not definitive rejection. |
 | ACCSystem returns 5xx | HTTP 5xx | Retry (transient failure) |
 | Duplicate send (crash after send, before SENT mark) | Idempotency key | ACCSystem ignores duplicate; Outbox remains PENDING → re-sent → idempotent |
-| Outbox poll failure | DB connection error | Log error; pause 30s; resume — Outbox is on local ACCore DB |
+| Outbox poll failure | DB connection error | Log error; resume under configured Operations-approved retry policy — Outbox is on local ACCore DB |
 | ACCSystem version mismatch | 422 response | UNKNOWN — versioning policy between ACCore and ACCSystem not defined |
 
 ---
@@ -96,7 +96,7 @@ retry_count         integer
 
 | Concern | Control |
 |---|---|
-| Authentication to ACCSystem | **OAuth 2.0 Client Credentials** — institution-specific client credentials issued at ACCore provisioning; CMP-CON-PUBLISHER obtains a Bearer access token from ACCSystem's authorization server and presents it on each publication request. CONFIRMED (IF-ACR-PUBLISH-EVENT §8.8) |
+| Authentication to ACCSystem | Policy-selected OAuth 2.0 Client Credentials or mTLS under ADR-015; the authenticated principal is bound to the institution. Exact method is an onboarding/security gate. |
 | Token renewal | CMP-CON-PUBLISHER caches the access token and refreshes it before expiry (standard OAuth 2.0 CC flow) |
 | Credential rotation | Client secret rotated via platform admin; no code changes required; CMP-CON-PUBLISHER re-authenticates with new secret after rotation |
 | Payload integrity | HTTPS only; no HTTP fallback |

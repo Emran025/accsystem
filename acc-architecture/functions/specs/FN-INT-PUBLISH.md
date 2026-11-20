@@ -33,7 +33,7 @@
 |---|---|---|---|
 | P1 | Institution is registered and active in ACCSystem | CMP-INT-GATEWAY (institution lookup) | 403 Unauthorized Institution |
 | P2 | Publication payload is well-formed | CMP-INT-GATEWAY (schema validation) | 400 Bad Request; Outbox → FAILED |
-| P3 | `{seller_product_id, institution_id, version}` is not already processed | CMP-CAT-LISTING idempotency | Return existing listing ID (no-op) |
+| P3 | Scoped `{seller_product_id, institution_id, version}` business operation | CMP-CAT-LISTING idempotency | Completed duplicate returns available outcome; incomplete/conflicting work requires recovery, not a second effect |
 | P4 | `version` > current listing version (if updating) | CMP-CAT-LISTING | Silently ignore (older version) |
 | P5 | ACCSystem is reachable | Network | Retry with backoff via CMP-CON-PUBLISHER |
 
@@ -73,60 +73,42 @@ ACCSystem Side:
    c. Route to CMP-INT-PUBLICATION
 
 5. CMP-INT-PUBLICATION:
-   a. Log publication event
-   b. Call CMP-CAT-LISTING.publish(payload)
+   a. Check source event identity and scoped institution/product/version business key.
+   b. Validate; persist rejected attempt and return non-success for pre-admission validation/permission failure without creating or mutating a listing.
+   c. For accepted work persist Integration Inbox + Catalog delivery intent in one Integration-local transaction; relay asynchronously and retain recovery state.
+   d. A completed duplicate returns its recorded outcome when available; an in-progress or uncertain duplicate follows the owner-approved status/retry contract.
 
-6. CMP-CAT-LISTING:
-   a. Idempotency check: {seller_product_id}:{institution_id}:{version} already processed?
-      → YES: return existing listing_id (200 OK — no-op)
-      → NO: continue
-   b. Call CMP-CAT-VALIDATION.validate(payload)
+6. CMP-CAT-LISTING (after delivery):
+   a. Apply institution/product/version idempotency and stale-version guards.
+   b. On approved processing create or update the Catalog-owned listing and emit the applicable catalog state event.
+   c. A separate catalog moderation/revalidation rejection, and its impact on a previous ACTIVE version, require Product/Catalog policy; do not conflate it with pre-admission rejection.
 
-7. CMP-CAT-VALIDATION:
-   a. Format checks, completeness checks, category validation
-   b. Return PASS or FAIL + violations
+7. CMP-CAT-SEARCHSYNC updates the derived index asynchronously from the approved Catalog state; failures are retried/reconciled under policy.
 
-8. CMP-CAT-LISTING (on PASS):
-   a. UPSERT Listing record (status=ACTIVE)
-   b. Publish ListingApproved event → CNT-ACC-EVENTBUS
-   c. Return: {listing_id, status: APPROVED}
+8. IF-ACR-PUBLISH-EVENT describes an acceptance receipt (HTTP 200/202) with assigned/retained listing_id, not proof that indexing finished. How this Catalog-owned ID is available at acceptance while work is queued, or how a later result preserves compatibility, remains an API/Integration/Catalog gate. A durable receipt must not be given as a final processing result.
 
-   CMP-CAT-LISTING (on FAIL):
-   a. Write Listing record (status=REJECTED)
-   b. Publish ListingRejected event → CNT-ACC-EVENTBUS
-   c. Return: {listing_id, status: REJECTED, violations: [...]}
-
-9. CMP-CAT-SEARCHSYNC (async, via event bus):
-   On ListingApproved: upsert search document in CNT-ACC-SEARCH
-   On ListingRejected: no-op
-
-10. ACCSystem response propagates back to CMP-INT-GATEWAY → HTTP response to CMP-CON-PUBLISHER:
-    - 200 APPROVED or 200 REJECTED: Outbox marks SENT (both are valid terminal outcomes)
-    - 4xx: Outbox marks FAILED (content error — notify institution admin)
-    - 5xx: Outbox retries
-
-11. Institution admin notified of REJECTED outcome (via CNT-ACC-NOTIFICATIONS — ASSUMPTION)
+9. The ACCore Outbox marks SENT only on the contract-valid acceptance receipt; definitive pre-admission errors are recorded for correction and resubmission; transient or uncertain delivery is retained/recovered under policy. Institution notification of rejection remains an ASSUMPTION.
 ```
 
 ---
 
 ## 5. Postconditions
 
-### On APPROVED:
+### After successful catalog processing (not merely receipt):
 | # | Postcondition |
 |---|---|
 | Q1 | Listing record exists: status=ACTIVE in CNT-ACC-CATALOG |
-| Q2 | Listing visible in search (CNT-ACC-SEARCH updated by CMP-CAT-SEARCHSYNC) |
-| Q3 | ListingApproved event published to event bus |
+| Q2 | Search synchronizes asynchronously; visibility is verified separately |
+| Q3 | Applicable Catalog state event is published via its durable event path; exact source-to-catalog event mapping requires approval |
 | Q4 | Outbox message marked SENT |
 
-### On REJECTED:
+### On pre-admission rejection:
 | # | Postcondition |
 |---|---|
-| Q1 | Listing record exists: status=REJECTED |
-| Q2 | ListingRejected event published |
-| Q3 | Outbox message marked SENT |
-| Q4 | Institution admin notified with violation reasons |
+| Q1 | Rejected attempt and reason recorded; no listing created or mutated |
+| Q2 | Structured non-success is returned; no Catalog delivery intent is created |
+| Q3 | ACCore records failure and can correct and resubmit |
+| Q4 | Institution notification remains an assumption; separately approved catalog moderation outcomes retain their own history and policy |
 
 ---
 
@@ -135,15 +117,15 @@ ACCSystem Side:
 ### 6.1 Data Persisted and Side Effects
 - **Data Persisted:** Product listing records written to Catalog DB; publication event record written to Integration Outbox table with `PENDING` state.
 - **Side Effects:** Emits `ProductListingPublished` domain event to Event Bus; invalidates search cache entries for the publishing institution; updates audit log.
-- **Transaction Boundary:** Local database transaction within `CNT-ACC-INTEGRATION` persists listing and Outbox record atomically. Event Bus dispatch occurs asynchronously post-commit.
+- **Transaction Boundary:** Integration commits its accepted Inbox state and Catalog-delivery intent locally; Catalog owns its separate listing write and durable event path. No cross-container atomic commit is asserted; dispatch occurs after the relevant local commit.
 
 ### 6.2 Idempotency
 
 | Field | Value |
 |---|---|
 | **Key** | `{seller_product_id}:{institution_id}:{version}` |
-| **Store** | CNT-ACC-CATALOG DB (listing table unique constraint) |
-| **Behavior on duplicate** | Return `{listing_id, status}` of existing record — no re-processing |
+| **Store** | Integration Inbox for source event; Catalog business/version guard for listing effects |
+| **Behavior on duplicate** | Return an available recorded outcome only where valid; recover in-progress/uncertain work without repeated listing/version effect |
 | **Version semantics** | Lower version than current → silent ignore (not an error) |
 
 ---
@@ -156,9 +138,9 @@ ACCSystem Side:
 | ACCSystem returns 5xx | Outbox retries with the configured backoff policy |
 | Validation fails | REJECTED outcome — not a failure; seller must correct content |
 | Search sync fails | Listing remains ACTIVE in catalog but not searchable; CMP-CAT-SEARCHSYNC retries |
-| Partial write (listing written, event not published) | Outbox pattern prevents split-brain; event published as part of Outbox-to-bus delivery |
+| Catalog write committed, event relay fails | Preserve local durable event intent where supported; retry/DLQ/reconcile, without claiming downstream completion |
 
-No rollback: publication is an advisory operation. REJECTED listings can be re-submitted with corrections.
+Pre-admission rejections can be corrected and resubmitted. Separately approved Catalog moderation states and resubmission remain available; visibility of an earlier active version on a rejected update is an open Product/Catalog decision.
 
 ---
 

@@ -469,6 +469,130 @@
       ]
     },
     {
+      "parent_id": "ADR-015",
+      "child_ids": [
+        "SYS-ACCORE",
+        "CNT-ACR-CONNECTOR",
+        "CNT-ACC-INTEGRATION"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-015.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-016",
+      "child_ids": [
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-PAYMENT",
+        "CMP-ORD-MULTISELLER",
+        "CMP-PAY-RECONCILIATION"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-016.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-017",
+      "child_ids": [
+        "SYS-ACCECOSYSTEM",
+        "CNT-ACC-IDENTITY",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-PAYMENT"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-017.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-018",
+      "child_ids": [
+        "CMP-ORD-SAGA",
+        "CMP-INT-RESERVATION",
+        "CMP-CON-RESERVATION",
+        "IF-ACC-RESERVE-SAGA",
+        "IF-ACR-RESERVATION-RESP",
+        "CNT-ACC-INTEGRATION",
+        "CNT-ACC-ORDERS"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-018.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-019",
+      "child_ids": [
+        "CMP-CON-ORDERRECEIVER",
+        "CNT-ACR-FINANCE",
+        "CNT-ACR-SALES",
+        "CNT-ACC-ORDERS",
+        "CNT-ACC-INTEGRATION"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-019.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-020",
+      "child_ids": [
+        "SYS-ACCSYSTEM",
+        "SYS-ACCORE",
+        "SYS-ACCOMMERCE",
+        "SYS-ACMANAGEMENT",
+        "SYS-ACCMARED-SUP",
+        "SYS-ACCMARED-COU"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-020.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-021",
+      "child_ids": [
+        "IF-ACC-RESERVE-SAGA",
+        "IF-ACR-RESERVATION-RESP",
+        "IF-ACC-CATALOG-QUERY",
+        "IF-ACC-ORDER-CREATE",
+        "IF-ACC-PAYMENT-WEBHOOK",
+        "IF-ACC-EVENT-ENVELOPE",
+        "IF-ACC-LICENSE-VALIDATE",
+        "IF-ACC-SOFTDL",
+        "IF-ACR-PUBLISH-EVENT"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-021.md"
+      ]
+    },
+    {
+      "parent_id": "ADR-022",
+      "child_ids": [
+        "SYS-ACCECOSYSTEM",
+        "CMP-ORD-SAGA",
+        "CMP-LIC-OFFLINE",
+        "CNT-ACC-PAYMENT",
+        "CNT-ACC-LICENSE",
+        "CNT-ACC-IDENTITY"
+      ],
+      "kind": "DECISION_TO_ELEMENT",
+      "status": "COMPLETE",
+      "doc_refs": [
+        "decisions/ADR-022.md"
+      ]
+    },
+    {
       "parent_id": "CNT-ACC-CATALOG",
       "child_ids": [
         "IF-ACC-CATALOG-QUERY"

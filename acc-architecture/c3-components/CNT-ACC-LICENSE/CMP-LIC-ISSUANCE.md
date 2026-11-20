@@ -6,7 +6,7 @@
 |---|---|
 | **Component ID** | CMP-LIC-ISSUANCE |
 | **Parent Container** | CNT-ACC-LICENSE (License & Entitlement Management — ACCSystem) |
-| **Purpose** | Triggered by OrderConfirmed events for software products. Creates license records, activates entitlements, and coordinates the initial issuance of an offline entitlement token as a separate retriable follow-up. |
+| **Purpose** | Supports authorized admin-initiated institutional issuance and OrderConfirmed-triggered marketplace software issuance. Creates license records, activates entitlements, and coordinates initial offline token issuance as a separate retriable follow-up. |
 | **Scope Boundary** | License creation and activation only. Does NOT manage license lifecycle transitions (CMP-LIC-LIFECYCLE) or ongoing validation (CMP-LIC-ENTITLEMENT). |
 
 ---
@@ -15,9 +15,10 @@
 
 | Collaborator | Direction | Role |
 |---|---|---|
-| CNT-ACC-EVENTBUS | Inbound | Subscribes to OrderConfirmed events |
+| CNT-ACC-EVENTBUS | Inbound | Subscribes to OrderConfirmed events for marketplace software items |
+| CNT-ACM-ADMIN | Inbound | Authorized platform-admin or institution-scoped admin request through platform administration, subject to role/approval policy |
 | CMP-LIC-LIFECYCLE | Outbound | Hands off newly created license for lifecycle registration |
-| CMP-LIC-OFFLINE | Outbound | Receives a separate retriable token-issuance request after license activation |
+| CMP-LIC-OFFLINE | Outbound | Receives separate retriable token-issuance work: institutional ISSUED before activation/delivery, marketplace after direct ACTIVE creation |
 | CNT-ACC-EVENTBUS | Outbound | Publishes LicenseIssued, LicenseActivated events |
 | CNT-ACC-AUDIT | Outbound | Logs issuance events |
 
@@ -26,14 +27,14 @@
 ## 3. Behavior, Rules, and State
 
 **Issuance steps:**
-1. Receive OrderConfirmed event; check if order contains a software/licensed product
+1. Receive an authorized platform-admin or institution-scoped admin issuance request as policy permits, or an OrderConfirmed event for marketplace issuance; check software classification for the latter. Role, institution scope and approvals remain gated.
 2. If not a software product → skip (no license needed)
 3. Institutional license issuance creates `ISSUED`; activation advances it to `ACTIVATED` then `ACTIVE`. Marketplace post-purchase issuance creates the license directly `ACTIVE`.
 4. Associate institutional records with `institution_id + product_code`; associate marketplace records with `buyer_id + product_id` and retain `publisher_institution_id` as seller identity. Units/seats and validity remain workflow-specific.
-5. Publish LicenseIssued + LicenseActivated events via Outbox
+5. Retain LicenseIssued + LicenseActivated events via Outbox at their applicable workflow transitions; event timing versus token readiness remains a contract gate. Require an atomic local follow-up intent or an approved equivalent durable discovery mechanism so a crash cannot lose separate signing/delivery work. Duplicate operations recover incomplete work without issuing another license.
 
 **Rules:**
-- Idempotency key: `order_id + product_id` — same order cannot create duplicate license
+- Marketplace idempotency key: `order_id + product_id`; sufficiency for repeated lines/quantities remains OPEN. Institutional admin issuance has its own authorized operation identity.
 - License type (per-institution, per-seat, per-unit) depends on product configuration — UNKNOWN (open decision §12)
 - Validity period and grace period: UNKNOWN — to be defined per product/plan. OWNER_UNASSIGNED.
 
@@ -60,7 +61,7 @@
 
 ## 6. Security
 
-- Marketplace license scoped to uyer_id; cross-buyer license access is blocked — CONFIRMED (idea.md §9)
+- Marketplace license scoped to `buyer_id`; cross-buyer license access is blocked — CONFIRMED (idea.md §9)
 - publisher_institution_id on license record identifies the seller; it does NOT grant the publisher access to the buyer's license entitlement data — CONFIRMED (dynamic-license-flow.md §7)
 - CONFIRMED (idea.md §1.1): License ≠ user permission; issuance does not grant platform admin access
 

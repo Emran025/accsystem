@@ -8,7 +8,7 @@
 When a validated cart contains products from multiple sellers/categories, this component creates one `ParentOrder` and one `SellerOrder` per seller/institution. It owns grouping, stable seller-order identifiers, and the atomic local write of the parent, seller orders, and `SellerOrderCreated` outbox events. Reservation, payment, delivery, and inventory business logic remain in their owning domains.
 
 ## Coherent execution pattern
-The Parent Saga Coordinator owns the overall checkout. It starts one reservation sub-operation per SellerOrder, concurrently where safe. Each sub-operation has its own reservation ID, idempotency key, state, and correlation link. Payment authorization is blocked until every required reservation has a definitive success or definitive rejection. A definitive rejection releases only holds confirmed to have succeeded and fails checkout by default. `UNKNOWN` is neither success nor rejection and is reconciled by reservation ID/idempotency key without an unsafe release.
+The Parent Saga Coordinator owns the overall checkout. It starts one reservation sub-operation per SellerOrder, concurrently where safe, with a stable scoped request key, state and correlation link; reservation-ID ownership/mapping remains open. Payment is eligible only after all required holds are authoritatively ACCEPTED. Definitive rejection or expiry blocks checkout; reconcile peers and compensate only eligible known holds under ADR-018 before closing. `UNKNOWN` is neither success nor rejection and requires reconciliation by known ID/key or safe waiting and escalation, without unsafe release.
 
 ## Data and transaction boundaries
 The splitter writes ParentOrder + all SellerOrders + their outbox records in one local ACCSystem database transaction. It does not span a transaction into ACCore. The parent coordinator persists saga state separately and coordinates the distributed steps with Outbox/Inbox and at-least-once delivery. A duplicate split request returns the existing seller orders.
@@ -22,7 +22,7 @@ Each SellerOrder contains its own item snapshot, seller, reservation ID/state, p
 | One seller | One SellerOrder is created through the same splitter path. |
 | Multiple sellers/categories | N SellerOrders are created with no cross-seller line mixing. |
 | Concurrent split retry | Existing ParentOrder/SellerOrders are returned; no duplicates. |
-| One reservation rejected | Confirmed successful holds are released; checkout fails; payment is not authorized. |
+| One reservation rejected | Payment is blocked; reconcile peers and release only eligible known holds under the UNKNOWN guard; final failure waits for required compensation. |
 | Reservation response unknown | SellerOrder enters `ReservationUnknown`; no release or payment until reconciled. |
 | Last-unit race | ACCore conditional update/lock allows at most one successful reservation. |
 | Outbox publish failure | Order transaction remains committed; relay retries the persisted outbox event. |

@@ -65,7 +65,7 @@ CONFIRMED (idea.md §9): Short-lived tokens, secure storage, no embedded service
 
 - **Deployment:** Distributed via Apple App Store and Google Play; over-the-air hotfix capability via Flutter code push where permitted.
 - **Observability:** Crashlytics for mobile crash telemetry; APM tracking API network request latency and error rates.
-- **SLI:** Target > 99.5% crash-free mobile sessions.
+- **SLI:** Crash-free mobile sessions are monitored; any target is an unapproved proposal requiring Operations/Product approval.
 
 ---
 

@@ -24,10 +24,12 @@
 
 ## 3. Behavior, Rules, and State
 
-- For each OrderConfirmed event, identifies the seller institution (from order.institution_id) and sends the order notification
+The existing `event_id + institution_id` logical dispatch work scope must preserve every authorized buyer and seller effect. Whether a single projection carries both roles or multiple role-specific operations are needed, and any corresponding key change, are API/institution decisions; do not let the coarse key suppress a distinct legitimate role.
+
+- For each OrderConfirmed event, identifies each relevant seller institution from the seller-order context and sends an authorized seller-scoped notification
 - For B2B orders, also notifies the buyer institution if present
-- Delivery uses Outbox/Inbox pattern: dispatch logged atomically; retried until acknowledged
-- Idempotency key: event_id + institution_id — same event not dispatched twice to same institution
+- Delivery uses Outbox/Inbox and durable dispatch records with policy-controlled retry and recovery.
+- `event_id + institution_id` deduplicates dispatch work records, not physical transmissions: a lost ACK may require redelivery. Role/operation mapping for a multi-role recipient remains open; see IF-ACC-ORDER-CONFIRM §2A.
 
 **Business rules:**
 - An institution is only notified of orders where it is seller or buyer — never shown cross-institution data
@@ -51,7 +53,7 @@ Does NOT own: Order records, institution records.
 | Failure | Response |
 |---|---|
 | ACCore connector unavailable | Retry with configured backoff and the same idempotency key; when the configured recovery policy is exhausted, preserve the message in DLQ and alert Operations. |
-| Duplicate OrderConfirmed event | Idempotency key check prevents double dispatch |
+| Duplicate OrderConfirmed event | Deduplicate logical recipient work while permitting safe retransmission; receiver effects remain idempotent |
 | Institution not found in registry | Log error; skip dispatch; alert ops |
 
 ---
@@ -81,5 +83,5 @@ Does NOT own: Order records, institution records.
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
 | Order delivery notification | `OrderConfirmed` event received from Orders container | Outbound notification dispatched to seller institution webhook |
-| Institution endpoint timeout | Seller endpoint unresponsive | Notification retried with exponential backoff (up to 5 attempts); queued in Outbox |
-| Duplicate delivery event | Re-delivery of already dispatched notification event | Idempotency key prevents duplicate HTTP webhook dispatch to institution |
+| Institution endpoint timeout | Seller endpoint unresponsive | Retain and retry with configured policy and same identifiers; escalate/DLQ when applicable |
+| Duplicate delivery event | Re-delivery, including lost ACK | No duplicate logical work/effects; physical retransmission is permitted |

@@ -64,6 +64,8 @@ rejection_reason        text (nullable)
 
 ### State Machine
 
+These Catalog moderation states are distinct from pre-admission validation/permission rejection, which must not create or mutate a listing. How a rejected update affects prior ACTIVE content and its search projection remains a Product/Catalog decision; preserve prior history until governed.
+
 ```
 PENDING_REVIEW → ACTIVE       (on CMP-CAT-VALIDATION PASS)
 PENDING_REVIEW → REJECTED     (on CMP-CAT-VALIDATION FAIL)
@@ -75,7 +77,7 @@ REJECTED       → PENDING_REVIEW (on seller re-submission)
 ### Rules
 1. **Idempotency:** Publication events identified by `{seller_product_id, platform_institution_id, version}`. Duplicate version → ignored (no-op). Lower version → ignored.
 2. **Projection update:** When a new version arrives with higher `version` number, replace snapshot fields; keep listing_id stable.
-3. **Removal:** A `ProductRetracted` event (from ACCore via integration) → sets status = REMOVED; publishes `ListingRemoved`.
+3. **Removal:** Seller withdrawal and administrative removal retain listing history and can result in removal from search. This view names `ProductRetracted` and `REMOVED`; IF-ACR-PUBLISH-EVENT names `ProductListingWithdrawn`, while other views use `WITHDRAWN`. API/Integration/Catalog must approve their mapping and versioned event/state names; do not assume they are wire synonyms. Catalog emits its applicable removal event (currently described as `ListingRemoved`).
 4. **No price-enforcement:** ACCSystem does not enforce price changes at order time (see CNT-ACC-OFFER for real-time offer validation). CONFIRMED (idea.md §12 — open decision on freshness).
 
 ---
@@ -86,7 +88,7 @@ REJECTED       → PENDING_REVIEW (on seller re-submission)
 |---|---|---|
 | Duplicate publication event | version check | Idempotent write (UPSERT by {seller_product_id, institution_id, version}) |
 | Validation service unavailable | CMP-CAT-VALIDATION call fails | Leave listing in PENDING_REVIEW; retry on next event; DLQ after N retries |
-| Search sync failure | CMP-CAT-SEARCHSYNC event not consumed | Outbox pattern for event delivery; CNT-ACC-EVENTBUS guarantees at-least-once |
+| Search sync failure | CMP-CAT-SEARCHSYNC event not consumed | Outbox pattern for event delivery; CNT-ACC-EVENTBUS supports at-least-once delivery attempts and duplicate-safe effects, with retry/DLQ recovery policy still gated |
 | CDN media URL invalid | No validation at receipt | UNKNOWN — validation policy not specified; ASSUMPTION: validate URL format only |
 | Out-of-order version delivery | version < current | Ignore silently; log discarded version for observability |
 
@@ -135,7 +137,7 @@ REJECTED       → PENDING_REVIEW (on seller re-submission)
 
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
-| Create product listing | Valid catalog listing payload from authorized institution | Listing persisted with status `ACTIVE`; `ProductListingCreated` event published |
+| Create product listing | Valid catalog listing payload from authorized institution | Listing persisted as approved; Catalog state event emitted; exact publication-to-Catalog event mapping is an API/Catalog gate |
 | Duplicate listing submission | Same institution submits listing with identical idempotency key | HTTP 200 returned with existing listing ID; no duplicate record created |
-| Invalid taxonomy code | Listing references nonexistent category taxonomy | Rejection with validation error code `INVALID_CATEGORY`; no state persisted |
+| Invalid taxonomy code | Listing references nonexistent category taxonomy | Pre-admission rejection records the attempt but does not mutate the listing; exact error code and separate moderation outcomes require contract/policy approval |
 | Bulk listing query | Query with institution and status filter | Returns paginated listing array matching filter criteria |

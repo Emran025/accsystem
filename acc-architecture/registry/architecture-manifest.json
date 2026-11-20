@@ -15,10 +15,14 @@
   "note": "Owner decisions from prompt.md were applied as ACCEPTED only where explicit. Architect-selected defaults are PROPOSED/ARCHITECTURAL DEFAULT and require ratification; configurable commercial, legal, provider, and operational policies remain gated.",
   "validation_summary": {
     "validate_architecture": "PASS",
-    "validate_artifact_depth": "STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW",
-    "last_run": "2026-11-20T00:32:00Z",
-    "elements_count": 113,
-    "open_decisions": 24,
+    "validate_artifact_depth": "BLOCKED_FOR_CONTENT_REVIEW",
+    "last_run": "2026-11-20T18:20:09Z",
+    "last_run_note": "UTC start of disposable-copy documentation-validator run; its depth result is a heuristic and still requires semantic review.",
+    "previous_last_run": "2026-11-20T00:32:00Z",
+    "elements_count": 114,
+    "open_decisions": null,
+    "open_decisions_note": "Current aggregate not established; the previously reported value 24 has no verified definition or source.",
+    "previously_reported_open_decisions": 24,
     "adrs_status": "PROPOSED_WITH_OWNER_DECISIONS_LABELLED",
     "incomplete_outlines": 4,
     "adrs_review_package": "decisions/ADR-STAKEHOLDER-REVIEW-GATE.md",
@@ -29,6 +33,8 @@
     "systems_count": 7,
     "containers_count": 30,
     "components_count": 28,
-    "baseline_commit": "06cbbc084728ca4af530d08444d3780628f70d51"
+    "baseline_commit": "06cbbc084728ca4af530d08444d3780628f70d51",
+    "baseline_commit_note": "Historical input for the preceding repair; not the starting tip of the current repair.",
+    "repair_starting_main": "ab64377b95f4d7266e364f2e0d601d709efdb4e4"
   }
 }

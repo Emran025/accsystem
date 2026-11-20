@@ -172,7 +172,7 @@ Implementation requirements:
 
 Implementation requirements (PROPOSED detail):
 1. Each incoming webhook validated with HMAC-SHA256 using provider-specific secret key
-2. Timestamp header checked — reject if `|now - webhook_timestamp| > 5 minutes` (PROPOSED tolerance)
+2. Timestamp header checked against a provider- and Security-approved replay tolerance; value UNKNOWN until calibrated
 3. `event_id` checked against idempotency store — reject duplicates silently (return 200 to avoid retrigger)
 4. Webhook endpoint not exposed publicly without authentication layer
 5. Webhook processing failures logged to DLQ for investigation

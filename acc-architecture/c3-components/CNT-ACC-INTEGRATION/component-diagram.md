@@ -18,15 +18,16 @@ flowchart LR
 
     %% Inbound from ACCore
     ACR_CON -->|ProductListingPublished\nIF-ACR-PUBLISH-EVENT| GW
-    ACR_CON -->|ReservationAccepted/Rejected\nIF-ACR-RESERVATION-RESP| GW
+    ACR_CON -->|reservation outcome response/query\noptional approved callback; IF-ACR-RESERVATION-RESP| GW
 
     %% Internal routing
     GW --> PUB
     GW --> RES
 
     %% Event Bus → Order Notify
-    EVENTBUS -->|OrderConfirmed\nOrderCancelled| NOTIFY
-    NOTIFY -->|IF-ACC-ORDER-CONFIRM\nasync, at-least-once| ACR_CON
+    EVENTBUS -->|OrderConfirmed / OrderCancelled / ReturnRequested| NOTIFY
+    NOTIFY -->|OrderConfirmed: IF-ACC-ORDER-CONFIRM\nlogical direction; selected ADR-015 channel| ACR_CON
+    NOTIFY -.->|Cancellation and return routing\nschema and channel mapping open| ACR_CON
 
     %% Publication → Catalog
     PUB -->|validated listing| CATALOG
@@ -44,4 +45,4 @@ flowchart LR
 ```
 
 > [!NOTE]
-> CMP-INT-GATEWAY validates inbound event signatures and routes to appropriate worker. CMP-INT-RESERVATION applies circuit breaker to ACCore outbound calls.
+> CMP-INT-GATEWAY validates inbound event signatures and routes to appropriate worker. Reservation status covers ACCEPTED, REJECTED, UNKNOWN and authoritative EXPIRED; response/query and optional approved callback are not claims that status values are registered event types. CMP-INT-RESERVATION applies circuit breaker and UNKNOWN-safe recovery to ACCore calls.

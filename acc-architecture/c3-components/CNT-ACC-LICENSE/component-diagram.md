@@ -35,7 +35,8 @@ flowchart TD
         AUDIT["CNT-ACC-AUDIT\n(Audit Log)"]
     end
 
-    %% Issuance trigger
+    %% Institutional admin and marketplace issuance triggers
+    ACMANAGEMENT -->|"Authorized institutional issuance"| ISSUANCE
     EVENTBUS -->|"OrderConfirmed event\n{order_id, buyer_id, product_id}"| ISSUANCE
     ISSUANCE -->|"Validate software product"| SOFTCAT
     ISSUANCE -->|"Create License record"| LICDB
@@ -68,7 +69,7 @@ flowchart TD
 
 | Component | ID | Role |
 |---|---|---|
-| License Issuance Engine | CMP-LIC-ISSUANCE | Consumes OrderConfirmed; creates License records; idempotent on order_id+product_id |
+| License Issuance Engine | CMP-LIC-ISSUANCE | Admin institutional issuance and marketplace OrderConfirmed issuance; marketplace key sufficiency remains open |
 | Entitlement Query Handler | CMP-LIC-ENTITLEMENT | Answers online validation queries (IF-ACC-LICENSE-VALIDATE) |
 | License Lifecycle Manager | CMP-LIC-LIFECYCLE | Admin-driven state transitions: renew, suspend, revoke |
 | Offline Token Generator | CMP-LIC-OFFLINE | Produces short-lived signed entitlement tokens for offline use (ADR-014) |
@@ -81,8 +82,8 @@ flowchart TD
 1. `OrderConfirmed` event consumed by **CMP-LIC-ISSUANCE**
 2. ISSUANCE validates product exists in CNT-ACC-SOFTCAT
 3. ISSUANCE writes License (`ACTIVE`, bound to buyer_id + product_id + order_id)
-4. ISSUANCE calls **CMP-LIC-OFFLINE** to generate first signed entitlement token
-5. `LicenseActivated` event published; audit entry written
+4. ISSUANCE arranges separately retriable **CMP-LIC-OFFLINE** token issuance; activation and token readiness are distinct.
+5. `LicenseActivated` and buyer readiness notification remain supported; precise sequencing is an owner decision; audit entry is written.
 
 ### Flow 2 — Online Entitlement Check
 1. Client calls `IF-ACC-LICENSE-VALIDATE` → **CMP-LIC-ENTITLEMENT**
@@ -91,14 +92,14 @@ flowchart TD
 
 ### Flow 3 — Offline Token Consumption
 1. ACCore's **CMP-CON-LICENSECHECK** holds a signed token from previous online session
-2. Token validated locally: signature (platform public key), expiry, product_id match
+2. Token validated locally: signature, credential expiry, grant validity and selected institutional or marketplace identity/scope
 3. If token expired and network available → fallback to online (Flow 2)
 
 ### Flow 4 — Admin Revocation
 1. Admin via ACManagement calls LIFECYCLE with `{license_id, action=revoke}`
 2. LIFECYCLE verifies admin permission via CNT-ACC-IDENTITY
 3. LIFECYCLE sets License state → `REVOKED`; publishes `LicenseRevoked`
-4. Existing offline tokens remain valid until expiry (ADR-014 trade-off — OPEN RISK)
+4. Offline revocation may be unseen; credential expiry, grant validity, observed revocation and approved policy constrain use (ADR-014 — OPEN RISK)
 
 ---
 

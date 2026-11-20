@@ -19,32 +19,20 @@ CONFIRMED (idea.md §14, ADR-014): Signed entitlement tokens for offline validat
 | Collaborator | Direction | Role |
 |---|---|---|
 | CMP-LIC-ENTITLEMENT | Inbound | Provides current entitlement state before token is signed |
-| CMP-LIC-ISSUANCE | Outbound | Called at license activation to issue first token |
+| CMP-LIC-ISSUANCE | Inbound | Separate retriable work: institutional token after ISSUED and before activation; marketplace token after the directly ACTIVE license record |
 | CNT-ACR-CONNECTOR / CMP-CON-LICENSECHECK | Consumer | Receives tokens and validates them locally |
 
 ---
 
 ## 3. Behavior, Rules, and State
 
-**Token structure (PROPOSAL — exact format UNKNOWN):**
-```json
-{
-  "license_id": "...",
-  "institution_id": "...",
-  "product_id": "...",
-  "licensed_modules": [...],
-  "units": N,
-  "issued_at": "ISO-8601",
-  "expires_at": "ISO-8601",
-  "signature": "..."
-}
-```
+**Token structure (PROPOSAL — exact format UNKNOWN):** See the two valid illustrative workflow-specific examples in ADR-014: institutional `institution_id + product_code`; marketplace `buyer_id + product_id`. Each includes `workflow`, `license_id`, issue/expiry and signature; institutional module/seat claims remain supported. Grant validity and token TTL are separate. Both workflows need authenticated, locally verifiable grant bounds or equivalent evidence for offline use; missing required evidence cannot grant access. Perpetual/null-expiry semantics, claim encoding and JWT mapping require approval.
 
 **Rules:**
 - Token TTL: short-lived (UNKNOWN: exact duration — hours to days depending on product sensitivity). OWNER_UNASSIGNED.
 - Signed with platform private key; CMP-CON-LICENSECHECK validates with platform public key
-- Revoked licenses → new tokens NOT issued; existing tokens remain valid until TTL (gap = revocation exposure window)
-- Grace period after token expiry: ACCore may continue operating briefly while renewing (UNKNOWN: policy)
+- Revoked licenses → new tokens NOT issued. An offline validator may not yet know revocation; any token-derived use remains bounded by credential expiry, grant validity, observed revocation and applicable approved policy. Revocation exposure is an unresolved risk, not an unconditional right to operate until TTL.
+- Grace after token expiry is UNKNOWN and applies only if explicitly approved; otherwise restrict licensed features while preserving separately permitted local operation.
 
 **Signing key management:** UNKNOWN — technology and key rotation process not specified. OWNER_UNASSIGNED.
 
@@ -64,8 +52,8 @@ Tokens themselves are stateless (signed payloads) — no server-side session nee
 
 | Failure | Response |
 |---|---|
-| Signing key unavailable | Cannot issue token; ACCore must use online validation |
-| License revoked but old token not yet expired | Revocation exposure window exists until TTL; shorter TTL reduces risk |
+| Signing key unavailable | No token-ready claim; retain durable issuance work for recovery, and use independently authorized online validation where supported |
+| License revoked but old token not yet expired | Offline revocation may be unseen; enforce known revocation and grant/credential bounds, and resolve exposure policy with Security/Product |
 | Key compromise | Emergency key rotation needed — UNKNOWN: rotation procedure. OWNER_UNASSIGNED. |
 
 ---

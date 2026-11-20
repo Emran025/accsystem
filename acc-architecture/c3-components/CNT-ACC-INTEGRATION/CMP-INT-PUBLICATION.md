@@ -19,7 +19,7 @@
 | Inbox Store (DB) | Read/Write | Deduplication by `event_id` |
 | CMP-CAT-LISTING | Outbound (calls) | Create / update / withdraw listing |
 | CMP-CAT-VALIDATION | Outbound (calls) | Validate schema + policy before listing write |
-| Outbox Table | Write | Guarantees at-least-once delivery to Catalog |
+| Outbox Table | Write | Supports at-least-once delivery attempts to Catalog with possible duplicates; retry exhaustion and reconciliation remain policy-gated |
 | Event Bus | Outbound | Publishes `ProductPublicationProcessed` events |
 
 ---
@@ -29,13 +29,11 @@
 ### 3.1 Processing Steps
 
 1. Receive event from CMP-INT-GATEWAY: `{event_id, event_type, institution_id, data}`.
-2. **Inbox check:** Query Inbox Store for `event_id`. If already processed → return cached result (deduplicated).
-3. Write `event_id` to Inbox Store (mark as processing) atomically within the same transaction as the Outbox write.
-4. Pass event data to CMP-CAT-VALIDATION for schema + policy check.
-   - If validation fails → return structured error to ACCore (via gateway); mark inbox as `rejected`; do NOT write to Outbox.
-5. Write Outbox entry targeting CMP-CAT-LISTING with the validated payload.
-6. Outbox relay picks up entry and calls CMP-CAT-LISTING.
-7. Mark Inbox entry as `completed` on successful delivery.
+2. **Inbox check:** identify the source `event_id` and scoped institution/product/version business key. A completed duplicate may return its recorded outcome; an in-progress, uncertain or failed record must retain/recover progress under the approved receipt/retry contract, not manufacture a final result.
+3. Validate schema, permission and policy. A definitive pre-admission rejection records the rejected attempt and returns a structured non-success; do not create/mutate a Catalog listing or enqueue catalog work.
+4. For accepted work, persist Integration's Inbox state and local Outbox delivery intent atomically in its own local transaction; coordinate concurrent claims safely. Exact receipt and claim states require API/Integration approval.
+5. Relay the durable intent to Catalog; Catalog owns its listing write and business-version guard. Track completion or failure separately, and recover queued/incomplete work after crashes or lost acknowledgments.
+6. The existing interface requires a stable Catalog-assigned `listing_id` in an acceptance receipt, but its availability before queued Catalog processing is not established. API Governance, Integration and Catalog must resolve the allocation/receipt or later-result mechanism with compatibility before implementation; neither a distributed transaction nor a final listing effect follows merely from acceptance.
 
 ### 3.2 Event Type Mapping
 
@@ -47,10 +45,10 @@
 
 ### 3.3 Business Rules
 
-- **Idempotency:** Same `event_id` → same result returned, no duplicate listing write.
-- Ordering: events for the same `seller_product_id` must be processed in order. Use `seller_product_id` as the message ordering key.
+- **Idempotency:** Stable source `event_id` identifies redelivery; the institution/product/version key separately guards the business operation. Return a stored result only when available and contract-valid; reconcile conflicts and incomplete work without duplicating listing effects.
+- Ordering is required per institution/product where supported by the chosen broker and consumer; retain Catalog version guards for delayed or replayed messages. The precise key and mechanism remain open.
 - A withdrawn listing is **not deleted** — it is marked inactive; historical record preserved.
-- Validation failure is returned as a structured error; it is **not** retried (the problem is with the data, not the infrastructure).
+- Definitive malformed/unauthorized validation failure is returned as a structured error and is not retried; validation dependency unavailability remains recoverable pending work under the approved retry/reconciliation policy.
 
 ---
 
@@ -62,7 +60,7 @@
 | Outbox entry | CMP-INT-PUBLICATION | Payload to be delivered to CMP-CAT-LISTING |
 | `ProductPublicationProcessed` event | Event Bus | Published on successful processing |
 
-- **Transaction boundary:** Inbox write + Outbox write are in the same DB transaction as the validation pass.
+- **Transaction boundary:** accepted Integration Inbox state and its delivery intent share an Integration-local transaction. A rejection records its outcome without Catalog work; Catalog writes belong to its own boundary. No cross-container atomic transaction is established.
 
 ---
 
@@ -74,7 +72,7 @@
 |---|---|
 | Validation fails | Structured error returned; Inbox entry marked `rejected`; no Outbox entry |
 | CMP-CAT-LISTING unavailable | Outbox retries delivery with backoff |
-| Duplicate event received | Inbox check returns cached result immediately |
+| Duplicate event received | Completed: return recorded outcome if available; in progress/unknown: approved status or safe retry/recovery, not a fabricated completion |
 | DB fails during Inbox/Outbox write | Transaction rolls back; event not marked processed; ACCore retries |
 
 ### 5.2 Security
@@ -97,9 +95,9 @@
 | Scenario | Expected Outcome |
 |---|---|
 | New product published | Inbox written; Outbox entry created; Catalog listing created |
-| Same event_id received twice | Second call returns cached result; no duplicate listing |
+| Same event_id received twice | Completed duplicate returns an available contract-valid outcome; in-progress duplicate is recoverable; no duplicate listing/version effect |
 | Validation fails (missing required field) | Structured error returned; no Outbox entry |
-| CMP-CAT-LISTING temporarily down | Outbox retries; eventually delivered |
+| CMP-CAT-LISTING temporarily down | Outbox retains recoverable work; configured retries and DLQ/reconciliation handle exhaustion |
 | Withdrawal event | Listing marked inactive; historical record intact |
 
 ---
@@ -110,6 +108,7 @@
 |---|---|
 | Ordering guarantee mechanism: Kafka partition key or DB-level ordering? | UNKNOWN — depends on message broker choice |
 | Max Outbox retry count before DLQ | UNKNOWN — config decision |
+| ID availability and receipt/in-progress duplicate semantics | UNKNOWN — API Governance, Integration and Catalog must resolve without dropping existing listing-ID requirement |
 
 **ADR References:** ADR-004, ADR-005
 

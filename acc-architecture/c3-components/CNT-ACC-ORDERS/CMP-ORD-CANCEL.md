@@ -21,7 +21,7 @@
 | CMP-PAY-REFUND | Outbound (calls) | Triggers void (pre-capture) or refund (post-capture) |
 | CNT-ACC-DELIVERY | Outbound (calls) | Requests shipment halt or return initiation |
 | Event Bus | Outbound | Publishes `OrderCancelled`, `ReturnRequested` events |
-| Outbox Table | Outbound | Guarantees event publication |
+| Outbox Table | Outbound | Persists event intent for recoverable asynchronous publication |
 
 ---
 
@@ -33,32 +33,30 @@
 2. Check with CMP-ORD-STATEMACHINE: is transition to `CancellationPending` allowed?
    - If not allowed (e.g., order already `Completed`, `Cancelled`, `Returned`) → reject with reason.
 3. Transition order state to `CancellationPending`.
-4. Execute compensation steps (order independent, can run in parallel):
-   - **Step A:** Release/cancel reservation at ACCore seller via CMP-INT-RESERVATION.
+4. Execute eligible compensation steps independently only where their guards and the conservative UNKNOWN rule permit:
+   - **Step A:** Coordinate institution-owned stock handling. Do not release a consumed or confirmed-order-linked reservation; any post-confirmation reversal/return rule requires institutional and product approval.
    - **Step B:** Void or refund payment via CMP-PAY-REFUND.
    - **Step C:** Halt or return shipment via CNT-ACC-DELIVERY.
-5. Record outcome of each step (success / failed / skipped).
-6. When all steps are settled (or max retries reached):
-   - If all succeeded (or not applicable) → transition to `Cancelled`.
-   - If some steps failed → remain in `CancellationPending` with operational alert; retry strategy applies.
-7. Publish `OrderCancelled` event with `correlation_id`.
+5. Record each step as succeeded, failed, skipped/not applicable or UNKNOWN with evidence and stable operation identity. Reconcile a possibly dispatched stock/financial effect before repeating it.
+6. Only when all required steps are definitively settled under policy transition to `Cancelled`; failure, UNKNOWN or exhausted retries remains pending with escalation.
+7. Publish `OrderCancelled` with `correlation_id` only on the final transition.
 
 ### 3.2 Return Flow
 
 1. Receive return request (`seller_order_id` or `order_id`, `return_reason`, `line_items`).
-2. Check transition to `ReturnPending` is allowed (must be in `Delivered` or `Completed`).
+2. Check transition to `ReturnPending` and eligibility under policy: Delivered and Completed are documented paths; Dispatched eligibility and rejected-return restoration remain OPEN, not silently removed or universally authorized.
 3. Transition to `ReturnPending`.
 4. Coordinate:
    - Initiate delivery return/collection via CNT-ACC-DELIVERY.
    - Trigger refund via CMP-PAY-REFUND (after delivery return confirmed, or immediately — per policy (OPEN: see idea.md §12, OWNER_UNASSIGNED)).
-5. On completion → transition to `Returned`.
-6. Publish `ReturnRequested` and subsequently `OrderReturned`.
+5. Track each applicable return/collection, stock and refund operation with stable identity, evidence and succeeded/failed/skipped/UNKNOWN outcome. Reconcile possible dispatch before repeating; respect ADR-018 and approved dependencies. Only when all required steps are definitively settled under policy transition to `Returned`; otherwise remain pending/review and escalate.
+6. Preserve both `ReturnRequested` and `OrderReturned`; the audit table proposes request notification on validated initiation and final notification on completion. Event-contract owners must resolve the inconsistent request timing before implementation.
 
 ### 3.3 Business Rules (§7.4)
 
 - Cancellation is **not** deletion. It is a state transition with full audit trail.
-- Each compensation step has an **independent outcome**. A failure in one step does not automatically fail or block others.
-- **Partial compensation** is supported: if delivery halt fails (shipment already dispatched), cancellation can still proceed for reservation and payment, with an operational flag raised for manual delivery handling.
+- Each compensation step has an **independent outcome**. Independently safe progress may continue only if it does not violate ADR-018's conservative UNKNOWN guard or a dependency.
+- **Partial compensation** is supported: a delivery halt failure can be tracked separately while other eligible, evidenced steps proceed; unresolved steps keep the operation pending and visible.
 - The coordinator must track each step's result and persist it.
 - Cancellation of an order in `PendingReservation` or `PendingPayment` is handled by CMP-ORD-SAGA compensation; CMP-ORD-CANCEL handles post-`Confirmed` cancellations.
 
@@ -67,8 +65,8 @@
 | Order State at Cancel Request | Reservation Action | Payment Action | Delivery Action |
 |---|---|---|---|
 | PendingReservation / PendingPayment | Via saga compensation | Via saga compensation | N/A |
-| Confirmed (before dispatch) | Release reservation | Void (pre-capture) or Refund | Cancel shipment creation |
-| Processing / Dispatched | Release reservation (if still held) | Refund (post-capture) | Request delivery return |
+| Confirmed (before dispatch) | Institution-approved post-confirmation handling; do not release confirmed-linked/consumed hold | Void (pre-capture) or refund where authorized and outcome known | Cancel shipment creation |
+| Processing / Dispatched | Institution-approved cancellation/return handling; do not release confirmed-linked/consumed hold | Refund where authorized and outcome known | Request delivery return where eligible |
 | Delivered | N/A | Refund | N/A (already delivered) |
 
 ---
@@ -79,10 +77,10 @@
 |---|---|---|
 | Cancellation / Return record | CMP-ORD-CANCEL | `{order_id, request_type, requester, reason, step_outcomes[], final_state, created_at}` |
 | Step outcome records | CMP-ORD-CANCEL | Per-step result: `{step, status, attempt_count, last_error}` |
-| `OrderCancelled` / `ReturnRequested` events | Outbox → Event Bus | Published on final state transition |
+| `OrderCancelled` / `ReturnRequested` / `OrderReturned` events | Outbox → Event Bus | Final events on final transition; request-event timing is proposed at validated initiation and remains a contract decision |
 
 - **Transaction boundary:** Cancellation record creation + order state transition to `CancellationPending` are atomic. Each compensation step outcome is written independently as it completes.
-- **Idempotency:** If a cancellation/return record already exists for the same `order_id`, return the existing record's status.
+- **Idempotency:** Deduplicate the same authorized request/operation and applicable order/seller/line scope, without treating a distinct authorized cancellation or return as a duplicate. Exact request key and multi-return eligibility remain OPEN.
 
 ---
 
@@ -93,9 +91,9 @@
 | Failure | Response |
 |---|---|
 | State machine rejects cancellation (invalid transition) | Return rejection error with current state and reason |
-| ACCore seller unreachable during reservation release | Retry with backoff; after max retries → flag for manual handling; allow payment/delivery steps to proceed |
-| Payment refund fails | Retry; after max retries → operational alert for manual reconciliation |
-| Delivery halt fails (shipment already moving) | Log failure; alert operations team; cancellation of order and payment proceeds |
+| ACCore seller unreachable during an eligible stock operation | If possibly dispatched, preserve UNKNOWN and reconcile before retry; escalate per policy. Other work proceeds only if independently safe under ADR-018. |
+| Payment refund fails or response is lost | Distinguish definitive failure from UNKNOWN; reconcile before repeating a possible financial effect and escalate per policy |
+| Delivery halt fails (shipment already moving) | Log and alert; independently safe steps may proceed but unresolved required work prevents final cancellation |
 | Coordinator crashes mid-flow | On restart, re-read step_outcomes; resume from incomplete steps |
 
 ### 5.2 Timeouts and Circuit Breaking
@@ -126,18 +124,18 @@
 
 | Scenario | Expected Outcome |
 |---|---|
-| Cancel order in `Confirmed` state | Reservation released, payment voided, delivery cancelled, order → Cancelled |
-| Cancel order in `Dispatched` state | Payment refunded, delivery return initiated, order → Cancelled |
+| Cancel order in `Confirmed` state | Coordinate approved stock handling and eligible void/refund and delivery steps; only settled required steps permit Cancelled |
+| Cancel order in `Dispatched` state | Coordinate eligible payment and delivery return under policy; no final Cancelled while required work is unresolved |
 | Cancel already-Cancelled order | Rejection with `InvalidStateTransition` |
 | Payment refund fails during cancellation | Operational alert raised; order stays CancellationPending; retry scheduled |
 | Delivery return fails | Log + alert; cancellation proceeds for other steps |
 | Idempotent cancellation request | Existing cancellation record returned; no duplicate steps executed |
-| Return request on `Delivered` order | Delivery return initiated, refund triggered, order → Returned |
+| Return request on `Delivered` order | Coordinate policy-eligible return and refund; unresolved or UNKNOWN required steps remain pending/review, with `Returned` only after settlement |
 
 ### 6.1 Partial Refund Edge Case
 
 > [!WARNING]
-> Partial refunds are marked **UNKNOWN** — business rules not yet defined (§12). The coordinator must support partial refund amounts when the business rule is established. Until then, all refunds are for the full order/seller-order amount.
+> Partial and full refund eligibility and amounts remain **UNKNOWN** (§12). Preserve both options for approved policy; do not assume an automatic full refund or execute an unapproved partial refund.
 
 ---
 

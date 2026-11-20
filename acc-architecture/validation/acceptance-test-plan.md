@@ -1,6 +1,6 @@
 # Critical Acceptance and Recovery Test Plan
 
-1. **Multi-seller saga:** cart with multiple sellers creates one ParentOrder and seller-scoped SellerOrders; reservations run independently; one rejection releases successful holds; no payment authorization occurs; duplicate commands are idempotent.
+1. **Multi-seller saga:** cart with multiple sellers creates one ParentOrder and seller-scoped SellerOrders; reservations run independently; one authoritative rejection blocks payment; after peer reconciliation, only eligible confirmed holds may be released under UNKNOWN-safe guards, and required compensation must settle before closure; duplicate commands are idempotent.
 2. **Concurrent last-unit race:** two checkouts target one unit at ACCore; local conditional update/lock permits at most one reservation; the loser receives definitive rejection; ACCSystem projection is never authoritative.
 3. **Unknown reservation:** connector timeout leaves reservation outcome UNKNOWN; checkout does not claim success, authorize payment, or release a possibly-held reservation solely on timeout; query/reconciliation resolves it.
 4. **Payment unknown/replay:** provider timeout remains UNKNOWN; duplicate webhook and retry create no duplicate authorization/capture; later definitive provider evidence drives one transition.

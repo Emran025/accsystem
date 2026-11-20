@@ -21,7 +21,7 @@ CONFIRMED (idea.md §3.1): "Institution Integration — موصلات ACCore، ا
 | Collaborator | Direction | Role |
 |---|---|---|
 | CNT-ACR-CONNECTOR (via IF-ACR-PUBLISH-EVENT) | Inbound | Receives product publication events from ACCore institutions |
-| CNT-ACR-CONNECTOR (via IF-ACR-RESERVATION-RESP) | Inbound | Receives reservation responses (Accepted/Rejected) from ACCore |
+| CNT-ACR-CONNECTOR (via IF-ACR-RESERVATION-RESP) | Inbound | Receives reservation outcomes via response/trusted query or optional approved callback; statuses include ACCEPTED, REJECTED, UNKNOWN and authoritative EXPIRED |
 | CNT-ACC-ORDERS / CMP-ORD-SAGA | Inbound (via IF-ACC-RESERVE-SAGA) | Receives reservation requests to relay to ACCore |
 | CNT-ACC-CATALOG | Outbound | Sends validated product publication for listing processing |
 | CNT-ACC-INSTREG | Outbound | Validates institution identity and integration configuration |
@@ -56,6 +56,7 @@ CONFIRMED (idea.md §3.1): "حالة المزامنة، سجلات الرسائ�
 - **IF-ACR-PUBLISH-EVENT** (consumer): Receives publication events from CNT-ACR-CONNECTOR
 - **IF-ACR-RESERVATION-RESP** (consumer): Receives reservation responses from CNT-ACR-CONNECTOR
 - **IF-ACC-RESERVE-SAGA** (provider): Accepts reservation requests from CNT-ACC-ORDERS; relays to CNT-ACR-CONNECTOR
+- **IF-ACC-ORDER-CONFIRM** (logical provider): Delivers recipient-scoped confirmations to the ACCore connector using the ADR-015 selected channel; other event schemas/channels remain open
 - **IF-ACC-EVENT-ENVELOPE** (bidirectional): Publishes/subscribes via CNT-ACC-EVENTBUS
 
 ---
@@ -67,7 +68,7 @@ CONFIRMED (idea.md §3.1): "حالة المزامنة، سجلات الرسائ�
 | ACCore connector unavailable | Retry with configured backoff using the same idempotency_key; when the configured recovery policy is exhausted, preserve the message in DLQ and alert Operations. For a reservation command, query ACCore before replay or release. |
 | Duplicate publication event received | Inbox check deduplicates; idempotent processing — CONFIRMED (idea.md §6.5) |
 | Signature validation failure on incoming event | Reject and log security event; alert ops — CONFIRMED (idea.md §9) |
-| Reservation response timeout | CMP-INT-RESERVATION records UNKNOWN, queries by reservation ID/idempotency key, and reconciles; timeout is not a failure signal |
+| Reservation response timeout | CMP-INT-RESERVATION records UNKNOWN after possible dispatch and reconciles by known reservation ID or stable request key using an agreed available channel; otherwise waits and escalates. Timeout is not a failure signal |
 
 ---
 

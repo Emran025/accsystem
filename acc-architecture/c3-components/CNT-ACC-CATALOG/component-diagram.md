@@ -38,7 +38,7 @@ flowchart TD
     LISTING -->|"Validate payload (sync)"| VALIDATION
     VALIDATION -->|"Category check"| SOFTCAT
     VALIDATION -->|"PASS / FAIL + violations"| LISTING
-    LISTING -->|"Write Listing record\n(status=ACTIVE or REJECTED)"| CATDB
+    LISTING -->|"Write Listing only after admission/moderation rule\n(pre-admission rejection records attempt only)"| CATDB
     LISTING -->|"ListingApproved or ListingRejected"| EVENTBUS
     LISTING -->|"Audit: listing created/rejected"| AUDIT
 
@@ -71,7 +71,7 @@ flowchart TD
 2. **CMP-CAT-LISTING** calls **CMP-CAT-VALIDATION** synchronously
 3. VALIDATION checks format, completeness, category → returns verdict
 4. If PASS: LISTING writes `Listing{status=ACTIVE}` → publishes `ListingApproved`
-5. If FAIL: LISTING writes `Listing{status=REJECTED}` → publishes `ListingRejected`
+5. If validation fails before admission: record the rejected attempt and audit reason; do not persist a Listing as `REJECTED`. A persisted moderation `REJECTED` state and `ListingRejected` event apply only after admission.
 6. **CMP-CAT-SEARCHSYNC** consumes `ListingApproved` → upserts search document
 
 ### Flow 2 — Listing Update (new version from ACCore)

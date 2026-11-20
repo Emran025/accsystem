@@ -25,7 +25,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 | CNT-ACR-SALES | Outbound | Delivers confirmed order data for sales record creation |
 | CNT-ACR-OUTBOX | Bidirectional | Reads outbound events from Outbox; writes incoming events to Inbox |
 | CNT-ACC-INTEGRATION | Bidirectional | IF-ACR-PUBLISH-EVENT (outbound), IF-ACR-RESERVATION-RESP (outbound), IF-ACC-RESERVE-SAGA (inbound) |
-| CNT-ACC-LICENSE | Inbound (via IF-ACC-LICENSE-VALIDATE) | Online license validation requests |
+| CNT-ACC-LICENSE | Outbound (via IF-ACC-LICENSE-VALIDATE) | Connector requests online license validation from the license provider |
 
 ---
 
@@ -52,6 +52,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 - **IF-ACR-PUBLISH-EVENT** (provider): Product publication events → CNT-ACC-INTEGRATION
 - **IF-ACR-RESERVATION-RESP** (provider): Reservation responses → CNT-ACC-INTEGRATION
 - **IF-ACC-RESERVE-SAGA** (consumer): Receives reservation requests from CNT-ACC-INTEGRATION
+- **IF-ACC-ORDER-CONFIRM** (consumer): Receives authorized recipient-scoped confirmation via the selected ADR-015 channel
 - **IF-ACC-LICENSE-VALIDATE** (consumer): Online license validation
 
 ---
@@ -62,7 +63,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 |---|---|
 | ACCSystem unreachable | Events queued in Outbox; retried with exponential backoff on reconnect — CONFIRMED (idea.md §4.2) |
 | Duplicate reservation request | Inbox deduplication by idempotency_key — CONFIRMED (idea.md §6.5) |
-| Reservation commit fails at inventory | ReservationRejected response sent back to ACCSystem |
+| Reservation action fails or response is lost | Report REJECTED only with authoritative rejection evidence; otherwise preserve UNKNOWN and reconcile before repeating the effect |
 
 ---
 

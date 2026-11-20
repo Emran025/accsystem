@@ -62,7 +62,7 @@ Strictly institution-internal; no direct access from ACCSystem — CONFIRMED (id
 |---|---|
 | Concurrent product updates by multiple managers | Optimistic locking (`version` field) rejects stale edits; user prompted to reload |
 | Large batch import failure | Executed in transactional chunks; partial batch failures report detailed line-by-line errors |
-| Primary database failover | Application connection pool reconnects to promoted replica within 15 seconds |
+| Primary database failover | Connection pool reconnects to a promoted replica under institution/Operations-approved recovery policy; timing is UNKNOWN |
 
 ---
 

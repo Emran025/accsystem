@@ -10,7 +10,7 @@ All required SellerOrder reservations are `ACCEPTED`; no reservation is `UNKNOWN
 1. The Parent Saga creates one payment allocation per SellerOrder.
 2. The policy resolver selects `AUTHORIZE_THEN_CAPTURE` or `IMMEDIATE_CAPTURE` for each seller/agreement. If a shared provider transaction would combine incompatible policies, split into separate attempts or reject checkout under policy; do not silently choose one.
 3. The orchestrator sends an idempotent provider request. `AUTHORIZED` means a hold only; `CAPTURED` means collection; neither alone means seller settlement/credit.
-4. On definitive decline/failure, release confirmed reservations. On timeout/lost response, persist `AUTHORIZATION_UNKNOWN` or `CAPTURE_UNKNOWN`, query/reconcile by provider reference/idempotency key, and do not repeat a financial effect or release a potentially existing hold solely due to elapsed time.
+4. On definitive decline/failure, block confirmation, reconcile other in-flight attempts and reservations, and compensate eligible known effects only under ADR-018 and approved policy; final closure waits for required results. On timeout/lost response, persist `AUTHORIZATION_UNKNOWN` or `CAPTURE_UNKNOWN`, reconcile via an available agreed provider channel, and do not repeat a financial effect or release solely due to elapsed time.
 5. For authorize-then-capture, capture at the configured seller/agreement trigger after confirmation. For immediate capture, capture in the approved payment step. Capture failure after order confirmation becomes a visible payment exception requiring retry/reconciliation/void/refund policy.
 
 ## States

@@ -8,7 +8,7 @@
 | Field | Value |
 |---|---|
 | **Container ID** | CNT-ACR-OUTBOX |
-| **Purpose** | Provides transactional outbox and inbox infrastructure within ACCore to guarantee reliable, at-least-once, non-duplicate event delivery between ACCore and ACCSystem via CNT-ACR-CONNECTOR. |
+| **Purpose** | Provides transactional outbox and inbox infrastructure within ACCore for recoverable at-least-once delivery attempts and idempotent business effects between ACCore and ACCSystem. Duplicate delivery is possible. |
 | **Scope Boundary** | Infrastructure component — no business logic. Outbox: queues outbound events atomically in the same DB transaction as business state changes. Inbox: stores received events for idempotent processing. |
 
 CONFIRMED (idea.md §4.1): "Outbox / Inbox — ضمان تسجيل الأحداث الصادرة ومعالجة الواردة بطريقة قابلة لإعادة المحاولة دون تكرار."
@@ -57,7 +57,7 @@ CONFIRMED (idea.md §6.5): "استخدم Transactional Outbox في ACCore وACCS
 
 ## 7. Technology Rationale and Decision Status
 
-- **Architecture Pattern:** Transactional Outbox pattern implemented per ADR-005. Guarantees at-least-once domain event delivery across process boundaries without requiring distributed 2PC transactions.
+- **Architecture Pattern:** Transactional Outbox per proposed ADR-005 supports durable local intent and at-least-once delivery attempts without distributed 2PC. DLQ and unresolved recovery do not imply completed delivery.
 
 ---
 

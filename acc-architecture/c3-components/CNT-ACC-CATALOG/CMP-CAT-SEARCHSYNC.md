@@ -55,12 +55,12 @@ No separate business data owned — search documents are projections of Listing 
 | `ListingApproved` | Upsert document: `{listing_id, title, description, price_snapshot, availability_snapshot, institution_id, media_refs}` |
 | `ListingUpdated` | Upsert document with new snapshot values |
 | `ListingRemoved` | Delete document by `listing_id` |
-| `ListingRejected` | No-op (search index never received this listing) |
+| `ListingRejected` | A never-indexed new listing may need no removal; a rejected update/revalidation can have prior indexed content. Product/Catalog must decide the authoritative permitted state and its index effect; do not assume either always hide or always retain. |
 
 ### Idempotency
-- Each event carries `{listing_id, version}`.
-- If `version ≤ last_synced_version` → skip (already synced or newer version already applied).
-- Upsert is idempotent at CNT-ACC-SEARCH level (by listing_id).
+- Each event carries `{listing_id, event identity, and an approved ordering/change identity}`; source product version alone is insufficient for every removal or stock/change event.
+- An implementation must use a distinct monotonic Catalog change revision or equivalent ordered, event-idempotent state/tombstone reconciliation so same-version removal cannot be skipped and stale upserts cannot resurrect removed content. Exact mechanism is an Operations/Architecture gate.
+- Upsert is idempotent at CNT-ACC-SEARCH level (by listing_id). Rebuilds need an approved state-reset/generation or equivalent procedure: replay against retained `last_synced_version` alone may skip every needed entry. Preserve version guards and protect concurrent newer updates and withdrawals; Operations/Architecture must select and verify the mechanism.
 
 ### Retry Policy
 1. First attempt: immediate.
@@ -77,7 +77,7 @@ No separate business data owned — search documents are projections of Listing 
 | CNT-ACC-SEARCH unavailable | Connection error / timeout | Retry with backoff; event stays in bus or Outbox until consumed |
 | Partial sync (search document partially written) | Health check on search API | Search API must be idempotent; re-send full document |
 | Event bus message loss | At-least-once delivery by CNT-ACC-EVENTBUS | Duplicate events handled via version-based idempotency |
-| Index inconsistency (search ahead of catalog) | Not possible — CMP-CAT-LISTING writes first; this component reads from events | ASSUMPTION: event ordering within listing_id is maintained |
+| Index inconsistency / out-of-order replay | Version/state comparison and reconciliation | Project authoritative permitted Catalog state; protect against stale replay and concurrent withdrawal, without assuming global ordering |
 | Search document schema mismatch | Schema validation on write | Fail-closed: do not write corrupt document; alert operations |
 
 ---
@@ -96,8 +96,8 @@ No separate business data owned — search documents are projections of Listing 
 
 | Concern | Note |
 |---|---|
-| Sync lag | Search results may lag listing approval by seconds (event propagation time + sync time). Acceptable for catalog search. |
-| Bulk re-index | On CNT-ACC-SEARCH rebuild, all ACTIVE listings must be re-synced. Operational procedure: UNKNOWN. Admin command to replay all ACTIVE listing events needed. |
+| Sync lag | Search results may lag listing approval. Target and monitoring require Operations/Product evidence and approval. |
+| Bulk re-index | Rebuild the current permitted Catalog projection, including withdrawal/removal reconciliation; coordinate sync-state reset or generation with concurrent changes and verify completeness. Exact procedure and admin mechanism remain UNKNOWN. |
 | Throughput | UNKNOWN — depends on listing publication rate. Stateless workers can be scaled horizontally. |
 
 ---
@@ -123,6 +123,6 @@ No separate business data owned — search documents are projections of Listing 
 
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
-| Incremental index sync | `ProductListingUpdated` event received from Event Bus | Search engine document upserted within sync SLA (< 2s); cache invalidated |
-| De-listing removal | `ProductDeactivated` event received | Search engine document marked deleted/hidden; excluded from subsequent search queries |
+| Incremental index sync | Approved Catalog `ListingUpdated` event received | Search document updated under version guard and cache invalidated; latency target requires approval |
+| De-listing removal | Approved Catalog `ListingRemoved` event received | Search document marked deleted/hidden; excluded from subsequent search queries. Mapping from upstream withdrawal/retraction remains open |
 | Search cluster timeout | Search cluster unavailable during sync attempt | Event re-queued with exponential backoff; dead-letter alert raised when the configured retry policy is exhausted |

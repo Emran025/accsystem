@@ -17,7 +17,7 @@
 |---|---|---|
 | ACCore Connector (CMP-CON-PUBLISHER, CMP-CON-RESERVATION, CMP-CON-ORDERRECEIVER) | Inbound | Source of all events and API calls from ACCore instances |
 | CMP-INT-PUBLICATION | Outbound (routes to) | Receives ProductListingPublished/Updated/Withdrawn events |
-| CMP-INT-RESERVATION | Outbound (routes to) | Receives ReservationAccepted/Rejected responses; relays ReservationRequested |
+| CMP-INT-RESERVATION | Outbound (routes to) | Relays reservation requests and receives validated reservation outcomes through the configured response/query or approved callback path |
 | CMP-INT-ORDERNOTIFY | Outbound (routes to) | Receives outbound order event delivery requests |
 | Institution Registry | Outbound (calls) | Validates `institution_id` from token against registry |
 | Identity & Access (OAuth2 provider) | Outbound (calls) | Validates service credentials (client_credentials flow) |
@@ -32,8 +32,8 @@
 For every inbound request:
 
 1. **TLS validation:** Enforce TLS 1.2+. Reject any non-TLS connection.
-2. **Service credential validation:** Apply the per-institution authentication mode selected under ADR-015: OAuth2 Client Credentials and/or mTLS; API keys are not implied. Token must be valid, not expired, and issued to a recognized `client_id`.
-3. **Institution identity check:** Extract `institution_id` from token claims. Validate that `institution_id` matches the request body/path parameter. If mismatch → reject with `403 Forbidden`.
+2. **Service credential validation:** Apply the per-institution authentication mode selected under ADR-015: OAuth2 Client Credentials and/or mTLS; API keys are not implied. Validate the authenticated principal under the selected method.
+3. **Institution identity check:** Derive the institution from the authenticated principal: from the validated token claim for OAuth, or from the approved certificate-to-institution mapping for mTLS-only mode. Cross-check any request body/path `institution_id`; if it is absent where allowed, use only the authenticated binding, and if it mismatches → reject with `403 Forbidden`.
 4. **Schema validation:** Validate event payload against the registered schema for the declared `event_type`. If schema fails → return structured validation error.
 5. **Route:** Forward validated payload to the appropriate downstream handler based on `event_type`.
 
@@ -47,6 +47,8 @@ For every inbound request:
 | `ReservationAccepted` | CMP-INT-RESERVATION |
 | `ReservationRejected` | CMP-INT-RESERVATION |
 | `StockAvailabilityChanged` | Offer/Availability Service |
+
+Reservation **status** includes `ACCEPTED`, `REJECTED`, `UNKNOWN` and authoritative `EXPIRED` (ADR-018). Immediate response and trusted query/reconciliation must preserve these outcomes; if a per-institution callback is approved, its versioned form routes to the relay after validation. Literal callback event names/schema for UNKNOWN or EXPIRED are not established and must not be invented from status labels.
 
 ### 3.3 Business Rules
 
@@ -85,7 +87,7 @@ For every inbound request:
 ### 5.2 Security
 
 - **POLICY-CONTROLLED:** OAuth2 Client Credentials and/or mTLS per ADR-015; onboarding and security approval select the institution mode.
-- Institution identity is derived from token, **not** from request body. The request body `institution_id` is cross-validated against token claim.
+- Institution identity is derived from the authenticated principal, **not** from an untrusted request body: validated token claim for OAuth, or approved certificate-to-institution mapping for mTLS-only mode. Any request body identity is cross-validated against that binding.
 - WAF and rate limiting enforced at edge layer before gateway (§10.1).
 - No institution can send events on behalf of another institution.
 - All rejected requests are logged to audit with reason.

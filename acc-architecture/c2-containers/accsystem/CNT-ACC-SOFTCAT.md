@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Container ID** | CNT-ACC-SOFTCAT |
-| **Purpose** | Manages the catalog of ACC software products, their versions, release channels, platform requirements, release notes, and package download links. Issues signed download URLs for installation packages stored in EXT-PACKAGE-CDN. |
+| **Purpose** | Manages the catalog of ACC software products, their versions, release channels, platform requirements, release notes, and package download links. Provides public HTTPS links, including policy-permitted anonymous signed links, or authorized signed, time-limited links for restricted installation packages stored in EXT-PACKAGE-CDN, according to asset access policy. |
 | **Scope Boundary** | Owns release metadata, version catalog, and download link generation. Does NOT store binary files (EXT-PACKAGE-CDN). |
 
 CONFIRMED (idea.md §3.1): "Software Catalog & Release Distribution — إدارة كتالوج منتجات ACC وإصداراتها ومتطلبات التشغيل وملاحظات الإصدار، وإتاحة تنزيل الحزم عبر روابط عامة أو موقعة ومحددة الصلاحية."
@@ -22,7 +22,7 @@ CONFIRMED (idea.md §3.1): "Software Catalog & Release Distribution — إدار
 |---|---|---|
 | CNT-ACM-PUBLIC | Inbound | Public catalog browsing and download link requests (IF-ACC-SOFTDL) |
 | CNT-ACM-ADMIN | Inbound | Admin console for publishing new releases and managing versions |
-| EXT-PACKAGE-CDN | Outbound | Generates signed download URLs pointing to CDN-hosted package files |
+| EXT-PACKAGE-CDN | Outbound | Provides public HTTPS or authorized signed, time-limited URLs to CDN-hosted packages as appropriate |
 | CNT-ACC-EVENTBUS | Outbound | Publishes SoftwareReleasePublished/Withdrawn events |
 | CNT-ACC-AUDIT | Outbound | Logs all release publish/withdraw and download events |
 
@@ -60,9 +60,9 @@ CONFIRMED (idea.md §3.1): "أما ملفات الحزم فتخزن في Object 
 
 | Failure | Response |
 |---|---|
-| CDN unavailable | Signed URL generation fails; download unavailable; ops alert |
+| CDN unavailable | Affected public or signed package download unavailable; alert operations |
 | Package integrity check fails | Do not publish release; log error; alert platform team |
-| Download link expired | Buyer requests new signed URL |
+| Signed download link expired | Authorized requester obtains a fresh signed URL under policy |
 
 ---
 

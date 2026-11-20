@@ -3,6 +3,8 @@
 **Checkpoint timestamp:** 2026-11-20T01:51:00Z V5.1  
 **Workflow completion:** Stage 7 of 7 (IN_PROGRESS — V5.1 remediation decisions applied; external stakeholder sign-off pending)
 
+> Historical V5.1 checkpoint: the embedded inventory and dated validator results are not the current registry snapshot; see `validation-status.md` and the manifest for current counts and review gates. Internal dates/counts reflect earlier checkpoints and are not evidence of a later validation run.
+
 ---
 
 ## 1. Final File Inventory

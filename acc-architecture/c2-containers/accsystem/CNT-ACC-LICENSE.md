@@ -54,7 +54,7 @@ CONFIRMED (idea.md §3.1): "سجلات الترخيص والاستحقاقات �
 
 ## 5. Interfaces
 
-- **IF-ACC-LICENSE-VALIDATE** (provider): Online entitlement validation. Consumers: CNT-ACR-CONNECTOR, CMP-CON-LICENSECHECK
+- **IF-ACC-LICENSE-VALIDATE** (provider): Institutional online validation for CNT-ACR-CONNECTOR/CMP-CON-LICENSECHECK; marketplace ACCommerce branch is proposed pending API Governance.
 - Provides: License issuance/management API (consumed by CNT-ACM-ADMIN)
 - Publishes: License lifecycle events via IF-ACC-EVENT-ENVELOPE
 - Functions: FN-LIC-ACTIVATE, FN-LIC-VALIDATE
@@ -65,7 +65,7 @@ CONFIRMED (idea.md §3.1): "سجلات الترخيص والاستحقاقات �
 
 | Failure | Response |
 |---|---|
-| License validation unavailable (online) | ACCore uses cached offline token (ADR-014); grace period allows continued operation |
+| License validation unavailable (online) | Use a valid scoped cached token; after expiry restrict licensed functions unless applicable grace is approved. Preserve independently permitted local ERP operation. |
 | License activation fails (order confirmed but activation failed) | Retry via event reprocessing; alert ops; order remains Confirmed |
 | Token signing key compromise | Emergency key rotation procedure needed (UNKNOWN: key rotation process) |
 

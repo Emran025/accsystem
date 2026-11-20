@@ -39,7 +39,7 @@
 | SYS-ACCSYSTEM | ACCSystem Platform | Product publication, inventory reservation, order event receipt, license validation | REST+Events / TLS | CONFIRMED (idea.md §4.3) |
 
 > [!NOTE]
-> ACCore's **primary integration posture is outbound-initiated**: the Platform Connector (CNT-ACR-CONNECTOR) polls or pushes outbound events to ACCSystem, and initiates online calls for license validation. However, ACCore's Connector also **exposes a secure inbound endpoint** that accepts authorized commands from ACCSystem — specifically reservation requests (IF-ACC-RESERVE-SAGA) and order confirmation event delivery. These inbound calls are authenticated using OAuth 2.0 service credentials and are routed exclusively through the Platform Connector. ACCSystem does **not** directly access ACCore's internal database or any internal service other than the Connector endpoint. Integration is exclusively via documented interfaces (ADR-005).
+> ACCore's **primary integration posture is outbound-initiated**: the Platform Connector (CNT-ACR-CONNECTOR) polls or pushes outbound events to ACCSystem, and initiates online calls for license validation. Where an approved deployment selects protected inbound, the Connector may expose a secure inbound endpoint for authorized commands/events; otherwise the logical boundary uses outbound polling, long-polling or a persistent channel. Authentication and certificate/token identity binding are policy-selected under ADR-015, and all modes route exclusively through the Connector. ACCSystem does **not** directly access ACCore's internal database or any internal service other than the Connector endpoint. Integration is exclusively via documented interfaces (ADR-005).
 
 ---
 
@@ -119,7 +119,7 @@ ACCore is decomposed into **8 containers** in the C2 layer (all institution-inte
 | CNT-ACR-ORGUSERS | Organization & Users | `c2-containers/accore/CNT-ACR-ORGUSERS.md` | Local employee/role management |
 | CNT-ACR-COMMERCE | Commerce Workspace | `c2-containers/accore/CNT-ACR-COMMERCE.md` | Embedded marketplace client UI |
 | CNT-ACR-CONNECTOR | Platform Connector | `c2-containers/accore/CNT-ACR-CONNECTOR.md` | ACCSystem integration adapter |
-| CNT-ACR-OUTBOX | Outbox / Inbox | `c2-containers/accore/CNT-ACR-OUTBOX.md` | Reliable event delivery guarantee |
+| CNT-ACR-OUTBOX | Outbox / Inbox | `c2-containers/accore/CNT-ACR-OUTBOX.md` | Outbox/Inbox with at-least-once delivery attempts and duplicate-safe recovery; downstream completion is not unconditional |
 
 > [!NOTE]
 > C2 decomposition of ACCore is EXCEPTION-scoped for all internal ERP modules — the platform architecture defines the **integration boundary**, not ACCore internals (which are institution-owned). CNT-ACR-CONNECTOR is IN_PROGRESS.

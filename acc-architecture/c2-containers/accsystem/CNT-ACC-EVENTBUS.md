@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | **Container ID** | CNT-ACC-EVENTBUS |
-| **Purpose** | Shared asynchronous messaging infrastructure for all ACCSystem bounded-context services. Provides durable, ordered, at-least-once event delivery with DLQ and retry policies. |
+| **Purpose** | Shared asynchronous messaging infrastructure for ACCSystem bounded contexts. Targets durable, at-least-once delivery with DLQ and retry; ordering is scoped to an aggregate/grouping key where supported and configured, not global. |
 | **Scope Boundary** | Infrastructure component only — no business logic. Owned by the platform; accessed by all services via published contracts. |
 
 CONFIRMED (idea.md §6.5, §10.1): "Message Broker / Event Bus — قنوات/Topics حسب المجال، مع DLQ وسياسات إعادة محاولة."
@@ -47,7 +47,7 @@ All ACCSystem domain services publish to and/or subscribe from the Event Bus. Ke
 |---|---|
 | Event Bus unavailable | Outbox pattern at producer side holds events until bus recovers — CONFIRMED (idea.md §6.5) |
 | Consumer lag | DLQ collects failed messages; consumer lag monitored — CONFIRMED (idea.md §11) |
-| Message ordering violation | Partition key (order_id, seller_order_id) ensures order within partition — CONFIRMED (idea.md §6.5) |
+| Message ordering violation | Group by order/seller-order where supported; chosen broker, consumers and replay configuration must establish ordering. Retain version guards and reconciliation; global and cross-DLQ ordering are not implied. |
 
 ---
 

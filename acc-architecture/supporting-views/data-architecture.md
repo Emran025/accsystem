@@ -26,18 +26,18 @@ This view documents the data entities, ownership boundaries, consistency models,
 | **Stock / Inventory** | ACCore Inventory & Warehousing | Availability snapshot (approximate/cached) in Offer/Price/Availability service | Institution-internal write; read-only snapshot exposed via Integration | Realtime at ACCore; snapshot updated on `StockAvailabilityChanged` | UNKNOWN |
 | **Cart** | ACCSystem Cart & Checkout domain | Owned by ACCSystem | Buyer-scoped (individual or institution employee) | Temporary; TTL-based expiry; abandoned carts purged per policy | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **CheckoutSession** | ACCSystem Cart & Checkout domain | Owned by ACCSystem | Buyer-scoped; read-only to Order domain on conversion | Ephemeral; invalidated on reservation failure, payment failure, or order confirmation | Controlled policy — owner and jurisdiction dependent; configure before production|
-| **ParentOrder** | ACCSystem Order Management domain | IS the canonical record | Buyer + relevant institution staff (scoped by `tenant_id` / order participation) | Created on order confirmation; state machine transitions logged immutably | Controlled retention policy; legal/compliance approval required; delete or anonymize PII only where policy permits |
+| **ParentOrder** | ACCSystem Order Management domain | IS the canonical record | Buyer + relevant institution staff (scoped by `tenant_id` / order participation) | Created during checkout before confirmation; commercial snapshot frozen at confirmation; state transitions logged | Controlled retention policy; legal/compliance approval required; delete or anonymize PII only where policy permits |
 | **SellerOrder** | ACCSystem Order Management domain | IS the record (sub-entity of ParentOrder) | Seller institution via Integration | Created on order split per seller; closed on fulfillment or cancellation | Same as ParentOrder |
 | **OrderLine** | ACCSystem Order Management domain | IS the record; snapshot of price/product at confirmation time | Same as ParentOrder/SellerOrder | Immutable after confirmation per idea.md 8.3 — commercial snapshot | Same as ParentOrder |
-| **Reservation** | ACCore at selling institution (authoritative decision) | ACCSystem holds request/response state only | Order domain (write); Integration Gateway (relay) | Created on `ReservationRequested`; expires on TTL or `ReservationAccepted/Rejected`; released on failure | Controlled policy — owner and jurisdiction dependent; configure before production|
+| **Reservation** | ACCore at selling institution (authoritative decision) | ACCSystem holds request/response state only | Order domain (write); Integration Gateway (relay) | Request may resolve ACCEPTED (active hold), REJECTED or UNKNOWN; an accepted hold may be consumed, validly released or authoritatively EXPIRED. Elapsed local time alone proves none of these outcomes | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **PaymentAttempt** | ACCSystem Payment Orchestration domain | IS the record (references provider record) | Payment domain internal; Order domain reads status | Created on payment initiation; terminal on capture, void, or refund | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **Shipment** | ACCSystem Delivery Management domain | IS the record | Delivery domain internal; ACCMared Supervisor/Courier (operational); buyer (read-only status) | Created on `OrderConfirmed`; closed on `ShipmentDelivered` or cancellation | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **Institution** | ACCSystem Institution Registry | IS the central record (non-ERP data only: ID, status, integration config) | Platform admin (write); integration services (read) | Registered on onboarding; deactivated/archived on offboarding | UNKNOWN |
-| **License** | ACCSystem License & Entitlement Management | IS the record; reference shared to ACCore via signed entitlement | Platform admin + License service (write); ACCore License Connector (read) | Issued → Activated → Renewed/Suspended/Revoked/Expired | Controlled policy — owner and jurisdiction dependent; configure before production|
-| **Entitlement** | ACCSystem License & Entitlement Management | IS the record; signed credential issued to ACCore | ACCore License Connector (validate); License service (issue/revoke) | Derived from License; short-to-medium lived signed token; refresh on renewal | UNKNOWN — TTL embedded in signed token |
+| **License** | ACCSystem License & Entitlement Management | IS the record; scoped reference shared through applicable path | Authorized admin/license service (write); authorized ACCore institutional and ACCommerce marketplace readers | Institutional ISSUED → ACTIVATED → ACTIVE; marketplace post-purchase ACTIVE; both retain renewal/suspension/revocation/expiry paths | Controlled policy — owner and jurisdiction dependent; configure before production|
+| **Entitlement** | ACCSystem License & Entitlement Management | IS the record; separately issued signed credential where applicable | Authorized workflow-specific validator; License service (issue/revoke) | Derived from License; credential TTL and grant validity are distinct and policy-controlled; separate refresh path | UNKNOWN — TTL embedded in signed token |
 | **SoftwareRelease** | ACCSystem Software Catalog & Distribution | IS the record | Public read (metadata); Platform admin (write); CDN (asset storage) | Published → Active → Withdrawn; metadata retained after withdrawal | Controlled policy — owner and jurisdiction dependent; configure before production|
 | **SupportSession** | ACCSystem Platform Administration & Support | IS the record | Support staff (time-limited scope); platform admin (audit); subject institution (audit view) | Created on approval; auto-expires per granted duration | Controlled policy — owner and jurisdiction dependent; configure before production|
-| **PlatformUser** | ACCSystem Identity & Access | IS the record for platform-level identity | Identity & Access (write); Platform Administration & Support (workflow) | Active → Suspended → Reactivated; deleted per GDPR/policy | UNKNOWN — retain audit trail post-deletion |
+| **PlatformUser** | ACCSystem Identity & Access | IS the record for platform-level identity | Identity & Access (write); Platform Administration & Support (workflow) | Active → Suspended → Reactivated; deletion/anonymization subject to approved applicable policy | UNKNOWN — audit and legal handling require approval |
 | **AuditEvent** | ACCSystem Audit & Observability | IS the immutable record | Audit service (write); platform admin/support (read-only); legal/compliance | Created on sensitive operations; never modified | Controlled policy — owner and jurisdiction dependent; configure before production|
 
 ---
@@ -91,26 +91,26 @@ ACCore Outbox Worker (Connector)
   │  → HTTP POST to Integration Gateway (TLS, service auth)
   │    Payload: { institution_id, seller_product_id, version, listing_data }
   ▼
-Integration Gateway (ACCSystem)
+Integration Gateway / publication worker (ACCSystem)
   │  Validates institution auth, schema, publishing policy
-  │  → Delivers to Catalog & Publication service
+  │  → Records rejected attempts without listing mutation, or durably queues accepted work
+  │  → Acceptance receipt and Catalog-owned listing_id timing require API/Integration/Catalog resolution
   ▼
 Catalog & Publication
-  │  Creates/updates Product Listing record (listing_id assigned)
-  │  → Publishes event to Event Bus: ProductListingPublished
+  │  Applies version guard; creates/updates authoritative Listing, retaining listing_id
+  │  → Emits applicable catalog state event via durable event path
   ▼
 Search & Discovery
-  │  Consumes ProductListingPublished event
-  │  → Updates search index
-  ▼
-Integration Gateway
-  │  Returns listing_id, version, status to ACCore
-  │  → ACCore stores listing_id as marketplace reference
+  │  Asynchronously projects permitted Catalog state; retry/rebuild under approved procedure
+  └  Search completion is not required for an acceptance receipt
+ACCore records the listing_id/result when available under the approved receipt contract.
 ```
 
-**Consistency:** Eventual — ACCore product master updated; listing projection may lag by seconds to minutes depending on event processing latency.
+**Consistency:** Eventual — ACCore product master is updated first; listing and search projections may lag. Operational targets and receipt timing remain approval gates.
 
 ### 4.2 Order Data Flow: Order → Payment → Delivery
+
+The following is a conditional happy path only. All required seller holds must be authoritatively accepted; selected payment/capture policy and supported provider capabilities apply. See `dynamic-purchase-flow.md`, ADR-018 and `CMP-ORD-SAGA` for UNKNOWN, expiry, mixed outcomes and recovery. B2B buyer purchase records, software licensing and notifications remain distinct downstream branches.
 
 ```
 Order Domain (ACCSystem)
@@ -122,7 +122,7 @@ Integration Gateway → ACCore (seller)
   │  → Returns ReservationAccepted (reservation_id, expiry) or ReservationRejected
   ▼
 Order Domain
-  │  On Accept: transitions to PendingPayment
+  │  On all required accepted holds: transitions to PendingPayment
   │  → Instructs Payment Orchestration to authorize
   ▼
 Payment Orchestration → Payment Provider
@@ -139,8 +139,8 @@ ACCore (seller)
   │  → Commits stock deduction, records local sale at agreed point
   ▼
 Payment Domain
-  │  Captures payment
-  │  → Publishes PaymentCaptured
+  │  Captures payment when required by the approved selected mode
+  │  → Publishes PaymentCaptured when applicable
   ▼
 Delivery Domain
   │  Creates Shipment on OrderConfirmed
@@ -168,7 +168,7 @@ Order Domain
 | Order Management | Strong for state transitions (saga coordinator) | Order state machine transitions must be atomic; saga handles cross-domain |
 | Payment Orchestration | Strong (payment ledger) + Eventual (reconciliation) | Payment records ACID; reconciliation eventual |
 | Delivery Management | Eventual (event-driven) | Delivery status updates are event-driven |
-| Integration Gateway | At-least-once with idempotency | Outbox/Inbox guarantees delivery; duplicates handled by idempotency keys |
+| Integration Gateway | At-least-once with idempotency | Outbox/Inbox supports recoverable delivery attempts and idempotent effects; duplicates and DLQ/reconciliation remain possible |
 | License & Entitlement | Strong (license issuance) + Eventual (validation cache) | License records authoritative; local validation cache with bounded staleness |
 | Platform Administration | Strong (access control decisions) | Access grants/revocations must be consistent |
 
@@ -184,7 +184,7 @@ Order Domain
 | `order_id` | ACCSystem Order Management | Platform-wide | Canonical order identifier for ParentOrder |
 | `seller_order_id` | ACCSystem Order Management | Platform-wide | SellerOrder identifier (sub-order per seller) |
 | `buyer_transaction_id` | ACCore (buyer institution) | Per institution | B2B buyer's internal purchase record reference; carried in order integration messages |
-| `reservation_id` | ACCore (seller) | Per reservation | ACCore-assigned; carried back in `ReservationAccepted` response |
+| `reservation_id` | ACCore (seller), per this view; earlier drafts differ from `FN-ORD-RESERVE`, so creator/assignment remains an open institution/API contract gate | Per reservation | Response reference; exact creator/mapping is an institution/API contract gate. A distinct stable request key is needed before dispatch, including lost-response recovery. |
 | `payment_id` | ACCSystem Payment domain | Platform-wide | Internal payment attempt identifier |
 | `provider_payment_ref` | External Payment Provider | External | Provider's transaction reference; stored in PaymentAttempt for reconciliation |
 | `shipment_id` | ACCSystem Delivery domain | Platform-wide | Shipment record identifier |
@@ -232,24 +232,24 @@ The following data crosses from ACCore to ACCSystem via Integration Gateway, as 
 ## 8. Retention and Deletion Policy
 
 > [!NOTE]
-> Specific retention targets are **UNKNOWN** in idea.md. The values below are **PROPOSED** defaults requiring legal/compliance stakeholder approval before implementation.
+> Retention targets, triggers and applicable jurisdictions are UNKNOWN and require policy approval. Earlier drafts proposed examples including seven years, seven days, 30 days, three years and indefinite metadata; they are historical proposals, **not defaults, implemented rules or legal requirements**. Legal/Compliance and Finance, with Audit, Security and Operations as applicable, must approve each class's scope and policy before implementation. Retain records needed for unresolved reconciliation, retry/deduplication, security, audit and applicable obligations; no elapsed-time example alone authorizes destruction.
 
-| Data Class | Proposed Retention | Deletion Trigger | PII Handling |
-|---|---|---|---|
-| AuditEvent | 7 years PROPOSED | Manual archival after retention period | Minimize PII in audit payloads; anonymize where possible |
-| PaymentAttempt | 7 years PROPOSED | Retention period expiry | PCI-DSS requirements apply; no raw card data stored |
-| ParentOrder / SellerOrder / OrderLine | 7 years PROPOSED | Retention period expiry | PII in shipping address — anonymize post-completion |
-| Cart / CheckoutSession | 30 days inactivity PROPOSED | TTL expiry | Purge fully on expiry |
-| Reservation | 7 days post-resolution PROPOSED | Resolution + 7 days | No sensitive PII |
-| Shipment | 3 years PROPOSED | Retention expiry | Delivery address is PII — anonymize post-delivery |
-| License / Entitlement | 7 years post-expiry PROPOSED | Expiry + retention period | Institution data, low PII risk |
-| SupportSession | 7 years PROPOSED | Retention period expiry | Audit requirement; scope and actor must be retained |
-| PlatformUser | Retain audit trail post-deletion PROPOSED | Account closure | GDPR right-to-erasure applies to personal data; audit trail anonymized |
-| SoftwareRelease (metadata) | Indefinite PROPOSED | Manual withdrawal (metadata retained) | No PII |
-| SoftwareRelease (binaries) | Per CDN/storage policy UNKNOWN | CDN lifecycle rules | No PII |
-| Search Index | Derived; rebuilt from events | On re-index; on listing withdrawal | Derived data only |
+| Data Class | Retention / disposition status | Potential options, subject to approval |
+|---|---|---|
+| AuditEvent | UNKNOWN | Minimize PII; archive, anonymize or retain as approved while preserving audit evidence |
+| PaymentAttempt | UNKNOWN | Retain/secure provider references and required financial/audit evidence; approved archival/deletion |
+| ParentOrder / SellerOrder / OrderLine | UNKNOWN | Preserve commercial snapshots and reconciliation; approved retention, archival and PII anonymization/deletion |
+| Cart / CheckoutSession | UNKNOWN | Inactivity/expiry and purge or retention only under approved policy |
+| Reservation | UNKNOWN | Preserve unresolved reservation/release and deduplication evidence; approved post-resolution archival/deletion |
+| Shipment | UNKNOWN | Approved retention and address minimization/anonymization or deletion |
+| License / Entitlement | UNKNOWN | Approved validity-related retention, archival and deletion while preserving relevant audit/revocation evidence |
+| SupportSession | UNKNOWN | Retain scope/actor and audit evidence for approved period; approved archival/deletion |
+| PlatformUser | UNKNOWN | Approved account-closure, erasure/anonymization and audit-retention handling; legal applicability requires review |
+| SoftwareRelease (metadata) | UNKNOWN | Withdrawal keeps historical metadata as required by approved policy; indefinite retention remains an option, not a default |
+| SoftwareRelease (binaries) | UNKNOWN | CDN/storage lifecycle and withdrawal/deletion per approved policy |
+| Search Index | Derived projection | Rebuild, remove or update per authoritative Catalog state and approved procedure |
 
-**BLOCKER:** Retention/deletion targets require legal, compliance, and finance stakeholder sign-off before implementation. Mark all PROPOSED values as UNRESOLVED.
+**BLOCKER:** Relevant policy and legal/compliance/finance sign-off is required; none of the above establishes a duration, automatic trigger, jurisdiction or actual approval.
 
 ---
 
@@ -271,7 +271,7 @@ The following data crosses from ACCore to ACCSystem via Integration Gateway, as 
 |---|---|---|---|---|
 | DA-001 | Retention/deletion periods for all entity classes | HIGH | Legal/Compliance | Define before data layer implementation |
 | DA-002 | GDPR/PDPA compliance scope — which jurisdictions apply | HIGH | Legal | Determine before launch |
-| DA-003 | PII fields in OrderLine commercial snapshot — anonymization strategy | MEDIUM | Privacy/Engineering | Define anonymization policy post-completion |
+| DA-003 | PII fields in OrderLine commercial snapshot — anonymization strategy | MEDIUM | Privacy/Engineering | Define approved triggers and strategy without assuming post-completion deletion |
 | DA-004 | ACCore DB backup strategy — RPO per institution | UNKNOWN | Architecture/Infra | Define per institution SLA |
 | DA-005 | B2B buyer ACCore integration — which events trigger purchase record creation | MEDIUM | Business/Architecture | Define commit point rules |
 | DA-006 | Multi-currency data model — currency fields on price snapshots | UNKNOWN | Business/Architecture | Define before cross-border commerce |

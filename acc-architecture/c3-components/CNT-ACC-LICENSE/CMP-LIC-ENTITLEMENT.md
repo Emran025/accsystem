@@ -15,7 +15,7 @@
 
 | Collaborator | Direction | Role |
 |---|---|---|
-| CNT-ACR-CONNECTOR / CMP-CON-LICENSECHECK | Inbound | Online validation queries via IF-ACC-LICENSE-VALIDATE |
+| CNT-ACR-CONNECTOR / CMP-CON-LICENSECHECK; ACCommerce client | Inbound | Institutional validation and proposed marketplace validation via IF-ACC-LICENSE-VALIDATE; marketplace mapping pending governance |
 | License record store | Inbound | Reads license state |
 | CNT-ACC-IDENTITY | Outbound | Validates requesting service identity |
 
@@ -25,14 +25,14 @@
 
 **Validation flow:**
 1. Receive validation request `{institution_id + product_code, modules_requested} for institutional validation OR {buyer_id + product_id/license_id, modules_requested} for marketplace validation`
-2. Load license record; check: status=Active, not Expired, not Revoked
-3. Check modules/units requested ≤ licensed capacity
-4. Check validity period (valid_from ≤ today ≤ valid_until + grace_period)
-5. Return `{valid: true/false, licensed_modules, units, expires_at, grace_until}`
+2. Authorize the workflow-specific scope; find matching candidates including negative states.
+3. Evaluate each candidate's status, effective validity and requested modules/units/capacity before selecting; apply configured, approved grace only where applicable.
+4. Select among eligible candidates deterministically as proposed in FN-LIC-VALIDATE; multiple-entitlement combination and negative-result precedence remain OPEN.
+5. Return the relevant contract status and evaluation result without conflating them; over-capacity mapping remains a policy/contract decision.
 
 **Rules:**
 - Suspended license → valid=false
-- Within grace period after expiry → valid=true with warning
+- Grace after expiry permits operation only if an applicable policy is approved; otherwise preserve the restrictive path. Status timing and duration remain OPEN.
 - Usage/seat capacity exceeded → valid=false with capacity_exceeded flag
 
 ---
@@ -55,7 +55,7 @@ Read-only consumer of License records owned by CMP-LIC-ISSUANCE and CMP-LIC-LIFE
 
 ## 6. Security
 
-- IF-ACC-LICENSE-VALIDATE restricted to authorized services only (CNT-ACR-CONNECTOR)
+- IF-ACC-LICENSE-VALIDATE requires authentication and authorization for the selected institutional or proposed marketplace caller and its own scope; by-ID access is not an authorization bypass.
 - CONFIRMED (idea.md §4.3): Validation does not expose ERP data
 
 ---

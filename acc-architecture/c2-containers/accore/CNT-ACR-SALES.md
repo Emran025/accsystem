@@ -19,9 +19,9 @@ CONFIRMED (idea.md §4.1): "Sales & Procurement — عمليات البيع وا
 
 | Collaborator | Direction | Role |
 |---|---|---|
-| CNT-ACR-CONNECTOR | Inbound | Receives OrderConfirmed events, creates local sales order record |
-| CNT-ACR-INVENTORY | Outbound | Triggers final inventory deduction on order commitment |
-| CNT-ACR-FINANCE | Outbound | Records financial entries at commitment point |
+| CNT-ACR-CONNECTOR | Inbound | Receives recipient-scoped OrderConfirmed: seller local sales or authorized B2B buyer purchase/procurement path |
+| CNT-ACR-INVENTORY | Outbound | Seller-scoped reservation commitment where applicable; buyer purchase receipt does not command seller stock |
+| CNT-ACR-FINANCE | Outbound | Institution-local financial posting only under its approved trigger/policy (ADR-019) |
 
 ---
 
@@ -58,7 +58,7 @@ CONFIRMED (idea.md §7.3): Financial commitment point is an open decision (§12)
 
 | Failure Scenario | Mitigation Strategy |
 |---|---|
-| Duplicate order notification from ACCSystem | Handled idempotently by checking existing `order_id`; duplicate acknowledged without re-processing |
+| Duplicate order notification from ACCSystem | Track durable receipt, role/operation and per-effect progress; recover incomplete work without repeating effects. An `order_id` alone must not suppress a distinct authorized buyer or seller effect. ACK semantics and exact role key/cardinality remain contract gates. |
 | Sales invoice generation failure | Order remains in `PROCESSING` state; background retry job regenerates invoice |
 | Local database disk full | Inbound connector rejects new orders with HTTP 503; critical disk space alert escalated |
 

@@ -66,8 +66,8 @@ CONFIRMED (idea.md §5.2): Reference IDs — order_id, seller_order_id, correlat
 
 | Failure | Response |
 |---|---|
-| ACCore definitive reservation rejection | Release only confirmed accepted holds; no payment; order fails. Timeout/lost response/circuit-open after possible dispatch → `ReservationUnknown`; query/reconcile; no payment or release solely from elapsed time. |
-| Payment definitive decline | Release only confirmed reservations; order fails. Timeout/lost response → `PaymentUnknown`; reconcile provider before retry, void, or release. |
+| ACCore definitive reservation rejection or authoritative expiry | Block payment; reconcile peers and compensate eligible known holds under ADR-018; final closure waits for required outcomes. Timeout/lost response/circuit-open after possible dispatch → `ReservationUnknown`; reconcile or safely wait/escalate. |
+| Payment definitive decline | Block confirmation, reconcile other payment and reservation effects, and compensate eligible known effects under policy; close only after required outcomes settle. Timeout/lost response → `PaymentUnknown`; reconcile before retry, void, or release. |
 | Confirmation write fails | Retry local commit if no commit; otherwise query local snapshot/outbox and external states, then resume or compensate only on definitive evidence; never blanket void/refund. |
 | Delivery creation fails | Order remains Confirmed; delivery state → PendingDelivery; retry |
 

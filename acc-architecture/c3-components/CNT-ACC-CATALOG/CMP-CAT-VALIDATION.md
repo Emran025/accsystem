@@ -67,7 +67,7 @@ warnings        list of {rule_id, field, message}
 > **UNKNOWN — Content Policy:** idea.md §12 does not define exact content policy rules. This component's behavior depends on a policy definition that must be provided by platform operations team. Until defined, only format/completeness checks are implementable. Owner: OWNER_UNASSIGNED. Revisit trigger: Content policy specification.
 
 ### Processing Logic
-1. Load active rules from Policy Rule Store (cached, TTL = ASSUMPTION: 5 min)
+1. Load active rules from Policy Rule Store (cache TTL is a controlled, unapproved Operations/Product policy)
 2. For each rule: evaluate against payload field
 3. If any `ERROR`-severity rule fails → result = FAIL
 4. If only `WARNING`-severity failures → result = PASS (warnings recorded)
@@ -102,7 +102,7 @@ warnings        list of {rule_id, field, message}
 | Concern | Note |
 |---|---|
 | Rule cache invalidation | On policy update, cache must be invalidated; ASSUMPTION: event-driven invalidation on policy change |
-| Validation latency | Should complete synchronously within publication event handler; target < 500ms (ASSUMPTION) |
+| Validation latency | Synchronous handler target requires workload evidence and Operations/Product approval; no value established |
 | Observability | Emit metrics: validations/min, FAIL rate by rule_id, institution_id — enables policy tuning |
 
 ---
