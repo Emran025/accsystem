@@ -200,6 +200,22 @@ phase boundary
 
 This four-phase partition is a proposed execution boundary. The current architecture registry and existing five-step roadmap remain authoritative for their own purposes until this phase plan is reviewed and accepted. No API document, functional requirement, provider choice, accounting policy or production commitment is created by this README.
 
+## 10. Requirements package structure
+
+The detailed requirements package is deliberately kept separate from this boundary document. The mandatory decomposition, identifier rules, application/location tables, C4-container binding rules, and machine-checkable registry are defined in [`requirements-governance.md`](requirements-governance.md).
+
+The five reserved phase folders are:
+
+| Phase | Folder | Current status |
+|---|---|---|
+| PH-01 | [`phase-01-platform-foundation/`](phase-01-platform-foundation/) | Requirement package not started |
+| PH-02 | [`phase-02-catalog-discovery-reservation/`](phase-02-catalog-discovery-reservation/) | Requirement package not started |
+| PH-03 | [`phase-03-inventory-order-payment-delivery-events/`](phase-03-inventory-order-payment-delivery-events/) | Requirement package not started |
+| PH-04 | [`phase-04-accmared-internal-delivery/`](phase-04-accmared-internal-delivery/) | Requirement package not started |
+| PH-05 | [`phase-05-intelligence-personalization/`](phase-05-intelligence-personalization/) | Future-only boundary; no requirements allowed |
+
+The initial machine-readable registry is [`requirements-registry.csv`](requirements-registry.csv), and its structural checker is [`validate_requirements.py`](validate_requirements.py). The empty registry is intentional until the first requirement package is elicited and reviewed.
+
 ## References
 
 [1]: https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/ "NASA Systems Engineering Handbook — Program/Project Life Cycle"
