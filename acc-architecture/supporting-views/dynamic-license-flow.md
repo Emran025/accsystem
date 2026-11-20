@@ -110,7 +110,7 @@ sequenceDiagram
         else Usage exceeds limits (seat overuse)
             LE-->>IGW: ValidationResult(status: VALID, usage_ok: false, overage_detail)
             IGW-->>ACC: ValidationResult(usage_ok: false)
-            ACC->>ACC: Alert institution admin; block new seat activations
+            ACC->>ACC: Alert institution admin, block new seat activations
         end
         
         LE->>BUS: LicenseValidated event (periodic)

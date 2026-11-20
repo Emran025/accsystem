@@ -28,12 +28,12 @@ flowchart LR
   PAY["EXT-PAYMENT-PROVIDER — external payment provider(s)"]
   CDN["EXT-PACKAGE-CDN — package CDN/object storage"]
   ACT -->|documented user interactions| COM["SYS-ACCOMMERCE boundary"]
-  COM -->|marketplace/order logical integration| AS["SYS-ACCSYSTEM boundary"]
-  AS -->|connector/API/event logical integration| CORE["SYS-ACCORE boundary"]
-  AS -->|platform management interfaces| MGT["SYS-ACMANAGEMENT boundary"]
-  AS -->|delivery/order interfaces| MS["SYS-ACCMARED-SUP boundary"]
-  AS -->|delivery/order interfaces| MC["SYS-ACCMARED-COU boundary"]
-  AS -->|payment interface| PAY
+  SYS_ACCOMMERCE -->|marketplace/order logical integration| SYS_ACCSYSTEM
+  SYS_ACCSYSTEM -->|connector/API/event logical integration| SYS_ACCORE
+  SYS_ACCSYSTEM -->|platform management interfaces| SYS_ACMANAGEMENT
+  SYS_ACCSYSTEM -->|delivery/order interfaces| SYS_ACCMARED_SUP
+  SYS_ACCSYSTEM -->|delivery/order interfaces| SYS_ACCMARED_COU
+  SYS_ACCSYSTEM -->|payment interface| PAY
   MGT -->|software distribution links| CDN
 ```
 
@@ -53,17 +53,17 @@ flowchart LR
   MC["SYS-ACCMARED-COU — ACCMared Courier"]
   PAY["EXT-PAYMENT-PROVIDER — External Payment Provider(s)"]
   CDN["EXT-PACKAGE-CDN — Software Package CDN/Object Storage"]
-  ECO --> AS
-  ECO --> CORE
-  ECO --> COM
-  ECO --> MGT
-  ECO --> MS
-  ECO --> MC
-  ACT --> ECO
-  AS --> PAY
+  SYS_ACCECOSYSTEM --> SYS_ACCSYSTEM
+  SYS_ACCECOSYSTEM --> SYS_ACCORE
+  SYS_ACCECOSYSTEM --> SYS_ACCOMMERCE
+  SYS_ACCECOSYSTEM --> SYS_ACMANAGEMENT
+  SYS_ACCECOSYSTEM --> SYS_ACCMARED_SUP
+  SYS_ACCECOSYSTEM --> SYS_ACCMARED_COU
+  ACT --> SYS_ACCECOSYSTEM
+  SYS_ACCSYSTEM --> PAY
   MGT --> CDN
 ```
-**System:** `SYS-ACCECOSYSTEM` — `ACC Ecosystem Portfolio`. **Status:** `COMPLETE`. **Source:** `00-discovery/discovery-report.md`.
+**System:** `SYS-ACCECOSYSTEM` — `ACC Ecosystem Portfolio`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `00-discovery/discovery-report.md`.
 
 ### C1-SYS-ACCSYSTEM — ACCSystem Platform context
 
@@ -78,11 +78,11 @@ flowchart LR
   MC["SYS-ACCMARED-COU — ACCMared Courier"]
   PAY["EXT-PAYMENT-PROVIDER — External Payment Provider(s)"]
   CDN["EXT-PACKAGE-CDN — Software Package CDN/Object Storage"]
-  ACT -->|actors| AS
+  ACT -->|actors| SYS_ACCSYSTEM
   SYS_ACCSYSTEM -->|logical connector/API/event integration| CORE
   SYS_ACCSYSTEM -->|logical payment interface| PAY
 ```
-**System:** `SYS-ACCSYSTEM` — `ACCSystem Platform`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACCSYSTEM.md`.
+**System:** `SYS-ACCSYSTEM` — `ACCSystem Platform`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCSYSTEM.md`.
 
 ### C1-SYS-ACCORE — ACCore (per-institution ERP) context
 
@@ -100,7 +100,7 @@ flowchart LR
   SYS_ACCORE -->|institution-controlled connector/API/event integration| AS
   SYS_ACCORE -->|institution users and ERP operations| ACT
 ```
-**System:** `SYS-ACCORE` — `ACCore (per-institution ERP)`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACCORE.md`.
+**System:** `SYS-ACCORE` — `ACCore (per-institution ERP)`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCORE.md`.
 
 ### C1-SYS-ACCOMMERCE — ACCommerce context
 
@@ -118,7 +118,7 @@ flowchart LR
   ACT -->|buyer interaction| SYS_ACCOMMERCE
   SYS_ACCOMMERCE -->|marketplace/order logical integration| AS
 ```
-**System:** `SYS-ACCOMMERCE` — `ACCommerce`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACCOMMERCE.md`.
+**System:** `SYS-ACCOMMERCE` — `ACCommerce`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCOMMERCE.md`.
 
 ### C1-SYS-ACMANAGEMENT — ACManagement Portal context
 
@@ -137,7 +137,7 @@ flowchart LR
   SYS_ACMANAGEMENT -->|platform management interfaces| AS
   SYS_ACMANAGEMENT -->|software download links| CDN
 ```
-**System:** `SYS-ACMANAGEMENT` — `ACManagement Portal`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACMANAGEMENT.md`.
+**System:** `SYS-ACMANAGEMENT` — `ACManagement Portal`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACMANAGEMENT.md`.
 
 ### C1-SYS-ACCMARED-SUP — ACCMared Supervisor context
 
@@ -155,7 +155,7 @@ flowchart LR
   ACT -->|delivery supervisor interaction| SYS_ACCMARED_SUP
   SYS_ACCMARED_SUP -->|delivery/order logical integration| AS
 ```
-**System:** `SYS-ACCMARED-SUP` — `ACCMared Supervisor`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACCMARED-SUP.md`.
+**System:** `SYS-ACCMARED-SUP` — `ACCMared Supervisor`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCMARED-SUP.md`.
 
 ### C1-SYS-ACCMARED-COU — ACCMared Courier context
 
@@ -173,7 +173,7 @@ flowchart LR
   ACT -->|courier interaction| SYS_ACCMARED_COU
   SYS_ACCMARED_COU -->|delivery/order logical integration| AS
 ```
-**System:** `SYS-ACCMARED-COU` — `ACCMared Courier`. **Status:** `COMPLETE`. **Source:** `c1-context/systems/SYS-ACCMARED-COU.md`.
+**System:** `SYS-ACCMARED-COU` — `ACCMared Courier`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCMARED-COU.md`.
 
 ## C2 — Container views
 

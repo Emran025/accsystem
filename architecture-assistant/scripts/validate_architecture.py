@@ -13,7 +13,7 @@ def load(p, errors, required=False):
         if required: errors.append(f'{p}: required registry missing')
         return {}
     try:
-        value=json.loads(p.read_text(encoding='utf-8'))
+        value=json.loads(p.read_text(encoding='utf-8-sig'))
         if not isinstance(value,dict): errors.append(f'{p}: registry root must be an object'); return {}
         return value
     except (OSError,UnicodeError,json.JSONDecodeError) as e:
@@ -44,10 +44,17 @@ def check_exception(root, ex, errors, owner):
 
 def check_markdown_links(root, md, errors):
     text=md.read_text(encoding='utf-8',errors='replace')
-    for ref in re.findall(r'\[[^\]]*\]\(([^)]+)\)',text):
+    for ref in re.findall(r'\[[^\]]*\]\(([^)]+)\)', text):
+        ref = ref.strip().strip('<>')
         if ref.startswith(('http://','https://','#','mailto:')): continue
-        rel=(md.parent/ref.split('#')[0]).relative_to(root).as_posix()
-        target=safe_target(root,rel)
+        path_ref = ref.split('?', 1)[0].split('#', 1)[0]
+        if not path_ref: continue
+        try:
+            rel = (md.parent / path_ref).resolve().relative_to(root).as_posix()
+        except (ValueError, OSError):
+            errors.append(f'{md.relative_to(root)}: broken/unsafe Markdown reference {ref}')
+            continue
+        target = safe_target(root, rel)
         if target is None or not target.exists(): errors.append(f'{md.relative_to(root)}: broken/unsafe Markdown reference {ref}')
 
 def validate(root):
@@ -187,8 +194,19 @@ def validate(root):
     if out.is_symlink(): errors.append('validation report directory must not be a symbolic link')
     else:
         out.mkdir(exist_ok=True)
-        (out/'coverage-report.md').write_text('\n'.join(coverage)+'\n',encoding='utf-8')
-        (out/'traceability-report.md').write_text('\n'.join(trace)+'\n',encoding='utf-8')
+        import tempfile, os
+        for name, payload in (("coverage-report.md", coverage), ("traceability-report.md", trace)):
+            target = out / name
+            if target.is_symlink() or (target.exists() and target.stat().st_nlink > 1):
+                errors.append(f'validation report target must not be a symlink or hard link: {target}')
+                continue
+            fd, tmp_name = tempfile.mkstemp(prefix=f'.{name}.', dir=out)
+            try:
+                with os.fdopen(fd, 'w', encoding='utf-8', newline='\n') as fh:
+                    fh.write('\n'.join(payload)+'\n'); fh.flush(); os.fsync(fh.fileno())
+                os.replace(tmp_name, target)
+            finally:
+                if os.path.exists(tmp_name): os.unlink(tmp_name)
     return errors,counts
 
 def main():

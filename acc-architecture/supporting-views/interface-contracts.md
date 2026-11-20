@@ -350,7 +350,7 @@ POST /v1/integration/reservations
 }
 ```
 
-> **Canonical status vocabulary:** Response `status` MUST be one of `ACCEPTED`, `REJECTED`, or `UNKNOWN`. `UNKNOWN` is returned when ACCore cannot immediately determine the outcome (connectivity issue, partial write). An `UNKNOWN` response is **not** a rejection — the saga must query by `idempotency_key` and await resolution before taking any compensating action. Vocabulary cross-reference: ADR-018.
+> **Canonical status vocabulary:** An immediate reservation response is `ACCEPTED` or `REJECTED`; a response that cannot establish the outcome is `UNKNOWN`. A trusted ACCore query/reconciliation or authoritative callback may later resolve `UNKNOWN` to terminal `ACCEPTED`, `REJECTED`, or `EXPIRED`. Elapsed time alone never proves `EXPIRED`. `UNKNOWN` is not a rejection: the saga must preserve the same idempotency key, block payment, and await authoritative resolution before release, compensation, or retry. Vocabulary cross-reference: ADR-018.
 
 ### 3.5 Saga Compensation
 
@@ -365,7 +365,7 @@ If reservation is accepted but payment subsequently fails: reservation release i
 | ACCore unreachable | Retry with same `idempotency_key`; exponential backoff; query existing reservation outcome | CONFIRMED — idea.md §7.5 |
 | Timeout before response (no response received by saga) | Persist `UNKNOWN` on saga reservation state; block payment step; query ACCore using `idempotency_key` / `reservation_id`; do not compensate or release until a definitive `ACCEPTED`, `REJECTED`, or `EXPIRED` outcome is confirmed by ACCore query or reconciliation | PROPOSAL — aligns with ADR-006 §3.2, ADR-013 §4, ADR-018 |
 | Invalid institution_id | Return 404/422 from Integration Gateway | ASSUMPTION |
-| Reservation TTL expired | ACCore auto-releases; saga compensates | CONFIRMED — idea.md §7.2 |
+| Reservation TTL policy reached / possible expiry | Persist `UNKNOWN` unless ACCore authoritatively reports `EXPIRED` or a trusted query/reconciliation resolves the state; do not release, compensate, charge, or repeat the effect from elapsed time alone | OPEN POLICY — configurable TTL/reconciliation/notification behavior requires ACCore and institutional approval |
 
 ### 3.7 Idempotency
 
@@ -1061,7 +1061,7 @@ The ACCore seller's response to a reservation request initiated by the Order sag
 > [!NOTE]
 > `reservation_id` is CONFIRMED as ACCore-assigned — idea.md §5.2: \"reservation_id: ACCore-assigned; carried back in ReservationAccepted response.\" The authority for the final reservation decision lies with ACCore — this is the source-of-truth for inventory. CONFIRMED — idea.md §5: \"Actual inventory source of truth: ACCore seller.\"
 
-> **Canonical status vocabulary (same as IF-ACC-RESERVE-SAGA):** `ACCEPTED` | `REJECTED` | `UNKNOWN`. Delivery mode: synchronous response by default; async-callback mode is available per ADR-015 connectivity configuration (PROPOSED/approval-required for specific institutions). Cross-reference: ADR-018, ADR-015.
+> **Canonical status vocabulary (same as IF-ACC-RESERVE-SAGA):** immediate response `ACCEPTED` | `REJECTED` | `UNKNOWN`; authoritative resolution may return terminal `ACCEPTED` | `REJECTED` | `EXPIRED`. Delivery mode and notification/callback behavior remain contract gates per ADR-015; do not infer them from this view. Cross-reference: ADR-018, ADR-015.
 
 ### 9.5 Reservation Expiry
 

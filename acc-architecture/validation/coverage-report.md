@@ -9,7 +9,7 @@ System: ACC Ecosystem (`SYS-ACCECOSYSTEM`)
 | C1 | 15 | 7 | 8 | 0 | None |
 | C2 | 39 | 16 | 23 | 0 | None |
 | C3 | 35 | 35 | 0 | 0 | None |
-| DECISION | 14 | 14 | 0 | 0 | None |
+| DECISION | 22 | 22 | 0 | 0 | None |
 
 Unmapped validation findings: 0
 

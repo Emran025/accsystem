@@ -12,7 +12,7 @@ Create one ParentOrder and one SellerOrder per seller, reserve inventory at ever
 2. Persist ParentOrder, SellerOrders, saga state, and outbox records atomically.
 3. Start one reservation sub-operation per SellerOrder, concurrently where safe. Each has a unique reservation ID and idempotency key.
 4. Wait for every required reservation:
-   - all `ACCEPTED/RESERVED` → payment is eligible;
+   - all `ACCEPTED` → payment is eligible;
    - any definitive `REJECTED` → release only reservations confirmed accepted, then fail checkout;
    - any `UNKNOWN` → enter `ReservationUnknown`, stop payment and unsafe release, query ACCore by reservation ID/key, and reconcile.
 5. Create payment allocation records per SellerOrder. Use one aggregated buyer-facing provider transaction only when seller policies are compatible and provider capabilities support it; otherwise use separate payment attempts.

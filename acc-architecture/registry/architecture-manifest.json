@@ -16,11 +16,19 @@
   "validation_summary": {
     "validate_architecture": "PASS",
     "validate_artifact_depth": "STRUCTURE_PRESENT_REQUIRES_HUMAN_REVIEW",
-    "last_run": "2026-11-19T04:00:00+03:00",
-    "elements_count": 105,
+    "last_run": "2026-11-20T00:32:00Z",
+    "elements_count": 113,
     "open_decisions": 24,
     "adrs_status": "PROPOSED_WITH_OWNER_DECISIONS_LABELLED",
     "incomplete_outlines": 0,
-    "adrs_review_package": "decisions/ADR-STAKEHOLDER-REVIEW-GATE.md"
+    "adrs_review_package": "decisions/ADR-STAKEHOLDER-REVIEW-GATE.md",
+    "operations_count": 7,
+    "functions_count": 7,
+    "interfaces_count": 9,
+    "decisions_count": 22,
+    "systems_count": 7,
+    "containers_count": 30,
+    "components_count": 28,
+    "baseline_commit": "99e440dd55a7d3ff424fb207069ed23ae2563e05"
   }
 }

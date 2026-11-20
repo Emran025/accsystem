@@ -1,11 +1,13 @@
 # Consistency Alignment Change Report
 
 **Date:** 2026-11-16  
-**Status:** COMPLETE — All 6 Inconsistency Categories Reconciled  
+**Status:** HISTORICAL — superseded by the 2026-11-20 V5 audit; not evidence of current semantic closure
 **Scope:** Strictly limited, surgical correction across existing ACC Architecture documentation  
 **Baseline Evidence:** `idea.md` v1.1 (Arabic, 685 lines)  
 
 ---
+
+> This document is retained for provenance. Current status is governed by `validation-status.md`, `c4-microservices-remediation-plan.md`, and `remediation-audit.md`; unresolved external gates and current Mermaid/contract results override broad historical wording.
 
 ## Executive Summary
 

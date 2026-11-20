@@ -38,7 +38,7 @@ flowchart TD
     %% Reservation flow (ACCSystem → ACCore → ACCSystem)
     INTEGRATION -->|"IF-ACC-RESERVE-SAGA\n{order_id, seller_id, product_id, quantity}"| RESERVATION
     RESERVATION -->|"Check + hold stock"| INVENTORY
-    RESERVATION -->|"IF-ACR-RESERVATION-RESP\n{RESERVED or INSUFFICIENT}"| INTEGRATION
+    RESERVATION -->|"IF-ACR-RESERVATION-RESP\n{ACCEPTED or REJECTED}"| INTEGRATION
 
     %% Order confirmation flow (ACCSystem → ACCore)
     INTEGRATION -->|"OrderConfirmed event\n{order_id, items, total}"| ORDERRECEIVER

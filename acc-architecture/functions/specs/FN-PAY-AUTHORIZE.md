@@ -4,7 +4,7 @@
 **Status:** PROPOSED MVP BASELINE — seller/agreement policy is configurable and constrained by platform/provider/risk controls.
 
 ## Preconditions
-All required SellerOrder reservations are `ACCEPTED/RESERVED`; no reservation is `UNKNOWN`. Every payment allocation has seller, SellerOrder, amount, currency, tax/delivery basis, policy snapshot, correlation ID, and idempotency key. Raw card data is absent.
+All required SellerOrder reservations are `ACCEPTED`; no reservation is `UNKNOWN`. Every payment allocation has seller, SellerOrder, amount, currency, tax/delivery basis, policy snapshot, correlation ID, and idempotency key. Raw card data is absent.
 
 ## Flow
 1. The Parent Saga creates one payment allocation per SellerOrder.

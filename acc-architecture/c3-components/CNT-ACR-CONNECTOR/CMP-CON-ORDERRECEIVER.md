@@ -56,7 +56,7 @@ retry_count         integer
 3. Check idempotency: has `order_id` already been processed? If YES → return ACK (no-op)
 4. Mark Inbox `status=PROCESSING`
 5. Call CNT-ACR-SALES: create SalesOrder `{accore_order_id, acc_order_id=order_id, items, total}`
-6. Call CNT-ACR-INVENTORY: confirm reservation for each item (transitions `RESERVED → CONFIRMED`)
+6. Call CNT-ACR-INVENTORY: confirm reservation for each item (transitions `ACCEPTED → CONFIRMED`)
 7. Mark Inbox `status=PROCESSED`; store `order_id` in idempotency store
 
 ### Error Handling

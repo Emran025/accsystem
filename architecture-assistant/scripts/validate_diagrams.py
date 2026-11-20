@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Validate registered identifiers in Markdown Mermaid blocks; syntax rendering is not performed."""
-import sys
+import argparse
 from validate_architecture import validate
-errs,_=validate(sys.argv[1]); errs=[e for e in errs if 'diagram references' in e]
-print('PASS (ID consistency only; syntax/rendering NOT VERIFIED)' if not errs else 'BLOCKED'); [print('- '+e) for e in errs]; sys.exit(bool(errs))
+p=argparse.ArgumentParser(description='Validate registered IDs used in Mermaid blocks.')
+p.add_argument('architecture_dir')
+a=p.parse_args(); errs,_=validate(a.architecture_dir); errs=[e for e in errs if 'diagram references' in e]
+for e in errs: print('- '+e)
+raise SystemExit(1 if errs else 0)

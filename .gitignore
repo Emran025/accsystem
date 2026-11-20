@@ -1,0 +1,13 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Local assistant state, indexes, backups and temporary reports
+.assistant-state/
+.rag/
+.assistant-backups/
+*.tmp
+*.bak

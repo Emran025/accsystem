@@ -102,9 +102,9 @@ sequenceDiagram
     IGW-->>OBX: 200 OK with PublicationResult<br/>{listing_id, version, status, published_at}
     OBX->>OBX: Mark outbox event as delivered
     OBX->>ACM: Update product record with listing_id and marketplace_status: PUBLISHED
-    ACM-->>EMP: Publication accepted — listing_id stored; marketplace visibility is confirmed once catalog and search indexing complete
+    ACM-->>EMP: Publication accepted — listing_id stored, marketplace visibility is confirmed once catalog and search indexing complete
 
-    Note over EMP,SRC: FLOW COMPLETE — Product visible in catalog and search; ack is an accepted receipt, not a final downstream processing guarantee
+    %% FLOW COMPLETE — Product visible in catalog and search; ack is an accepted receipt, not a final downstream processing guarantee
 ```
 
 ---
