@@ -35,7 +35,7 @@ CONFIRMED (idea.md §3.1): "Institution Integration — موصلات ACCore، ا
 | Aspect | Status | Note |
 |---|---|---|
 | Integration pattern | CONFIRMED (idea.md §6.5) | Outbox/Inbox pattern; at-least-once delivery; idempotency keys |
-| Transport | CONFIRMED (idea.md §4.3) | HTTPS/TLS; service-to-service auth (OAuth 2.0) |
+| Transport | CONFIRMED (idea.md §4.3) | HTTPS/TLS; service-to-service auth selected by ADR-015 policy: OAuth 2.0 Client Credentials or mTLS |
 | Event format | CONFIRMED (idea.md §6.4) | Unified event envelope with event_id, event_type, correlation_id, idempotency_key |
 
 ---
@@ -75,7 +75,7 @@ CONFIRMED (idea.md §3.1): "حالة المزامنة، سجلات الرسائ�
 ## 7. Security
 
 - CONFIRMED (idea.md §9): Webhook signature verification on all inbound events from ACCore
-- CONFIRMED (idea.md §4.3): TLS + service-to-service OAuth for all outbound calls to ACCore
+- CONFIRMED (idea.md §4.3): TLS plus ADR-015 policy-selected service-to-service OAuth 2.0 Client Credentials or mTLS for outbound calls to ACCore
 - CONFIRMED (idea.md §9): Institution identity verified via platform_institution_id on every event
 - CONFIRMED (idea.md §9): No direct database access to ACCore
 

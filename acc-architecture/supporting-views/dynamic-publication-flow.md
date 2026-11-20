@@ -14,7 +14,7 @@ This view documents the product publication flow from ACCore's Product Master to
 
 **Preconditions:**
 - ACCore institution is registered (`platform_institution_id` exists in Institution Registry)
-- ACCore service credentials are valid (OAuth 2.0 Client Credentials issued)
+- ACCore service credentials/certificates are valid under the OAuth 2.0 Client Credentials or mTLS policy selected by ADR-015
 - Product exists in ACCore Product Master with internal `seller_product_id`
 
 **Postconditions (after successful catalog processing, not merely receipt):**

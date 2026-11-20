@@ -33,7 +33,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 
 | Aspect | Status | Note |
 |---|---|---|
-| Transport | CONFIRMED (idea.md §4.3) | HTTPS/TLS; OAuth 2.0 service-to-service auth |
+| Transport | CONFIRMED (idea.md §4.3) | HTTPS/TLS; ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS service-to-service auth |
 | Messaging pattern | CONFIRMED (idea.md §6.5) | Outbox/Inbox; at-least-once; idempotency keys |
 | Connectivity model | CONFIRMED (idea.md §4.3) | Outbound polling or secure message channel (depending on hosting) |
 
@@ -69,7 +69,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 
 ## 7. Security
 
-- CONFIRMED (idea.md §4.3): TLS + service-to-service authentication for all platform connections
+- CONFIRMED (idea.md §4.3): TLS plus ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS service-to-service authentication for all platform connections
 - CONFIRMED (idea.md §9): Institution identity included in every message
 - CONFIRMED (idea.md §4.3): License validation does not expose ERP data to ACCSystem
 

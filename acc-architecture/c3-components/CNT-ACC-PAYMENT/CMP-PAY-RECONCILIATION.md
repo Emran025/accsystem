@@ -30,8 +30,8 @@
 |---|---|
 | **1 — Ingest** | Receive/pull settlement report from EXT-PAYMENT-PROVIDER for a given settlement period |
 | **2 — Normalize** | Parse provider-specific report format into internal settlement line items |
-| **3 — Match** | Match each settlement line item to an internal `PaymentTransaction` by provider reference |
-| **4 — Compare** | Compare amounts, currencies, statuses, and timestamps |
+| **3 — Match** | Match each settlement line item through the durable scoped mapping of provider transaction/reference, `payment_attempt_id`, `seller_order_id`, and `allocation_id`. One aggregate provider transaction may reconcile to multiple provider allocation references and internal allocations; never infer scope from `order_id` alone. |
+| **4 — Compare** | Compare the provider line or aggregate against the internal allocation-level reconciliation basis: gross, fee, commission, net, currency, status, and relevant operation timestamps. Aggregate totals may be compared only after all constituent allocations and provider references are mapped. |
 | **5 — Flag** | Record unmatched, over-settled, under-settled, or status-mismatched items as `DiscrepancyRecord` |
 | **6 — Alert** | Emit operational alert for any discrepancy requiring action; publish `ReconciliationCompleted` audit event |
 
@@ -46,7 +46,7 @@
 |---|---|---|
 | `UNMATCHED_INTERNAL` | Settlement line has no matching internal transaction | Alert; investigate potential duplicate payment or data gap |
 | `UNMATCHED_PROVIDER` | Internal transaction has no matching settlement line | Alert; payment may not have settled — investigate with provider |
-| `AMOUNT_MISMATCH` | Settled amount differs from internal authorized/captured amount | Alert; possible fee deduction or error |
+| `AMOUNT_MISMATCH` | Provider gross, fee, commission, or net differs from the allocation-level reconciliation basis; an aggregate mismatch is decomposed before classification | Alert; possible fee deduction, split-mapping gap, or error |
 | `STATUS_MISMATCH` | Internal status is `CAPTURED` but provider shows `REFUNDED` or vice versa | Alert; trigger corrective state sync via CMP-PAY-ORCHESTRATOR |
 | `CURRENCY_MISMATCH` | Currencies differ | Alert; high severity |
 
@@ -59,7 +59,7 @@
 | Entity | Owned By | Schema Shape |
 |---|---|---|
 | `ReconciliationRun` | CMP-PAY-RECONCILIATION | `{run_id, period_start, period_end, status, total_lines, matched, unmatched, discrepancies, completed_at}` |
-| `DiscrepancyRecord` | CMP-PAY-RECONCILIATION | `{discrepancy_id, run_id, type, internal_payment_id, provider_ref, internal_amount, provider_amount, internal_status, provider_status, flagged_at, resolved_at, resolution_note}` |
+| `DiscrepancyRecord` | CMP-PAY-RECONCILIATION | `{discrepancy_id, run_id, type, payment_attempt_id?, seller_order_id?, allocation_id?, aggregate_transaction_id?, provider_transaction_reference?, provider_allocation_reference?, internal_gross?, internal_fee?, internal_commission?, internal_net?, provider_gross?, provider_fee?, provider_commission?, provider_net?, currency?, internal_status, provider_status, flagged_at, resolved_at, resolution_note}` |
 | Ingested settlement report (raw) | CMP-PAY-RECONCILIATION | Stored as blob/JSONB per run for audit; retention policy UNKNOWN |
 
 **NOT owned:**

@@ -4,6 +4,8 @@
 **Reference:** architecture-assistant/OUTPUT-DEPTH-AND-AMPLIFIER.md  
 **Date:** 2026-11-15
 
+> **Historical snapshot, not current validation status.** The counts and depth findings below describe the 2026-11-15 review and must not be read as the current artifact-depth result. The current structural result is recorded in `validation/validation-status.md` and the manifest: 88 artifacts reviewed, 0 incomplete outlines, with human semantic review and external approval gates still required.
+
 > This audit checks each amplifier requirement from OUTPUT-DEPTH-AND-AMPLIFIER.md against the produced artifacts. Status: PASS / PARTIAL / FAIL / NOT_VERIFIED.
 
 ---

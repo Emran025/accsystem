@@ -33,7 +33,7 @@ CONFIRMED (idea.md §14, ADR-010): "فصل Software Catalog وLicense Management
 
 | Aspect | Status | Note |
 |---|---|---|
-| Auth protocol | CONFIRMED (idea.md §9) | OAuth 2.0 Client Credentials for service-to-service |
+| Auth protocol | CONFIRMED (idea.md §9) | Service-to-service method is policy-controlled; OAuth 2.0 Client Credentials or mTLS may be selected under ADR-015 where applicable |
 | Token format | UNKNOWN | JWT or opaque — not specified. OWNER_UNASSIGNED. |
 | MFA | CONFIRMED (idea.md §9) | Required for platform admin and support accounts |
 | Encryption | CONFIRMED (idea.md §9) | Sensitive data encrypted at rest; TLS in transit |

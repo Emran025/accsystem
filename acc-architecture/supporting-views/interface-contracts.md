@@ -483,13 +483,21 @@ The schema is provider-defined (UNKNOWN: specific provider field names). The exp
   "event_id": "string (provider-assigned)",
   "event_type": "payment.authorized | ...",
   "occurred_at": "ISO-8601",
-  "payment_reference": "string",
+  "payment_reference": "string (provider operation/reference)",
+  "provider_transaction_reference": "string (aggregate reference, optional)",
+  "provider_allocation_reference": "string (split reference, optional)",
+  "payment_attempt_id": "string (ACCSystem, optional until mapped)",
+  "seller_order_id": "string (ACCSystem, optional until mapped)",
+  "allocation_id": "string (ACCSystem, optional until mapped)",
+  "operation_id": "string (authorize/capture/refund/etc., optional)",
   "order_reference": "string",
   "amount": { "value": "decimal", "currency": "string" },
   "status": "string",
   "signature": "string (HMAC-SHA256)"
 }
 ```
+
+These fields are illustrative and provider-defined fields may be absent. The consumer must reconcile an event to the durable scoped payment-attempt, seller-order, allocation, aggregate transaction, and operation mapping before applying a state change. If provider details are insufficient or ambiguous, record `UNKNOWN`/pending reconciliation and do not guess an order-wide allocation or perform an unsafe retry, release, capture, or refund.
 
 ### 4.5 Security
 
@@ -747,7 +755,7 @@ Read-only validation has no mandatory idempotency key. An optional correlation o
 | Control | Detail | Label |
 |---|---|---|
 | Transport | TLS | CONFIRMED |
-| Service-to-service auth | OAuth 2.0 Client Credentials (ACCore → License service) | CONFIRMED — idea.md §4.3: "via documented service channel with S2S auth" |
+| Service-to-service auth | Policy-controlled OAuth 2.0 Client Credentials or mTLS (ACCore → License service) | CONFIRMED in principle — idea.md §4.3 specifies S2S auth; selected method requires service/security policy |
 | Signed entitlement token | Platform signing key; short TTL; not forged by ACCore | CONFIRMED — idea.md §4.3; signing key management per ADR-014 |
 | License ≠ Permission | License validates what can RUN; does not grant platform user permissions | CONFIRMED — idea.md §9, §3.1.1 |
 
@@ -1032,7 +1040,7 @@ ACCore publishes product data changes (new listings, updates, withdrawals, stock
 | Control | Detail | Label |
 |---|---|---|
 | Transport | TLS (ACCore → Integration Gateway) | CONFIRMED — idea.md §4.3 |
-| Service-to-service auth | OAuth 2.0 Client Credentials with rotatable institution-specific credentials | CONFIRMED — idea.md §4.3, §9 |
+| Service-to-service auth | ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS with rotatable institution-specific credentials | CONFIRMED in principle — idea.md §4.3, §9; selected method requires onboarding/security approval |
 | `institution_id` validation | Integration Gateway validates token's `institution_id` matches payload | CONFIRMED — idea.md §9 |
 | Schema and policy validation | Integration Gateway validates against publication schema and policies | CONFIRMED — idea.md §7.1 |
 

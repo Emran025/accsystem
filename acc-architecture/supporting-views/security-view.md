@@ -64,7 +64,7 @@
 | Institution admin | Manages institution's marketplace listings, purchases | Medium-trusted | Same as institution employee; elevated role claim |
 | Platform admin | ACCSystem operator — manages users, licenses, releases | High-trusted (privileged) | MFA mandatory; short-lived scoped tokens; RBAC |
 | Support staff | Time-limited JIT access to institution data | High-trusted (time-limited, scoped) | MFA; JIT approval flow; scoped token with explicit expiry |
-| ACCore service | Backend-to-backend integration | High-trusted (service) | OAuth 2.0 Client Credentials; mTLS PROPOSED |
+| ACCore service | Backend-to-backend integration | High-trusted (service) | ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS |
 | Payment Provider | External webhook sender | External (signature-verified) | HMAC signature on webhook payload |
 | CDN / Package Store | Software distribution | External (content integrity) | Signed URLs; SHA-256 checksum verification |
 
@@ -80,7 +80,7 @@
 | Institution employee (ACCore-initiated) | ACCore authenticates locally; passes institution-scoped token or identity claim to ACCSystem | Institution-federated | CONFIRMED — idea.md §4.3: "TLS + service-to-service auth"; §9: "institution_id on every request" |
 | Platform admin | MFA mandatory; privileged session with short TTL | MFA + RBAC | CONFIRMED — idea.md §9: "MFA, least-privilege, pre-approval, time-limited access" for admin accounts |
 | Support staff | JIT approval workflow; time-limited scoped token | JIT access | CONFIRMED — idea.md §9 and §7.7: JIT support access with approval, time-limited, scoped, audited |
-| ACCore service (S2S) | OAuth 2.0 Client Credentials with rotatable client credentials | OAuth 2.0 CC | CONFIRMED — idea.md §9: "OAuth 2.0 Client Credentials or equivalent with rotatable certificates/secrets" |
+| ACCore service (S2S) | ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS with rotatable credentials/certificates | OAuth 2.0 CC or mTLS | CONFIRMED in principle — idea.md §9; selected method requires onboarding/security policy |
 | Delivery operators (ACCMared) | Short-lived tokens; session revocation; no hardcoded service secrets in mobile app | OAuth 2.0 / OIDC | CONFIRMED — idea.md §9: "short-lived tokens, secure storage, session revocation, no service secrets in mobile app" |
 | Payment Provider webhook | HMAC-SHA256 signature verification on every inbound webhook | Webhook signature | CONFIRMED — idea.md §9: "webhook signature verification and replay protection" |
 
@@ -278,7 +278,7 @@ Implementation requirements (PROPOSED detail):
 | MFA for platform admin and support staff | Authentication | CONFIRMED |
 | Short-lived tokens; secure mobile storage | Authentication | CONFIRMED |
 | Session revocation | Authentication | CONFIRMED |
-| S2S OAuth 2.0 Client Credentials with rotatable secrets | Authentication | CONFIRMED |
+| S2S OAuth 2.0 Client Credentials or mTLS with rotatable credentials/certificates | Authentication | CONFIRMED in principle; method selected by ADR-015 policy |
 | RBAC/ABAC with contextual conditions | Authorization | CONFIRMED |
 | `tenant_id` check on every request | Authorization | CONFIRMED |
 | License ≠ Permission separation | Authorization | CONFIRMED |

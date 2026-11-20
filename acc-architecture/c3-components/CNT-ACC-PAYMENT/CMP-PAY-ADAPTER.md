@@ -30,11 +30,13 @@
 
 | Operation | Input | Output |
 |---|---|---|
-| `authorize(order_id, amount, currency, payment_method_ref, idempotency_key)` | Internal domain request | `{provider_auth_id, status, raw_response}` |
-| `capture(provider_auth_id, amount, idempotency_key)` | Internal domain request | `{provider_capture_id, status, raw_response}` |
-| `void(provider_auth_id, idempotency_key)` | Internal domain request | `{status, raw_response}` |
-| `refund(provider_capture_id, amount, idempotency_key)` | Internal domain request | `{provider_refund_id, status, raw_response}` |
+| `authorize(payment_attempt_id, seller_order_id, allocation_id, order_id, amount, currency, payment_method_ref, operation_idempotency_key)` | Internal domain request | `{provider_auth_id, provider_transaction_reference?, provider_allocation_reference?, status, raw_response}` |
+| `capture(payment_attempt_id, seller_order_id, allocation_id, provider_auth_id, amount, operation_idempotency_key)` | Internal domain request | `{provider_capture_id, status, raw_response}` |
+| `void(payment_attempt_id, seller_order_id, allocation_id, provider_auth_id, operation_idempotency_key)` | Internal domain request | `{status, raw_response}` |
+| `refund(payment_attempt_id, seller_order_id, allocation_id, provider_capture_id, amount, operation_idempotency_key)` | Internal domain request | `{provider_refund_id, status, raw_response}` |
 | `validateWebhook(headers, body)` | Raw HTTP webhook | `{valid: bool, translated_event}` |
+
+Every internal request and translated result carries the scoped `payment_attempt_id`, `seller_order_id`, `allocation_id`, operation identity, and any aggregate provider transaction reference. Provider references are resolved from that durable scoped record; they are never selected from `order_id` alone. A provider that omits allocation detail requires reconciliation rather than applying an event to the whole order by guesswork.
 
 ### 3.2 Translation Rules
 

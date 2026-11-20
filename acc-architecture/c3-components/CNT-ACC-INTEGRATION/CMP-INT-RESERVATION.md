@@ -1,6 +1,6 @@
 # CMP-INT-RESERVATION — Reservation Relay
 
-**Purpose:** Relay versioned reservation/release commands between the Parent Saga Coordinator and seller ACCore instances. It does not own inventory decisions.
+**Purpose:** Relay reservation/release commands between the Parent Saga Coordinator and seller ACCore instances. Their concrete version/schema mapping is intended to follow ADR-021 and API Governance; it is not preassigned here. The relay does not own inventory decisions.
 
 ## Contract and state
 Commands carry parent/seller order and seller scope, applicable items and price/currency snapshot reference, correlation ID, and a stable request/idempotency key before dispatch. `reservation_id` is used when known; its creator and mapping are an institution/API contract gate (see `FN-ORD-RESERVE` and interface §9). The relay persists `REQUESTED`, `ACCEPTED`, `REJECTED`, `UNKNOWN`, `RELEASE_REQUESTED`, `RELEASED`, `EXPIRED`, and `CONSUMED/COMMITTED` states.

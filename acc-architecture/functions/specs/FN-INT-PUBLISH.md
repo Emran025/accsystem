@@ -62,13 +62,13 @@ ACCore Side:
 3. CMP-CON-PUBLISHER polls/reads from Outbox:
    POST IF-ACR-PUBLISH-EVENT to CNT-ACC-INTEGRATION endpoint
    Header: Idempotency-Key: {institution_id}:{seller_product_id}:{version}
-   Header: Authorization: Bearer {oauth2_access_token}  ← OAuth 2.0 Client Credentials (CONFIRMED — IF-ACR-PUBLISH-EVENT §8.8)
+   Header: Authorization: Bearer {oauth2_access_token}  ← illustrative OAuth 2.0 Client Credentials path; ADR-015 policy may select OAuth 2.0 Client Credentials or mTLS (IF-ACR-PUBLISH-EVENT §8.8)
 
 ---
 
 ACCSystem Side:
 4. CMP-INT-GATEWAY receives request:
-   a. Authenticate institution: validate OAuth 2.0 Bearer token; resolve token → platform_institution_id (CONFIRMED — IF-ACR-PUBLISH-EVENT §8.8)
+   a. Authenticate institution using the ADR-015-selected OAuth 2.0 Client Credentials or mTLS policy; when OAuth is selected, validate the Bearer token and resolve token → platform_institution_id (IF-ACR-PUBLISH-EVENT §8.8)
    b. Schema-validate payload
    c. Route to CMP-INT-PUBLICATION
 
@@ -148,9 +148,9 @@ Pre-admission rejections can be corrected and resubmitted. Separately approved C
 
 | Concern | Control |
 |---|---|
-| Institution authentication | **OAuth 2.0 Client Credentials** — institution-specific client credentials issued at ACCore provisioning time; CMP-CON-PUBLISHER obtains a Bearer token from ACCSystem's authorization server and presents it on each request. CONFIRMED (IF-ACR-PUBLISH-EVENT §8.8, interface-contracts.md). |
+| Institution authentication | **ADR-015 policy-selected OAuth 2.0 Client Credentials or mTLS** — the OAuth path uses institution-specific client credentials and a Bearer token; the mTLS path uses approved client certificates. Final method and provisioning details require onboarding/security approval (IF-ACR-PUBLISH-EVENT §8.8, interface-contracts.md). |
 | Token binding | ACCSystem authorization server validates that the token's `client_id` maps to exactly one `platform_institution_id`; payload `institution_id` must match — mismatch → 403 |
-| Credential rotation | OAuth 2.0 client secret rotation does not require code changes; new secret provisioned via platform admin; old secret revoked after transition period |
+| Credential rotation | Rotate the selected OAuth secret or mTLS certificate through platform-admin lifecycle controls; exact transition and revocation policy remains deployment-specific |
 | Scope | Institution can only publish products for its own `institution_id` (enforced by token → institution_id binding) |
 | Transport | HTTPS/TLS only — no plaintext connections accepted |
 | Content injection | CMP-CAT-VALIDATION sanitizes text fields |

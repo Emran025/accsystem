@@ -39,7 +39,7 @@ CONFIRMED (idea.md §3.1): "Payment Orchestration — إنشاء محاولات 
 
 ## 4. Data Owned
 
-- Payment Attempt: `{payment_id, order_id, amount, currency, provider_reference, status, created_at}`
+- Payment Attempt: `{payment_attempt_id, order_id, seller_order_id, allocation_id, amount, currency, provider_transaction_reference?, provider_allocation_reference?, operation_id, operation_idempotency_key, status, created_at}`. A buyer-facing aggregate provider transaction may map to multiple allocation references; capture, void, refund, seller-credit and settlement effects always resolve through the scoped allocation record, never `order_id` alone.
 - Webhook event log (for reconciliation)
 - Refund records
 
