@@ -422,3 +422,11 @@ Because Cycle 10 is report-only and the registry is unchanged, the before→afte
 - Immediately before its push, a fresh `git fetch origin main` confirmed local `HEAD == c89d0a569c410928f98956698149c0c61c5e8e99` and `origin/main == ddd4db7f0f47a79d908108f3f055171f9a773bb8`; the committed worktree was clean and `git show --check` passed.
 - The commit was pushed with `git push origin HEAD:main` without force; Git reported a fast-forward from `ddd4db7` to `c89d0a5`.
 - After the push and another fetch, `HEAD == origin/main == c89d0a569c410928f98956698149c0c61c5e8e99`; the worktree was clean.
+
+
+### Cycle 10 report-only follow-up push and final verification
+
+- Report-only commit `2c47e333a566a88e66c1c849b264f6fbc61274e3` has content commit `c89d0a569c410928f98956698149c0c61c5e8e99` as its parent; its scope was only `acc-architecture/validation/requirements-change-report.md`.
+- Immediately before its push, a fresh `git fetch origin main` confirmed local `HEAD == 2c47e333a566a88e66c1c849b264f6fbc61274e3` and `origin/main == c89d0a569c410928f98956698149c0c61c5e8e99`; the worktree was clean and `git show --check` passed.
+- It was pushed to `main` without force; Git reported a fast-forward from `c89d0a5` to `2c47e33`.
+- After the push and another fetch, `HEAD == origin/main == 2c47e333a566a88e66c1c849b264f6fbc61274e3`; the worktree was clean.
