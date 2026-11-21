@@ -896,4 +896,6 @@ Exactly four files, all under `acc-architecture/validation/`: `atomicity-review-
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively); both checks are **NOT_VERIFIED**, not PASS. Available validators are not substitutes.
 - The registry remains 278 rows and 279 CRLF lines with zero bare LF. No functional SREQ acceptance result is established by this cycle.
 
-The Cycle 22 content-push commit and post-push verification will be recorded in the separate report-only follow-up after the fast-forward push is verified.
+### Cycle 22 content push and post-push verification
+
+The content commit `0884106f819803e1c422dac803c25341d64b9a68` has Cycle 22 base `73e2667ac17e7277a405942d70ec4bdf782e8382` as its parent and changes exactly the four validation reports listed above. Immediately before pushing, a fresh fetch confirmed `origin/main` still equaled the Cycle 22 base and the content commit's parent; staged scope and whitespace checks passed. `git push origin HEAD:main` succeeded as a fast-forward from `73e2667` to `0884106`, without force. Immediately after the push, `git ls-remote` and, after fetch, `origin/main` both agreed on `0884106f819803e1c422dac803c25341d64b9a68`; the worktree was clean. This verification record is a separate report-only follow-up; the final follow-up SHA and worktree state are reported at task completion.
