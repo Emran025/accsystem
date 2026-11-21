@@ -291,3 +291,9 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 - A fresh fetch before committing confirmed `HEAD == origin/main == 60a0f414fc5afaa56b18dffedda35383ec76c631`. Content commit `735d27725d7679a88f2537751980724a6c37e43e` has that base as its parent.
 - Immediately before pushing, a fresh fetch confirmed `origin/main` remained at `60a0f414fc5afaa56b18dffedda35383ec76c631`; the worktree was clean. The content commit was pushed to `main` without force.
 - After push and another fetch, `HEAD == origin/main == 735d27725d7679a88f2537751980724a6c37e43e`; the worktree was clean. The push output showed a fast-forward from `60a0f41` to `735d277`.
+
+### Report-only follow-up push and final verification
+
+- Report-only commit `953377c9e1aab10a4be59bd03d1e6bb951f423a6` updated only this report to record the content-push evidence above; its parent was content commit `735d27725d7679a88f2537751980724a6c37e43e`.
+- Immediately before pushing `953377c`, a fresh fetch confirmed `origin/main == 735d27725d7679a88f2537751980724a6c37e43e`, with local `HEAD` at `953377c9e1aab10a4be59bd03d1e6bb951f423a6` and a clean worktree. It was pushed to `main` without force.
+- After the push and another fetch, `HEAD == origin/main == 953377c9e1aab10a4be59bd03d1e6bb951f423a6`; the worktree was clean. This is the final remote/worktree state observed for that report-only follow-up.
