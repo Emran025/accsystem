@@ -559,3 +559,11 @@ Exactly four reports under `acc-architecture/validation/`: `atomicity-review-rep
 - Mermaid rendering used `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium`; semantic C4 correctness and owner approval remain unverified.
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively); both checks are **NOT_VERIFIED**, not PASS. Available validators are not substitutes for these checks.
 - Scope review found only the four validation reports above. `git diff --check` and the CRLF-aware diff check are required before commit; the registry must retain 279 CRLF lines and zero bare LF.
+
+
+### Cycle 13 content push and post-push verification
+
+- Content commit `57e73d0a7d5b6e2e467c18f8c183003d8f4bd9f1` has Cycle 13 base `dadd8a1e2fc84698059ec490848c801eb2442b04` as its parent and changes exactly the four validation reports listed above.
+- Immediately before push, a fresh `git fetch origin main` confirmed `HEAD == origin/main == dadd8a1e2fc84698059ec490848c801eb2442b04`; staged scope and both whitespace checks passed.
+- `git push origin HEAD:main` succeeded without force; Git reported a fast-forward from `dadd8a1` to `57e73d0`.
+- After push and another fetch, `HEAD == origin/main == 57e73d0a7d5b6e2e467c18f8c183003d8f4bd9f1` and the worktree was clean. This verification record is being pushed as a separate report-only follow-up.
