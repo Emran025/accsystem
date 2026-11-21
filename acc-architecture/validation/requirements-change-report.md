@@ -477,3 +477,42 @@ Exactly four reports under `acc-architecture/validation/`: `atomicity-review-rep
 - Report-only commit `c3c49237a4dba5e4c27dbfe667a2b74900cb1310` has content commit `9e5d846d9cae3be382a8015c55514aa31e3c3127` as its parent and changes only `acc-architecture/validation/requirements-change-report.md`.
 - Immediately before its push, a fresh `git fetch origin main` confirmed local `HEAD == c3c49237a4dba5e4c27dbfe667a2b74900cb1310` and `origin/main == 9e5d846d9cae3be382a8015c55514aa31e3c3127`; the worktree was clean and `git show --check` passed.
 - It was pushed to `main` without force; Git reported a fast-forward from `9e5d846` to `c3c4923`. After push and another fetch, `HEAD == origin/main == c3c49237a4dba5e4c27dbfe667a2b74900cb1310` and the worktree was clean.
+
+
+## Cycle 12: ARH-2026-11-21-C12
+
+**Base commit:** `3fc3f0de5ca646ee0d6b86d72404936d8849f795` (`origin/main` at Cycle 12 start).<br>
+**Cycle type:** report-only reassessment; no requirement, acceptance criterion, registry row, child ID, or architecture source changed.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Changed files
+
+Exactly four reports under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this report. No application code, requirement source, acceptance criteria, registry row, or file outside `acc-architecture/` changed.
+
+### Reassessment and evidence-supported outcome
+
+- Seven independent reviews (one per finding) and synthesis completed without failures. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` remain `SPLIT_REQUIRED`; `PAY-002` remains additionally `OWNER_BLOCKED`. No new approved contract, owner decision, or executed SREQ acceptance result supports changing a requirement, AC, registry row, child ID, or classification.
+- The reviews reconfirmed the open boundaries: institution configuration versus credential/reference issuance and protection (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006`); receiver receipt/idempotency versus in-progress recovery (`ADR-022-GATE`); publication key stability versus the submission/receipt/outcome lifecycle (`PUB-005/006`); rejection visibility versus post-acceptance failure/recovery (`PUB-005/006`); checkout validation versus successful-session snapshots (`UNKN-006`, `ODEC-003/009`, `RGAP-PH02-003/009`, with TTL unknown); recipient projection versus dispatch/recovery (`ADR-019-GATE`, `RP-04`); and payment allocation versus provider-attempt cardinality/policy (`ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003`).
+- `ORD-001` remains retired and distinct from `ORD-002` and `ORD-007/008`. `ADM-001` membership, licensing lifecycle/policy gates, incomplete `REC-004`/`CHK-003` acceptance evidence, `DOP-004` as an unproven merge candidate, and `DEN-003` blocked by `ODEC-010` remain explicit. No OAuth/mTLS, TTL, settlement/commission/refund, provider behavior, or other owner policy was inferred.
+
+### Exact counts from the unchanged registry
+
+- Registry: 278 rows (45 main requirements, 233 SREQ); 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired source rows and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`. All 233 SREQ rows are classified.
+- `use_case_id` `TBD`: 188 rows. Nonempty open-decision rows: 209, with 60 distinct decision/gate references after excluding the separate `RGAP-PH02-004` reference. Unique AC IDs: 270; unique C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows retain an AC and planned-verification reference (233/233); these are not executed test evidence. The unchanged registry is 279 CRLF lines with zero bare LF.
+
+### Validation outcomes before content push
+
+- `validate_requirements.py --check` and `--check --require-rows`: PASS on 278 rows. Required queries exited 0: PH-01 returned 113 rows; PH-02 with `SYS-ACCORE` returned 30; `CNT-ACC-CATALOG` returned 22.
+- `--check --strict-ready`: FAIL as expected (exit 1, 908 blockers); the package remains not implementation-ready.
+- Unit suites: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS. These are not executed SREQ acceptance tests.
+- All eight available architecture checks exited 0 against an isolated temporary copy: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py`, and `generate_coverage_report.py`. Artifact depth: 88 reviewed, 0 incomplete/findings, human review still required; consistency: 65/65 IDs, 0 findings, semantic review still required; diagram validation rendered and checked 55 Mermaid blocks; release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition counts: C1 15/7/8, C2 40/17/23, C3 35/35/0, and DECISION 22/22/0 (in-scope/decomposition-complete/exceptions-not-complete), not semantic completeness.
+- Mermaid rendering used `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium` because Puppeteer's expected cached `chrome-headless-shell` was absent; the configured system Chromium successfully rendered all 55 blocks. Semantic C4 correctness and owner approval remain unverified.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively); both checks are **NOT_VERIFIED**, not PASS. Available validators are not substitutes for these checks.
+- Scope review found only the four validation reports above. `git diff --check` and the CRLF-aware diff check are required before commit; the registry must retain 279 CRLF lines and zero bare LF.
+
+
+### Final pre-commit scope and whitespace verification
+
+- After the Cycle 12 report edits, both `git diff --check` and `git -c core.whitespace=cr-at-eol diff --check` passed. The diff contains exactly the four validation reports listed above; the registry is unchanged and retains 279 CRLF lines with zero bare LF.
