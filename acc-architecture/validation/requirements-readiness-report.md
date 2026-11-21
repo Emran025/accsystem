@@ -2,8 +2,8 @@
 
 **الحكم الحالي: غير جاهزة كـRequirements Baseline للتنفيذ.** لا توجد صفوف `ACCEPTED`، وتوجد فجوات Use Case وقرارات مالك وتصنيفات ذرية معلقة. نجاح المدقق الهيكلي واختباراته لا يغير هذا الحكم.
 
-**الدورة:** ARH-2026-11-21-C19<br>
-**الأساس:** `4c4b0acdaee4847919b3dd4359904d6ae43ee6b2`
+**الدورة:** ARH-2026-11-21-C20<br>
+**الأساس:** `5715f891e2a70bb252b4e2f223b0359a4acffdfb`
 
 ## الأرقام التي تمنع إعلان الجاهزية
 
@@ -13,6 +13,19 @@
 - قرارات المالك: 209 صفوف تحمل قرارات/بوابات مفتوحة. ومن الفئات الفرعية: 47 `BLOCKED_BY_OWNER_DECISION` و42 `NEEDS_USE_CASE` بحسب المراجعة الدلالية.
 - التحقق: 233/233 SREQ لها مرجع تحقق مخطط. لا توجد نتائج اختبار SREQ منفذة في السجل؛ لذلك لا تُسجل أي منها كـPASS.
 - التغطية البنيوية: كل SREQ يحمل AC ومراجع تحقق، وجميع علاقات C1/C2 ومسارات الوثائق وصفوف Markdown مطابقة في المدقق؛ العدد الحالي 233/233. هذا يثبت سلامة شكلية/مرجعية فقط، لا صلاحية المعيار أو التنفيذ.
+
+## إعادة التقييم في Cycle 20
+
+أكملت سبع مراجعات مستقلة، واحدة لكل finding، ثم توليفاً واحداً دون إخفاق أو اختلاف جوهري. بقيت findings السبع `SPLIT_REQUIRED`؛ `SREQ-PH03-PAY-002` وحده أيضاً `OWNER_BLOCKED`، بينما `SREQ-PH02-REC-004` ليس `OWNER_BLOCKED`. لم يظهر عقد معتمد جديد أو قرار مالك محلول أو قبول SREQ منفذ يبرر تعديل requirement أو AC أو registry أو child IDs أو التصنيف. وتُظهر مقارنة Git منذ أساس Cycle 19 تغيّر تقارير التحقق الأربعة فقط؛ لم تتغير متطلبات المصدر أو ADR أو القرارات أو المعمارية. الدورة تقريرية فقط: لا استنتاج سياسة أو اختيار بديل أو إضافة PH-05، وتبقى Use Case gaps وقرارات المالك صريحة.
+
+### نتائج التحقق في Cycle 20
+
+- `validate_requirements.py --check --require-rows`: **PASS** على 278 صفاً. الاستعلامات خرجت برمز 0 وأعادت 113 صفاً لـPH-01، و30 لـPH-02 مع `SYS-ACCORE`، و22 لـ`CNT-ACC-CATALOG`.
+- `--check --strict-ready`: **FAIL** (رمز الخروج 1، و908 أخطاء)؛ الحزمة لا تزال محجوبة عن الجاهزية.
+- اختبارات `unittest` على نسخة مؤقتة معزولة: **9/9 PASS** لـ`acc-architecture/execution-phases/tests` و**65/65 PASS** لـ`architecture-assistant/tests`. ليست هذه اختبارات قبول SREQ منفذة.
+- الفحوص المعمارية الثمانية المتاحة خرجت جميعها برمز 0 على نسخة مؤقتة معزولة: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py` و`generate_coverage_report.py`. العمق: 88 artifact، 0 ناقص و0 findings؛ الاتساق: 65/65 IDs و0 findings؛ عُرضت وفُحصت 55 كتلة Mermaid. بقي `Gate7=IN_PROGRESS` و`manifest=IN_PROGRESS`. التغطية: C1 15/7/8، C2 40/17/23، C3 35/35/0، DECISION 22/22/0 (in-scope/decomposition-complete/exceptions-not-complete)؛ لا تثبت النتائج اكتمالاً دلالياً أو موافقة مالك.
+- أداتا التسليم المطلوبة `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` و`/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` غير موجودتين؛ الفحصان **NOT_VERIFIED، وليس PASS** (رمزا المحاولة 127 و2 بالترتيب). لا تحل الفحوص المتاحة محلهما.
+- بقي السجل عند 278 صفاً، و188 `TBD` في `use_case_id`، و209 صفوف بقرارات مفتوحة، و270 AC IDs فريدة و29 حاوية C2؛ لكل SREQ AC ومرجع تحقق مخطط (233/233)، ولا binding مفقود بنيوياً. CSV عند 279 سطر CRLF وصفر bare LF؛ لا توجد نتيجة قبول وظيفي منفذة مثبتة.
 
 ## إعادة التقييم في Cycle 19
 
