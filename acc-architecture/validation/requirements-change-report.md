@@ -138,7 +138,7 @@
 ## Cycle 4: ARH-2026-11-21-C4
 
 **Base commit:** `c6ebc0b028e2ab9933f41715117bc29ac77d6391` (`origin/main` at cycle start).
-**Implementation commit:** pending pre-push validation.
+**Implementation commit:** `2038af6945bf11e63a4e44b21c37272f494c4b8a` (pushed).
 **Push target:** `origin/main` is authorized; no force push.
 
 ### Evidence-based changes
