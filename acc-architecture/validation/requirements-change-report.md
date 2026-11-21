@@ -380,3 +380,37 @@ The package remains a reviewable draft, not an implementation-ready baseline.
 - Report-only commit `1719e050ea032d85c14fed03dd62adb9dc5540dc` has content commit `58be1bc4c581dfff1462e707530e3c138f6fbfd2` as its parent and changed only `acc-architecture/validation/requirements-change-report.md`.
 - Immediately before its push, a fresh fetch confirmed `origin/main == 58be1bc4c581dfff1462e707530e3c138f6fbfd2`, with local `HEAD` at `1719e050ea032d85c14fed03dd62adb9dc5540dc`; the working tree was clean and the report-only commit scope was the single file above. It was pushed to `main` without force (fast-forward from `58be1bc` to `1719e05`).
 - After the push and another fetch, `HEAD == origin/main == 1719e050ea032d85c14fed03dd62adb9dc5540dc`; `git show --check` passed and the worktree was clean.
+
+## Cycle 10: ARH-2026-11-21-C10
+
+**Base commit:** `ddd4db7f0f47a79d908108f3f055171f9a773bb8` (`origin/main` at cycle start).<br>
+**Cycle type:** report-only; the validated content batch is limited to the four reports under `acc-architecture/validation/`.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Changed files
+
+`acc-architecture/validation/atomicity-review-report.md`, `acc-architecture/validation/requirements-coverage-matrix.md`, `acc-architecture/validation/requirements-readiness-report.md`, and `acc-architecture/validation/requirements-change-report.md` only.
+
+### Reassessment and evidence-supported outcome
+
+- Seven live `SPLIT_REQUIRED` findings were reviewed independently, one dedicated reviewer per finding, then synthesized. All reviews and the synthesis completed without failures. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` remain `SPLIT_REQUIRED`; `PAY-002` remains additionally `OWNER_BLOCKED`. No new evidence supports changing requirements, ACs, registry rows, child IDs, or classifications.
+- No owner decision or executed SREQ acceptance test was added. `ORD-001` remains preserved as `RETIRED` and distinct from `ORD-002` and `ORD-007/008`. `ADM-001` membership, license lifecycle/policy gates, and incomplete `REC-004`/`CHK-003` evidence remain open. `DOP-004` remains an unproven merge candidate; `DEN-003` remains unconfirmed as duplicate and blocked by `ODEC-010`. No OAuth/mTLS, TTL, settlement, commission, refund, or provider-behavior choice was inferred.
+- The seven finding-specific evidence gates remain as recorded in `atomicity-review-report.md`: `INST-004` (`ADR-015-GATE`, `RP-16`, contract/security and RGAP evidence); `MSG-002` (`ADR-022-GATE`, receiver ACK/key/recovery/retention); `PUB-004` (publication receipt/listing-ID/retry contract under `PUB-005`); `REC-004` (`PUB-005/006`, rejection-vs-failure visibility); `CHK-003` (`UNKN-006`, `ODEC-009`, `ODEC-003`/`ADR-016`, `RGAP-PH02-003/009`, with TTL unknown); `CNF-005` (`ADR-019-GATE`/`RP-04`, `IF-ACC-ORDER-CONFIRM` §2A, distinct from `CNF-006`); and `PAY-002` (`ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003`; allocation completeness is distinct from unresolved provider/cardinality policy).
+
+### Exact counts from the current registry
+
+Because Cycle 10 is report-only and the registry is unchanged, the before→after counts are: registry 278→278 rows (45 main/233 SREQ); `ATOMIC` 58→58; `SPLIT_REQUIRED` 17→17; `MERGE_CANDIDATE` 1→1; `use_case_id` `TBD` 188→188; rows with open decisions 209→209; missing C4 bindings 0→0; and SREQs with AC plus planned verification 233/233→233/233.
+
+- Registry: 278 rows (45 main requirements and 233 SREQ); statuses are 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired source rows and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`. All 233 SREQ rows are classified.
+- `TBD` in `use_case_id`: 188 rows. Nonempty open-decision rows: 209, with 60 distinct decision/gate references excluding the separate `RGAP-PH02-004` reference. Unique AC IDs: 270; distinct C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows have an AC and planned-verification reference (233/233); planned references are not executed evidence. The unchanged registry is 279 CRLF lines with no bare LF.
+
+### Validation outcomes before content push
+
+- `validate_requirements.py --check` and `--check --require-rows`: PASS on 278 rows. Required queries exited 0: PH-01 returned 113 rows; PH-02 with `SYS-ACCORE` returned 30; `CNT-ACC-CATALOG` returned 22.
+- `--check --strict-ready`: FAIL, expected, with 908 errors. Open owner/use-case gates, draft/review status, and planned-only verification still block readiness; this is not a readiness pass.
+- Tests: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
+- Eight available architecture checks on a temporary copy of the current `acc-architecture/` tree exited 0: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py`, and `generate_coverage_report.py`. Artifact depth reviewed 88 records (0 incomplete/findings; human review still required); consistency covered 65/65 IDs (0 findings; semantic review still required); diagram validation rendered/checked 55 Mermaid blocks. Release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition counts were C1 15/7/8, C2 40/17/23, C3 35/35/0, and DECISION 22/22/0; these do not prove semantic completeness.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent; both remain `NOT_VERIFIED`, not PASS.
+- Scope/whitespace: raw `git diff --check` and `git -c core.whitespace=cr-at-eol diff --check` passed. Exactly the four paths listed above changed, all under `acc-architecture/validation/`; the registry has no diff and remains 279 CRLF lines with no bare LF. Source requirements and ACs remain unchanged. Content-push SHA and observed fetch/push/worktree evidence will be recorded in a separate report-only follow-up after the push.
