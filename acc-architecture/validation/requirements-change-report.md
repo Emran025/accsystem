@@ -684,4 +684,6 @@ Exactly four reports under `acc-architecture/validation/`: `atomicity-review-rep
 
 ### Cycle 16 content push and post-push verification
 
-The content commit, fresh pre-push remote comparison, push result, final `HEAD`/`origin/main` SHA, and clean-worktree confirmation will be recorded in a separate report-only follow-up after the push is observed. No commit SHA is claimed before that verification.
+The content commit `657962cbfdb39e9eace31fb76b7b48cd522ee8df` has Cycle 16 base `ff1110fe5fd2d37dbbaf474e21e29883d0f79821` as its parent and changes exactly the four listed validation reports. Immediately before pushing, a fresh fetch confirmed `HEAD == origin/main == ff1110fe5fd2d37dbbaf474e21e29883d0f79821`; staged scope and whitespace checks passed. `git push origin HEAD:main` succeeded without force as a fast-forward from `ff1110f` to `657962c`. After the push and another fetch, `HEAD == origin/main == 657962cbfdb39e9eace31fb76b7b48cd522ee8df` and the worktree was clean before this report-only verification follow-up.
+
+This observed content-push record is being committed and pushed separately as a report-only follow-up; the final remote tip will be verified again after that push.
