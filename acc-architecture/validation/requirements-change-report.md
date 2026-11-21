@@ -2,7 +2,7 @@
 
 **Cycle ID:** ARH-2026-11-21-C1<br>
 **Base commit:** `a8f38d19188588eadaa68fc6142a20b9983d5b58`<br>
-**Final commit:** يضاف بعد إنشاء commit النهائي.<br>
+**Final implementation commit:** `0c37461b5c4a6faa5cbbcb3f92155affccf3f69c` (pushed to `origin/main`).<br>
 **Push target:** `origin/main` وفق التفويض؛ بدون force push.
 
 ## التغييرات ضمن النطاق
@@ -44,4 +44,12 @@
 
 ## الخطوة التالية
 
-تعاد فحوص مدقق المتطلبات والاستعلامات و`git diff --check` بعد اكتمال هذا التقرير، وتراجع حالة الشجرة وأسماء الملفات لضمان اقتصارها على `acc-architecture/`. بعدها ينشأ commit وصفي، وينفذ `git fetch origin main` مع مراجعة تقدم الفرع، ثم push غير قسري وإعادة التحقق من تزامن `main`. يسجل معرف commit ونتيجة المزامنة في تسليم المهمة؛ لا تغيّر بوابات الجاهزية أو findings لمجرد نجاح validators.
+تتطلب الدورة التالية مراجعة قرارات المالك، واستكمال Use Cases/الفجوات الموثقة، ومعالجة 17 حالة `SPLIT_REQUIRED` و5 `MERGE_CANDIDATE` وحالة `DUPLICATE` مع حفظ علاقات المتطلبات ومعايير القبول. لا تُعلن الجاهزية قبل إغلاق هذه البوابات وتنفيذ التحقق وقبول أصحاب القرار؛ تبقى القرارات والسياسات غير المحسومة لدى مالكيها.
+
+
+## نتائج التحقق بعد دفع commit الدورة
+
+- بعد الدفع، أعاد `git fetch origin main` النتيجة `HEAD == origin/main == 0c37461b5c4a6faa5cbbcb3f92155affccf3f69c`، مع divergence `0/0`.
+- بعد الدفع، نجح `--check` و`--check --require-rows` على 253 صفاً، وأعادت الاستعلامات 92/30/20 صفاً. نجحت اختبارات المدقق المخصص 9/9 واختبارات architecture-assistant 65/65.
+- بعد الدفع، خرجت validators المعمارية البديلة جميعها برمز 0: architecture، artifact depth، consistency، traceability، references، diagrams، release status، وتقرير التغطية. تبقى نتائج artifact depth/consistency مشروطة بالمراجعة البشرية/الدلالية، وrenderer لا يثبت صحة C4 الدلالية أو موافقة المالك.
+- بعد الدفع، بقي `--check --strict-ready` فاشلاً على 814 مخالفة متوقعة لبوابات الجاهزية؛ الحزمة ما تزال مسودة وغير جاهزة للتنفيذ. نجح `git diff --check`.
