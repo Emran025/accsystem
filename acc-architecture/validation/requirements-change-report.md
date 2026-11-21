@@ -301,6 +301,7 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 ## Cycle 8: ARH-2026-11-21-C8
 
 **Base commit:** `c100b641d63e918cc1325bf17dde8a9d1732eb55` (`origin/main` at cycle start).<br>
+**Content commit:** `6fac95369f38c5e608d506ee273a9482e745f03a` (four validation reports; pushed to `origin/main` without force).<br>
 **Push target:** `origin/main` under the previously approved iterative workflow; no force push.
 
 ### Reassessment and evidence-supported outcome
@@ -329,6 +330,12 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent; those exact checks remain `NOT_VERIFIED`, not PASS. Available architecture-assistant validators are not substitutes for claiming those scripts ran.
 - Whitespace/scope: `git diff --check` and CRLF-aware `git -c core.whitespace=cr-at-eol diff --check` passed. Scope review found exactly the four listed validation reports, all under `acc-architecture/`.
 
-The package remains a reviewable draft, not an implementation-ready baseline. Push and post-push evidence for the content batch will be recorded in the report-only follow-up after it is observed.
+The package remains a reviewable draft, not an implementation-ready baseline.
+
+### Content push and post-push verification
+
+- Immediately before pushing, a fresh `git fetch origin main` confirmed `origin/main == c100b641d63e918cc1325bf17dde8a9d1732eb55`, the reviewed base. Content commit `6fac95369f38c5e608d506ee273a9482e745f03a` has that base as its parent; the worktree was clean after commit.
+- The content commit was pushed to `main` without force; Git reported a fast-forward from `c100b64` to `6fac953`.
+- After push, another fetch confirmed `HEAD == origin/main == 6fac95369f38c5e608d506ee273a9482e745f03a`; the worktree was clean. `git show --check` passed, and the commit contains exactly the four validation reports listed above.
 
 **Next cycle:** continue evidence-based review from the latest `origin/main`; preserve owner gates and alternatives, distinguish planned from executed acceptance evidence, and do not assert readiness while blockers remain.
