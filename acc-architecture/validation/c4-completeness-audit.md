@@ -1,5 +1,8 @@
 # ACC Diagram Completeness Audit
 
+
+> **Superseding note (2026-11-21):** The ACCSystem C1/C2 observations below describe the 2026-11-19 snapshot. The canonical black-box C1 view is now `c1-context/context-diagram.md`; the canonical C2 view is `c2-containers/accsystem/container-diagram.md`. The former embedded/overlay duplication is removed. C3 edge semantics and owner approval remain separate open review items.
+
 > **Historical finding set:** This audit predates the 2026-11-20 focused corrections and current renderer/schema checks. Its counts and findings are retained for provenance; do not read them as the current diagram state or as owner approval/release readiness. Consult `validation-status.md` for the current snapshot.
 
 **Audit date:** 2026-11-19. **Source archive:** `acc-architecture.zip`, SHA-256 `806faea3966d0abb0b3b955360bee2529d3bd9238e5b265862ed82da76bc45ac`. **Method:** an independent reviewer started from `registry/elements.json`, cross-checked `registry/decomposition-map.json`, interfaces, functions and decisions, then inspected actual Mermaid blocks and local file paths. It did not treat the coverage matrix or plausible filenames as proof. No files were edited by the auditor.

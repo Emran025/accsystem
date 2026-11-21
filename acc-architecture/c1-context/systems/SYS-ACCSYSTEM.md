@@ -45,48 +45,8 @@
 ---
 
 ## 3A. C1 System Context Diagram
-This is the C4 system-context view for `SYS-ACCSYSTEM`. ACCSystem is intentionally shown as a black-box system; internal containers belong only in the C2 view at [`c1-context/landscape.md`](../landscape.md).
 
-```mermaid
-flowchart LR
-    BUYER["ACT-INDIVIDUAL\nIndividual Buyer"]
-    EMP["ACT-INST-EMPLOYEE\nInstitution Employee / Seller"]
-    IADMIN["ACT-INST-ADMIN\nInstitution Administrator"]
-    PADMIN["ACT-PLATFORM-ADMIN\nPlatform Administrator"]
-    SUPPORT["ACT-SUPPORT-STAFF\nPlatform Support Staff"]
-    SUP["ACT-DELIVERY-SUPERVISOR\nDelivery Supervisor"]
-    COURIER["ACT-COURIER\nCourier / Delivery Agent"]
-    VISITOR["ACT-VISITOR\nPublic Portal Visitor"]
-    COM["SYS-ACCOMMERCE\nACCommerce"]
-    CORE["SYS-ACCORE\nACCore per institution"]
-    MGT["SYS-ACMANAGEMENT\nACManagement Portal"]
-    MS["SYS-ACCMARED-SUP\nACCMared Supervisor"]
-    MC["SYS-ACCMARED-COU\nACCMared Courier"]
-    PAY["EXT-PAYMENT-PROVIDER\nExternal Payment Provider"]
-    CDN["EXT-PACKAGE-CDN\nSoftware Package CDN"]
-    ACC["SYS-ACCSYSTEM\nACCSystem Platform\nblack-box system"]
-
-    BUYER -->|browse, cart, checkout, tracking| COM
-    COM -->|catalog, cart, checkout, order APIs| ACC
-    EMP -->|institution product and order work| CORE
-    IADMIN -->|ERP and marketplace administration| CORE
-    PADMIN -->|platform administration and license issuance| MGT
-    SUPPORT -->|scoped support sessions| MGT
-    SUP -->|dispatch and delivery monitoring| MS
-    COURIER -->|task status and proof of delivery| MC
-    VISITOR -->|public catalog and downloads| MGT
-    CORE -->|publication events and license validation| ACC
-    ACC -->|reservation/order commands; mode policy-gated| CORE
-    MGT -->|public, license, admin, and support APIs| ACC
-    MS -->|dispatch and status events| ACC
-    MC -->|task and status APIs| ACC
-    ACC -->|authorization, capture, and refund| PAY
-    PAY -->|payment webhooks| ACC
-    ACC -->|signed package distribution| CDN
-```
-
-> [!NOTE]
-> C1 arrows show the control/data-flow initiator. Responses, callbacks, and events are shown only where they affect the system-context relationship. This view does not claim a selected ACCore deployment mode; ADR-015 remains policy-gated.
+The sole canonical ACCSystem C1 diagram is [`../context-diagram.md`](../context-diagram.md). It shows `SYS-ACCSYSTEM` as one black-box system with the actors and external systems below; no container or component details are repeated in this system record.
 
 ---
 
@@ -164,7 +124,7 @@ Sourced from idea.md §12 — Open Decisions:
 
 ## 8. C2 Disposition — Containers
 
-ACCSystem is decomposed into **17 containers** in the C2 layer. The canonical relationship diagram is [`c1-context/landscape.md`](../landscape.md); the table below maps each container to its individual record.
+ACCSystem is decomposed into **17 containers** in the C2 layer. The canonical relationship diagram is [`../../c2-containers/accsystem/container-diagram.md`](../../c2-containers/accsystem/container-diagram.md); the table below maps each container to its individual record.
 
 | Container ID | Name | C2 Doc | Decomposition Status |
 |-------------|------|--------|---------------------|

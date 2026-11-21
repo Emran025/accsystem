@@ -1,5 +1,28 @@
 
 
+# Current validation status — 2026-11-21
+
+> This checkpoint covers the C1/C2 separation and path correction. The dated material below is historical; the next semantic C3 correction cycle will update this section again. Structural coverage and renderer acceptance do not certify relationship semantics, stakeholder approval, implementation behavior, security, or production readiness.
+
+## Current checks
+
+| Check | Result | What it establishes—and does not |
+|---|---|---|
+| `validate_architecture.py` | PASS — exit 0 | Registry/reference structure across 4 levels only. |
+| `validate_consistency_artifacts.py` | PASS — exit 0; 65/65 IDs, 0 structural findings | Required ledger/matrix/report coverage; not semantic consistency. |
+| `validate_references.py` | PASS — exit 0 | Local references checked by the script. |
+| `validate_artifact_depth.py` | PASS — 88 documents; 0 heuristic incompletes/findings | Outline depth only; human review remains required. |
+| `validate_diagrams.py` / Mermaid CLI 12.0.0 | PASS — 55 blocks in 41 Markdown files rendered | Parser/render acceptance plus registered-ID checks; not C4 semantic correctness. |
+| `validate_release_status.py` | CONSISTENT — Gate 7 and manifest remain `IN_PROGRESS` | Status records are coherent; this is not release approval. |
+
+The dedicated C1 scope check found one `SYS-ACCSYSTEM` black-box, 8 registered actor nodes, and 7 client/external system or service nodes, with no `CNT-*` or `CMP-*` internals. The C2 diagram contains all 17 registered ACCSystem containers. Its Mermaid block is byte-for-byte unchanged from the former `c1-context/landscape.md` file. The two canonical views also rendered independently.
+
+## Still open
+
+The C3 relationship/source audit and its seven diagram corrections are the next work cycle. Arrow direction in ADR-020 remains a reversible technical baseline requiring owner review and not stakeholder-approved. No implementation completion, owner acceptance, stakeholder approval, security certification, or production readiness is asserted.
+
+---
+
 ## Earlier machine-check snapshot (2026-11-20)
 
 The narrative below records the preceding diagram repair. The later architecture-contract repair starts from `ab64377b95f4d7266e364f2e0d601d709efdb4e4`; current checks are reported separately and do not imply semantic approval.

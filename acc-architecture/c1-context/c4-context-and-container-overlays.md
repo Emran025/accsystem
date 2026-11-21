@@ -13,7 +13,7 @@
 - A relationship shown as `logical integration` is not a synchronous or deployment guarantee.
 
 > [!NOTE]
-> **Arrow convention:** Arrows show the **control/data-flow initiator direction**. An arrow from A to B means A initiates the call, message, or connection to B. Response data, callbacks, and events may flow in either direction and are not separately depicted unless explicitly labelled. This convention follows ADR-020 and the C4 Model.
+> **Arrow convention:** Arrows show the **control/data-flow initiator direction**. An arrow from A to B means A initiates the call, message, or connection to B. Response data, callbacks, and events may flow in either direction and are not separately depicted unless explicitly labelled. This is the reversible technical baseline in ADR-020, not stakeholder approval; owner review remains open.
 
 ## C1 — System Landscape
 
@@ -71,43 +71,7 @@ flowchart LR
 **System:** `SYS-ACCECOSYSTEM` — `ACC Ecosystem Portfolio`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `00-discovery/discovery-report.md`.
 
 ### C1-SYS-ACCSYSTEM — ACCSystem Platform context
-
-```mermaid
-flowchart LR
-  SYS_ACCSYSTEM["SYS-ACCSYSTEM\nACCSystem Platform"]
-  BUYER["ACT-INDIVIDUAL — Individual Buyer"]
-  EMP["ACT-INST-EMPLOYEE — Institution Employee / Seller"]
-  IADMIN["ACT-INST-ADMIN — Institution Administrator"]
-  PADMIN["ACT-PLATFORM-ADMIN — Platform Administrator"]
-  SUPPORT["ACT-SUPPORT-STAFF — Platform Support Staff"]
-  SUP["ACT-DELIVERY-SUPERVISOR — Delivery Supervisor"]
-  COURIER["ACT-COURIER — Courier / Delivery Agent"]
-  VISITOR["ACT-VISITOR — Public Portal Visitor"]
-  CORE["SYS-ACCORE — ACCore (per-institution ERP)"]
-  COM["SYS-ACCOMMERCE — ACCommerce"]
-  MGT["SYS-ACMANAGEMENT — ACManagement Portal"]
-  MS["SYS-ACCMARED-SUP — ACCMared Supervisor"]
-  MC["SYS-ACCMARED-COU — ACCMared Courier"]
-  PAY["EXT-PAYMENT-PROVIDER — External Payment Provider(s)"]
-  CDN["EXT-PACKAGE-CDN — Software Package CDN/Object Storage"]
-  BUYER -->|browse/cart/checkout/order interaction| SYS_ACCSYSTEM
-  EMP -->|publish products and receive order events| SYS_ACCSYSTEM
-  IADMIN -->|listing, order and license management| SYS_ACCSYSTEM
-  PADMIN -->|platform administration and license issuance| SYS_ACCSYSTEM
-  SUPPORT -->|scoped support sessions| SYS_ACCSYSTEM
-  SUP -->|delivery dispatch and status| SYS_ACCSYSTEM
-  COURIER -->|assignment/status/proof of delivery| SYS_ACCSYSTEM
-  VISITOR -->|public catalog and download| SYS_ACCSYSTEM
-  COM -->|catalog/order/cart APIs| SYS_ACCSYSTEM
-  CORE -->|publication events and license validation| SYS_ACCSYSTEM
-  SYS_ACCSYSTEM -->|reservation/order commands; mode policy-gated| CORE
-  MGT -->|management and software catalog APIs| SYS_ACCSYSTEM
-  SYS_ACCSYSTEM -->|delivery/order APIs| MS
-  SYS_ACCSYSTEM -->|delivery/order APIs| MC
-  SYS_ACCSYSTEM -->|payment authorization/capture/refund| PAY
-  SYS_ACCSYSTEM -->|signed package distribution| CDN
-```
-**System:** `SYS-ACCSYSTEM` — `ACCSystem Platform`. **Status:** `PRESENT-INCOMPLETE` (literal coverage only; semantic/owner review remains open). **Source:** `c1-context/systems/SYS-ACCSYSTEM.md`.
+The canonical single-system context is [`context-diagram.md`](context-diagram.md). This section links to that black-box view rather than maintaining a second C1 diagram. The boundary, actor, and external-system records remain in [`systems/SYS-ACCSYSTEM.md`](systems/SYS-ACCSYSTEM.md). **Status:** scope and registry coverage are recorded; owner review of arrow semantics remains open.
 
 ### C1-SYS-ACCORE — ACCore (per-institution ERP) context
 
@@ -205,7 +169,7 @@ flowchart LR
 Each view is registry-derived. Containers are shown inside the owning system boundary; a co-deployment or shared platform does not imply shared data ownership.
 ### C2-SYS-ACCSYSTEM — containers of ACCSystem Platform
 
-This overlay is a **registry-derived internal container view**: it shows the 17 registered ACCSystem containers and a limited set of source-supported logical interactions. It is not declared authoritative over the separate [ACCSystem container diagram](../c2-containers/accsystem/container-diagram.md), which includes broader client/external context and a different relationship selection. The two views are retained as complementary candidates pending an explicit owner/architecture decision on precedence or reconciliation; no such decision is recorded here.
+This overlay is a **registry-derived cross-check**, not a competing canonical graph. It shows the 17 registered ACCSystem containers and a limited set of source-supported logical interactions. The canonical ACCSystem C2 container graph, including its original relationships and supporting external/client context, is [`../c2-containers/accsystem/container-diagram.md`](../c2-containers/accsystem/container-diagram.md). The overlay's narrower relationship selection is not a claim that omitted interactions do not exist; source container records remain authoritative for detailed collaborators. Owner review of relationship semantics remains open.
 
 ```mermaid
 flowchart TB

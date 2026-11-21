@@ -412,3 +412,7 @@
 ## Coordinator status
 
 The 16 tickets cover seven C1 observations (one incomplete context and six duplicate focal-node/self-boundary diagrams), seven C2 observations (six incomplete relationship/context views and one unresolved conflict between ACCSystem C2 views), and two C3 observations (Integration heading mismatch and Payment webhook-route mismatch). They are not sixteen absent registered items: all registry IDs remain present. Ticket proposals require owner/architecture/security review where noted. See the separate remediation plan for dispositions and acceptance tests.
+
+## Current disposition addendum — 2026-11-21
+
+The earlier T-C2-007 evidence and its former disposition above describe an earlier archive snapshot and are retained as historical evidence. The ACCSystem documentation-location ambiguity is now resolved: `c1-context/context-diagram.md` is the single canonical C1 black-box view, `c2-containers/accsystem/container-diagram.md` is the canonical C2 container view (relocated from the former `c1-context/landscape.md` path), and the ACCSystem section of `c1-context/c4-context-and-container-overlays.md` links to C1 instead of duplicating it. Its ACCSystem C2 overlay is a registry-derived cross-check, not a competing canonical diagram. The original C2 Mermaid block was relocated without changing its source. These changes resolve organization/precedence ambiguity only; C2/C3 relationship semantics and owner/stakeholder review remain open. No implementation, owner approval, stakeholder approval, or production readiness is asserted.

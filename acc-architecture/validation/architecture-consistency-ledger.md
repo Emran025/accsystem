@@ -18,12 +18,12 @@
 ## Decisions and architecture rules
 
 - Reservation uncertainty remains `UNKNOWN` until authoritative evidence or trusted reconciliation.
-- The ACCSystem C2 organization has one canonical container view at `c1-context/landscape.md`; the registry-derived C2 overlay in `c1-context/c4-context-and-container-overlays.md` is retained as a cross-check. The C1 black-box context view is in `c1-context/systems/SYS-ACCSYSTEM.md`.
+- The canonical ACCSystem C1 black-box view is `c1-context/context-diagram.md`; the C1 source record is `c1-context/systems/SYS-ACCSYSTEM.md`. The canonical C2 container view is `c2-containers/accsystem/container-diagram.md`; the registry-derived C2 overlay in `c1-context/c4-context-and-container-overlays.md` is only a cross-check.
 - Historical findings are retained and labeled as historical; no report claims owner approval or release readiness.
 
 ## Open decision gates
 
 - Versioned ACCore/institution reservation response, expiry, callback/connectivity, notification, and reconciliation contract.
-- Arrow-direction convention and C1/C2 semantic scope/precedence.
+- Owner/stakeholder review of the recorded arrow-direction convention and source-level C1/C2 relationship semantics; ADR-020 remains unapproved.
 - Institutional accounting/finance trigger, settlement, payment, and operational policies.
 - Security, legal, operations, stakeholder approval, and production-readiness evidence.
