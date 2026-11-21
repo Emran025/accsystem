@@ -58,7 +58,7 @@
 ## Cycle 2: ARH-2026-11-21-C2
 
 **Base commit:** `ea00eb2816722e20a976d6a842c7aaa9c669638c` (`origin/main` بعد fetch عند بدء الدورة الثانية).
-**Implementation commit:** يُسجَّل في تحديث توثيقي بعد إنشاء commit المحتوى وقبل الدفع النهائي.
+**Implementation commit:** `3371089ea74324e1a0a0414471260784bccc836a` (commit محتوى الدورة؛ يليه commit توثيقي لتثبيت هذا المرجع).
 **Push target:** `origin/main` وفق التفويض؛ دون force push.
 
 ### التغييرات
