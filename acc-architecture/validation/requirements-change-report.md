@@ -212,3 +212,37 @@ Four reports only, all within `acc-architecture/validation/`: `atomicity-review-
 - After push and a second fetch, `HEAD == origin/main == ca38b2b9355533ddf6a0b799743b1f7a53989b81`; `git show --check` passed and the worktree was clean. This report-only follow-up records those observed results; no source requirement or registry row changed.
 
 **Next cycle:** continue evidence-based review of the eight live `SPLIT_REQUIRED` findings and related acceptance/Use Case gaps. Keep owner decisions, ADM membership behavior, LIC lifecycle/policy gates, PUB/REC contracts, checkout model, recipient projection and provider/payment policies open until their owners supply evidence; retain DOP-004 and DEN-003/ODEC-010 carry-forwards. Do not claim implementation readiness while strict-ready, owner, acceptance and execution-evidence blockers remain.
+
+
+## Cycle 6: ARH-2026-11-21-C6
+
+**Base commit:** `c2ad68e5f0ee27880f2511758a6fdfeff0efbd1b` (`origin/main` at cycle start).<br>
+**Content commit:** to be recorded in the post-push follow-up below.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- All eight live findings were independently reviewed and synthesized. They remain `SPLIT_REQUIRED`: `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-ORD-001`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002`. Current evidence supports neither further classification changes nor new child IDs.
+- `REC-004` acceptance shows an outbox FAILED state and resubmission, not rejection visibility or visibility to both operations and ACCore. `CHK-003` acceptance remains incomplete. `ORD-001` may conceptually separate local aggregate/outbox creation from duplicate-safe replay in future, but remains distinct from `ORD-002`; no IDs were created and `ODEC-003`/the API contract remain open.
+- Institution membership behavior in `ADM-001` and LIC lifecycle/policy gates remain open. `DOP-004` remains an unproven merge candidate; `DEN-003` is not a confirmed duplicate and remains blocked by `ODEC-010`. No owner decision was made.
+- No requirement statements, acceptance criteria, registry rows, source architecture, capabilities, states, flows, alternatives, or ADRs changed. This was a report-only reassessment.
+
+### Changed files
+
+Four validation reports only, all under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this `requirements-change-report.md`.
+
+### Exact counts (before → after Cycle 6)
+
+- Registry: 276 rows (45 main, 231 SREQ) → unchanged; statuses remain 217 `DRAFT`, 50 `OWNER_REVIEW`, 9 `RETIRED`, 0 `ACCEPTED`.
+- Atomicity: `ATOMIC` 56 → 56; `SPLIT_REQUIRED` 17 → 17 (9 historical retired sources + 8 live findings); `MERGE_CANDIDATE` 1 → 1; confirmed `DUPLICATE` 0 → 0. The full classification table covers 231/231 SREQ.
+- `TBD` use_case_id rows: 188 → 188. Nonempty open-decision rows: 207 → 207 (60 distinct decision/gate references). Structurally missing C4 bindings: 0 → 0.
+- SREQ rows with AC and planned verification references: 231/231 → 231/231; unique AC IDs: 268 → 268. Planned references are not executed test evidence. The registry remains 277 CRLF lines with 0 bare LF.
+
+### Validation outcomes before push
+
+- Custom requirement validator: `--check` and `--check --require-rows` PASS on 276 rows. Required queries exited 0: PH-01 113 rows; PH-02 + `SYS-ACCORE` 30 rows; `CNT-ACC-CATALOG` 22 rows.
+- `--check --strict-ready` FAIL, expected, with 902 errors. Open owner gates, draft/review states, unresolved Use Case references and planned-only verification continue to block readiness; this is not a pass.
+- Tests: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
+- Available architecture validators all exited 0: `validate_architecture.py` (structural checks only), `validate_artifact_depth.py` (88 reviewed; human review still required), `validate_consistency_artifacts.py` (65/65; semantic review still required), `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py` (55 Mermaid blocks rendered/checked; semantic C4 correctness not proven), `validate_release_status.py` (Gate7/manifest remain `IN_PROGRESS`), and `generate_coverage_report.py` (C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0; decomposition counts are not semantic completeness).
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively). These two checks are `NOT_VERIFIED`, not PASS; the available architecture-assistant validators are substitutes only.
+- The final diff/scope and pre-push fetch, commit, push, and post-push verification are recorded below after they occur.
