@@ -975,3 +975,42 @@ Exactly four files, all under `acc-architecture/validation/`: `atomicity-review-
 ### Cycle 24 content push and post-push verification
 
 The content commit `83ee5da033608892bb92c49b7b244a4ab370b8b4` has Cycle 24 base `a8c369884e4c6b3748a261849f5c5c0fdfb06c30` as its parent and changes exactly the four validation reports listed above. Immediately before pushing, a fresh fetch confirmed `origin/main` still equaled the Cycle 24 base and the content commit's parent; staged scope and whitespace checks passed. `git push origin HEAD:main` succeeded as a fast-forward from `a8c3698` to `83ee5da`, without force. Immediately after the push, `git ls-remote` and, after fetch, `origin/main` both agreed on `83ee5da033608892bb92c49b7b244a4ab370b8b4`; the worktree was clean. This verification record is a separate report-only follow-up; the final follow-up SHA and worktree state are reported at task completion.
+
+
+## Cycle 25: ARH-2026-11-21-C25
+**Base commit:** `bbf3079b31d46203b627748e5737f1fcd4b0c251` (`origin/main` at Cycle 25 start).<br>
+**Cycle type:** report-only reassessment; no requirement, acceptance criterion, registry row, ID, child ID, classification, decision, ADR, contract, architecture source, application code, or capability was changed.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- Seven independent read-only finding reviews and one synthesis completed without failures. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` remain `SPLIT_REQUIRED`; only `PAY-002` remains additionally `OWNER_BLOCKED`. `REC-004` remains not `OWNER_BLOCKED`.
+- The reviews inspected each current source requirement, exact registry row, linked ACs and architecture artifacts, pertinent ADR/decision/gap records, and history since the Cycle 24 content commit. The only later commit is the report-only Cycle 24 push-verification append to this report. No new explicit owner-approved evidence, approved contract, resolved owner decision, or executed SREQ acceptance result was found. Proposed/draft artifacts, assumptions, planned scenarios, reports, unit suites, and structural validators do not constitute that evidence.
+- The unresolved boundaries remain: `INST-004` connector configuration versus credential issuance/protection/lifecycle, authentication/schema, security approval, and Use Case linkage (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006`); `MSG-002` durable receipt/claim, ACK, idempotency scope/retention, duplicate outcomes, and recovery (`ADR-022-GATE`, `UNKN-002`); `PUB-004` acceptance receipt, Catalog-owned `listing_id`, duplicate/rejection/retry/result contract and state mapping (`PUB-005/006`); `REC-004` rejected-publication recording and operations/ACCore visibility beyond `FAILED`/resubmission (`PUB-005`); `CHK-003` checkout/session/API contract, snapshots, multi-seller boundary, TTL, tax/currency/delivery fields (`UNKN-006`, `ODEC-003/009`, `RGAP-PH02-003/009`); `CNF-005` recipient/role projection, schema/cardinality/disclosure, ACK, and recovery (`ADR-019-GATE`, `RP-04`); `PAY-002` provider capability/attempt cardinality, Finance/Legal/institution policy, payment interface, and settlement ownership (`ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003`). None was resolved by inference.
+- No capability, state, flow, path, or alternative was removed or narrowed. Use Case gaps and owner decisions remain explicit; no PH-05 item or child ID was added. `ORD-001` remains distinct from `ORD-002` and `ORD-007/008`. No requirement is declared `ACCEPTED` or `IMPLEMENTATION_READY`.
+
+### Changed files
+
+Exactly four files, all under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this report. No source requirement, AC, registry row, ID, ADR, decision, contract, architecture source, application code, or file outside `acc-architecture/` changed.
+
+### Exact counts (unchanged)
+
+- Registry: 278 rows (45 main requirements, 233 SREQ); 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired sources and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`.
+- `use_case_id` `TBD`: 188 rows. Nonempty open-decision rows: 209. Unique AC IDs: 270; unique C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows retain an AC and planned-verification reference (233/233); these are not executed test evidence. The unchanged registry remains 279 CRLF lines with zero bare LF.
+
+### Validation outcomes before content push
+
+- Verified outcomes are detailed in the Cycle 25 validation record below; the two required handoff utilities remain **NOT_VERIFIED** (exit 127 and 2).
+- No functional SREQ acceptance result is established by this cycle.
+
+
+### Cycle 25 detailed validation record
+
+- `validate_requirements.py --check --require-rows`: PASS on 278 rows. The required queries exited 0: PH-01 returned 113 rows; PH-02 with `SYS-ACCORE` returned 30; `CNT-ACC-CATALOG` returned 22.
+- `--check --strict-ready`: FAIL (exit 1, 908 errors): 278 status gates, 188 unresolved function/Use Case placeholders, 209 open-decision rows, and 233 planned-only verification references. These remain blockers; no status was promoted and no SREQ acceptance result was established.
+- Python `unittest` suites on an isolated temporary copy: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS. These are not functional SREQ acceptance tests.
+- All eight available architecture checks exited 0 on an isolated temporary copy: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `generate_coverage_report.py`, and `validate_release_status.py`. Mermaid rendered and checked 55 blocks using the preinstalled `/usr/bin/chromium` via `PUPPETEER_EXECUTABLE_PATH`; no package installation or repository change was needed. Artifact depth: 88 documents, 0 incomplete/findings; consistency: 65/65 IDs, 0 findings; release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition: C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0 (in-scope/decomposition-complete/exceptions-not-complete). These checks do not establish semantic completeness or owner approval.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent; execution attempts returned 127 and 2 respectively. Both checks are **NOT_VERIFIED**, not PASS; available validators are not substitutes.
+- The registry remains 279 CRLF lines with zero bare LF; all 233 SREQ verification references remain planned, and no functional SREQ acceptance result is established.
