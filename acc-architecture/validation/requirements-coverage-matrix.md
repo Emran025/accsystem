@@ -197,3 +197,11 @@
 - الحالة الحالية: 218 صفاً `DRAFT` و50 `OWNER_REVIEW` و10 صفوف `RETIRED`؛ لا توجد صفوف `ACCEPTED` أو `PROPOSED`.
 - قرارات مفتوحة غير فارغة: 209 صفوف (منها 60 معرف قرار/بوابة فريداً، باستثناء مرجع RGAP المنفصل). لا تُحسب هذه القرارات كاعتماد.
 - PH-05 غير موجودة في السجل (0 صف).
+
+
+## Cycle 24 update
+
+- أُعيد تقييم findings التفكيك السبعة الحية بصورة مستقلة ثم جُمعت النتائج دون إخفاق عند الأساس `a8c369884e4c6b3748a261849f5c5c0fdfb06c30`. بقيت `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005` و`SREQ-PH03-PAY-002` جميعها `SPLIT_REQUIRED`؛ `PAY-002` وحده أيضاً `OWNER_BLOCKED`، و`REC-004` ليس `OWNER_BLOCKED`.
+- لم يظهر عقد معتمد أو قرار مالك محلول أو اختبار قبول SREQ منفذ جديد؛ لذلك لم تتغير المتطلبات أو AC أو registry أو IDs أو classifications. تظل بوابات المصادقة/الأسرار والـreceiver/recovery وعقد النشر/الرفض والجلسة/اللقطات وإسقاط المستلمين/الإقرار وسياسة محاولات مزود الدفع مفتوحة كما هو موثق في تقرير الذرية. لم تُخترع use-case/function IDs أو بدائل أو سياسات، ولم تضف PH-05.
+- بقيت الأعداد: 278 صفاً (45 REQ رئيسية و233 SREQ)، 218 `DRAFT` و50 `OWNER_REVIEW` و10 `RETIRED` و0 `ACCEPTED`; الذرية 58 `ATOMIC` و17 `SPLIT_REQUIRED` (10 مصادر تاريخية و7 findings حية) و1 `MERGE_CANDIDATE` و0 `DUPLICATE` مؤكداً. `use_case_id` TBD: 188؛ صفوف القرارات المفتوحة: 209؛ AC IDs الفريدة: 270؛ C2 IDs: 29؛ مراجع AC والتحقق المخطط: 233/233؛ لا missing C4 binding بنيوي.
+- بقي `strict-ready` فاشلاً بـ908 أخطاء، وجميع نتائج التحقق الوظيفي SREQ غير منفذة. تبقى فجوات Use Case وقرارات المالك صريحة؛ لا يُعلن `ACCEPTED` أو `IMPLEMENTATION_READY`، ولا تُضيّق أي capability أو state أو flow أو path أو alternative.
