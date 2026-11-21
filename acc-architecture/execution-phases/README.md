@@ -208,13 +208,13 @@ The five reserved phase folders are:
 
 | Phase | Folder | Current status |
 |---|---|---|
-| PH-01 | [`phase-01-platform-foundation/`](phase-01-platform-foundation/) | Requirement package not started |
-| PH-02 | [`phase-02-catalog-discovery-reservation/`](phase-02-catalog-discovery-reservation/) | Requirement package not started |
-| PH-03 | [`phase-03-inventory-order-payment-delivery-events/`](phase-03-inventory-order-payment-delivery-events/) | Requirement package not started |
-| PH-04 | [`phase-04-accmared-internal-delivery/`](phase-04-accmared-internal-delivery/) | Requirement package not started |
+| PH-01 | [`phase-01-platform-foundation/`](phase-01-platform-foundation/) | Draft requirement package present; owner review pending; not accepted or verified |
+| PH-02 | [`phase-02-catalog-discovery-reservation/`](phase-02-catalog-discovery-reservation/) | Draft requirement package present; owner review pending; not accepted or verified |
+| PH-03 | [`phase-03-inventory-order-payment-delivery-events/`](phase-03-inventory-order-payment-delivery-events/) | Draft requirement package present; owner review pending; not accepted or verified |
+| PH-04 | [`phase-04-accmared-internal-delivery/`](phase-04-accmared-internal-delivery/) | Draft requirement package present; owner review pending; not accepted or verified |
 | PH-05 | [`phase-05-intelligence-personalization/`](phase-05-intelligence-personalization/) | Future-only boundary; no requirements allowed |
 
-The initial machine-readable registry is [`requirements-registry.csv`](requirements-registry.csv), and its structural checker is [`validate_requirements.py`](validate_requirements.py). The empty registry is intentional until the first requirement package is elicited and reviewed.
+The machine-readable registry is [`requirements-registry.csv`](requirements-registry.csv), and its structural checker is [`validate_requirements.py`](validate_requirements.py). It currently contains draft PH-01 through PH-04 requirements; structural validation does not establish semantic correctness, implementation, security approval, owner approval, or implementation readiness. No PH-05 requirements are present.
 
 ## References
 
