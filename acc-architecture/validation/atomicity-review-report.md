@@ -1,13 +1,29 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C10<br>
-**الأساس:** `ddd4db7f0f47a79d908108f3f055171f9a773bb8` (`origin/main` عند بدء الدورة العاشرة)<br>**الدورة السابقة:** ARH-2026-11-21-C9؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C11<br>
+**الأساس:** `960463a3fcee4b63eb5c65cd3bcecde25110d9cd` (`origin/main` عند بدء الدورة الحادية عشرة)<br>**الدورة السابقة:** ARH-2026-11-21-C10؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل تصنيف **233 من 233** صف SREQ. أعادت Cycle 10 تقييم findings التفكيك السبعة الحية بصورة مستقلة ثم وُحّدت النتائج؛ بقيت جميعها `SPLIT_REQUIRED`، و`PAY-002` ما زال `OWNER_BLOCKED` أيضاً. لم تدعم الأدلة الجديدة أي تعديل على المتطلبات أو AC أو صفوف registry أو إنشاء child IDs أو إعادة تصنيف. الأعداد الحالية: `ATOMIC` 58 و`SPLIT_REQUIRED` 17 (عشرة مصادر تاريخية متقاعدة وسبعة findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لا قرار مالك أو اعتماد جديد؛ التحقق الوظيفي غير منفذ.
+يعرض السجل تصنيف **233 من 233** صف SREQ. أعادت Cycle 11 تقييم findings التفكيك السبعة الحية بصورة مستقلة ثم وُحّدت النتائج دون إخفاق؛ بقيت جميعها `SPLIT_REQUIRED`، و`PAY-002` ما زال `OWNER_BLOCKED` أيضاً. لم تدعم الأدلة المتاحة أي تعديل على المتطلبات أو AC أو صفوف registry أو إنشاء child IDs أو إعادة تصنيف. الأعداد الحالية: `ATOMIC` 58 و`SPLIT_REQUIRED` 17 (عشرة مصادر تاريخية متقاعدة وسبعة findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لا قرار مالك أو اعتماد جديد؛ التحقق الوظيفي غير منفذ.
+
+## إعادة التقييم في Cycle 11
+
+فحص سبعة مراجعين مستقلين صفوف registry ووثائقها ومعاييرها وأدلة المعمارية/القرارات، ثم جُمعت النتائج دون إخفاق. بقيت التصنيفات السبعة `SPLIT_REQUIRED`؛ لا يوجد دليل يبرر تغيير المصدر أو AC أو registry أو إنشاء child IDs. الحدود التالية تشرح سبب بقاء كل finding مفتوحاً ولا تفوض اختيار التفكيك أو السياسة:
+
+| SREQ | النتيجة | حدود السلوك والأدلة والبوابة المفتوحة |
+|---|---|---|
+| `SREQ-PH01-INST-004` | `SPLIT_REQUIRED` | استرجاع تكوين الموصل للمؤسسة متميز عن إنشاء/حماية مرجع الاعتماد وآثاره الأمنية. `AC-PH01-INST-004-01/02` لا تعتمد طريقة مصادقة أو عقد إصدار/تدوير/إلغاء. تبقى `ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006` ومراجعات الأمن/العقد مفتوحة؛ لا نفترض OAuth/mTLS أو child IDs. المصدر: `REQ-PH01-INSTITUTION-LIFECYCLE` §§3–6 و`ADR-015`. |
+| `SREQ-PH01-MSG-002` | `SPLIT_REQUIRED` | receipt/claim ومنع أثر مكرر ونتيجة duplicate المكتمل تختلف عن الاسترداد لقيد المعالجة/الآثار الجزئية. معنى ACK ونطاق المفتاح وحالة receiver والاحتفاظ/reconciliation غير معتمدة. تبقى `ADR-022-GATE` واختبارات duplicate/crash/recovery مخططة لا منفذة. المصدر: `REQ-PH01-MESSAGE-RELIABILITY` §§3–6 و`ADR-022` و`IF-ACC-ORDER-CONFIRM` §2A. |
+| `SREQ-PH02-PUB-004` | `SPLIT_REQUIRED` | ثبات مفتاح idempotency متميز عن دورة Outbox/receipt/acceptance/rejection/retry. `PUB-005` لا يحسم durable acceptance مقابل النتيجة النهائية، `listing_id`، duplicate/in-progress/uncertain، أو تصحيح الرفض؛ ACs والاختبارات مخططة فقط. المصدر: `REQ-PH02-PRODUCT-PUBLICATION` §§3–6 و`FN-INT-PUBLISH` و`IF-ACR-PUBLISH-EVENT`. |
+| `SREQ-PH02-REC-004` | `SPLIT_REQUIRED` | الرفض قبل القبول وفشل التسليم بعد القبول/الاسترداد نتائج وحالات مختلفة. `AC-PH02-REC-004-01` يغطي FAILED/resubmission فقط ولا يثبت تسجيل/رؤية الرفض من العمليات وACCore. تبقى `PUB-005/006` وعقد الاستجابة وقنوات الرؤية والاختبارات مفتوحة. المصدر: `REQ-PH02-PUBLICATION-RECOVERY` §§3–5 و`FN-INT-PUBLISH` §7. |
+| `SREQ-PH02-CHK-003` | `SPLIT_REQUIRED` | أهلية المشتري/التحقق من التوفر والسعر/الكمية منفصلة عن إنشاء session ناجحة ولقطات التوفر والسعر والتسليم ونسخة السياسة. `AC-01` يغطي تغير السعر/الكمية فقط و`AC-02` يؤجل نموذج اللقطة؛ تبقى `UNKN-006`, `ODEC-009`, `ODEC-003`, `RGAP-PH02-003/009` وعقد checkout/session/TTL مفتوحة. المصدر: `REQ-PH02-CHECKOUT-PREPARATION` §§3–6 و`FN-ORD-CHECKOUT`. |
+| `SREQ-PH03-CNF-005` | `SPLIT_REQUIRED` | صلاحية المستلم/الدور وإسقاط البيانات المعزول منفصلان عن الإرسال at-least-once وACK/retry/receiver recovery. لم يُعتمد schema أو cardinality أو disclosure أو ACK semantics؛ يبقى accounting trigger `CNF-006` منفصلاً. المصدر: `REQ-PH03-ORDER-CONFIRMATION` §§3–6 و`IF-ACC-ORDER-CONFIRM` §2A و`ADR-019-GATE`/`RP-04`. |
+| `SREQ-PH03-PAY-002` | `SPLIT_REQUIRED`; `OWNER_BLOCKED` | اكتمال allocation لكل SellerOrder منفصل عن سياسة أهلية/cardinality محاولة provider مجمعة أو منفصلة. تبقى `ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003` وسياسات Finance/Legal/provider مفتوحة؛ لا اختيار provider ولا دمج مع `PAY-003`. المصدر: `REQ-PH03-PAYMENT-ORCHESTRATION` §§3–6 و`FN-PAY-AUTHORIZE` و`ADR-016`. |
+
+لا يضيف وجود function أو interface في registry دليلاً على التنفيذ؛ ولم يُنفذ أي اختبار SREQ أو يحصل اعتماد مالك جديد. تبقى عضوية `ADM-001` وبوابات lifecycle/policy للترخيص ونقص قبول `REC-004`/`CHK-003` ظاهرة. يُحفظ `ORD-001` منفصلاً عن `ORD-002` وعن تفكيك `ORD-007/008`. لم يُستنتج OAuth/mTLS أو TTL أو settlement/commission/refund أو provider behavior.
 
 ## إعادة التقييم في Cycle 9
 

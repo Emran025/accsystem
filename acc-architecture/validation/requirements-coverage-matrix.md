@@ -1,6 +1,6 @@
 # مصفوفة تغطية متطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C10<br>**الأساس:** `ddd4db7f0f47a79d908108f3f055171f9a773bb8` (`origin/main` عند بدء الدورة العاشرة)<br>
+**الدورة:** ARH-2026-11-21-C11<br>**الأساس:** `960463a3fcee4b63eb5c65cd3bcecde25110d9cd` (`origin/main` عند بدء الدورة الحادية عشرة)<br>
 **مصادر الربط:** `requirements-registry.csv`، `registry/functions.json`، `registry/interfaces.json`، `registry/elements.json`، ومراجعات الذرية المرحلية.<br>
 **ملاحظة:** هذه مصفوفة تغطية مرجعية/اسمية؛ ليست إثباتاً بأن وظيفة أو قناة أو حاوية مطبقة فعلياً.
 
@@ -75,6 +75,13 @@
 - إعادة الحساب من السجل الحالي: 278 صفاً (45 REQ رئيسية و233 SREQ)، منها 218 `DRAFT` و50 `OWNER_REVIEW` و10 `RETIRED` و0 `ACCEPTED`. تصنيف الذرية 58 `ATOMIC` و17 `SPLIT_REQUIRED` (10 مصادر متقاعدة و7 findings حية) و1 `MERGE_CANDIDATE` و0 `DUPLICATE` مؤكد.
 - بقيت `TBD` في `use_case_id` عند 188؛ و209 صفوف بقرارات مفتوحة، مع 60 مرجع قرار/بوابة مميزاً بعد استثناء `RGAP-PH02-004`. توجد 270 AC IDs فريدة و29 حاوية C2 فريدة، ولا missing C4 binding بنيوي. لكل SREQ وعددها 233 معيار قبول ومرجع تحقق مخطط (233/233)، وليس ذلك دليلاً على التنفيذ.
 - لا تغيير في خيارات المعمارية أو الحالات أو التدفقات أو ADR أو معرفات الوظائف/حالات الاستخدام؛ تبقى عضوية `ADM-001` وبوابات lifecycle/policy الترخيص، وقيود `ORD-001` المتميزة عن `ORD-002` و`ORD-007/008`، ونقص أدلة `REC-004`/`CHK-003` كما هي. يوضح تقرير الذرية بوابات findings السبعة؛ يظل TTL الخاص بـ`CHK-003` مجهولاً ولا تُستنتج سياسة OAuth/mTLS أو settlement/commission/refund أو provider.
+
+## Cycle 11 update
+
+- أُعيد تقييم findings التفكيك السبعة الحية كلٌّ بمراجع مستقل، ثم جُمعت النتائج دون إخفاق. بقيت كلها `SPLIT_REQUIRED`، و`PAY-002` بقي `OWNER_BLOCKED`؛ لا يدعم الدليل الحالي تغيير requirement أو AC أو registry أو التصنيف أو إنشاء child IDs.
+- أُعيد الحساب من CSV غير المتغير: 278 صفاً (45 REQ رئيسية و233 SREQ)، منها 218 `DRAFT` و50 `OWNER_REVIEW` و10 `RETIRED` و0 `ACCEPTED`. الذرية: 58 `ATOMIC` و17 `SPLIT_REQUIRED` (10 مصادر متقاعدة و7 findings حية) و1 `MERGE_CANDIDATE` و0 `DUPLICATE` مؤكداً.
+- بقيت `TBD` في `use_case_id` عند 188؛ و209 صفوف بقرارات مفتوحة، مع 60 مرجع قرار/بوابة فريداً بعد استثناء `RGAP-PH02-004`. توجد 270 AC IDs فريدة و29 معرف C2 فريداً، ولا missing C4 binding بنيوي. لكل SREQ وعددها 233 AC ومرجع تحقق مخطط (233/233)، لا دليل تنفيذ.
+- لا قرار مالك أو اختبار قبول SREQ منفذ أُضيف. تبقى عضوية `ADM-001` وبوابات lifecycle/policy الترخيص و`REC-004`/`CHK-003` كما هي؛ يحفظ `ORD-001` متميزاً عن `ORD-002` و`ORD-007/008`. لا يُستنتج OAuth/mTLS أو TTL أو سياسات settlement/commission/refund/provider. تفاصيل بوابات findings في تقرير الذرية.
 
 ## Capability / requirement areas
 

@@ -430,3 +430,35 @@ Because Cycle 10 is report-only and the registry is unchanged, the before→afte
 - Immediately before its push, a fresh `git fetch origin main` confirmed local `HEAD == 2c47e333a566a88e66c1c849b264f6fbc61274e3` and `origin/main == c89d0a569c410928f98956698149c0c61c5e8e99`; the worktree was clean and `git show --check` passed.
 - It was pushed to `main` without force; Git reported a fast-forward from `c89d0a5` to `2c47e33`.
 - After the push and another fetch, `HEAD == origin/main == 2c47e333a566a88e66c1c849b264f6fbc61274e3`; the worktree was clean.
+
+
+## Cycle 11: ARH-2026-11-21-C11
+
+**Base commit:** `960463a3fcee4b63eb5c65cd3bcecde25110d9cd` (`origin/main` at Cycle 11 start).<br>
+**Cycle type:** report-only reassessment; no requirement, acceptance criterion, registry row, or architecture source changed.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Changed files
+
+Exactly four reports under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and `requirements-change-report.md`.
+
+### Reassessment and evidence-supported outcome
+
+- Seven independent finding reviews and synthesis completed without failures. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` all remain `SPLIT_REQUIRED`; `PAY-002` remains additionally `OWNER_BLOCKED`. No current evidence supports changes to source requirements, ACs, registry rows, child IDs, or classifications.
+- No owner decision or executed SREQ acceptance test was added. `ORD-001` remains `RETIRED` and distinct from `ORD-002` and `ORD-007/008`. `ADM-001` membership, licensing lifecycle/policy gates, and incomplete `REC-004`/`CHK-003` evidence remain open. `DOP-004` is still an unproven merge candidate; `DEN-003` remains unconfirmed as duplicate and blocked by `ODEC-010`. No OAuth/mTLS, TTL, settlement, commission, refund, or provider behavior was inferred.
+
+### Exact counts from the unchanged registry
+
+- Registry: 278 rows (45 main requirements, 233 SREQ); 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired source rows and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`. All 233 SREQ rows are classified.
+- `use_case_id` `TBD`: 188 rows. Nonempty open-decision rows: 209, with 60 distinct decision/gate references after excluding the separate `RGAP-PH02-004` reference. Unique AC IDs: 270; unique C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows retain an AC and planned-verification reference (233/233); these are not executed test evidence. The unchanged registry is 279 CRLF lines with zero bare LF.
+
+### Validation outcomes before push
+
+- `validate_requirements.py --check` and `--check --require-rows`: PASS on 278 rows. Required queries exited 0: PH-01 returned 113 rows; PH-02 with `SYS-ACCORE` returned 30; `CNT-ACC-CATALOG` returned 22.
+- `--check --strict-ready`: FAIL as expected with 908 errors; the package remains not implementation-ready.
+- Unit suites: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
+- All eight available architecture checks exited 0 against a temporary copy: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py`, and `generate_coverage_report.py`. Artifact depth: 88 reviewed, 0 incomplete/findings, human review still required; consistency: 65/65 IDs, 0 findings, semantic review still required; diagram validation checked/rendered 55 Mermaid blocks. Release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition counts are C1 15/7/8, C2 40/17/23, C3 35/35/0, and DECISION 22/22/0; these do not prove semantic completeness.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent and remain `NOT_VERIFIED`, not PASS.
+- `git diff --check` and the CRLF-aware diff check passed. Scope review found only the four validation reports above; the registry has no diff and retains its 279 CRLF lines with zero bare LF.
