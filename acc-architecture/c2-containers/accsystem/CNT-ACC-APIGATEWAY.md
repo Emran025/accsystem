@@ -10,7 +10,7 @@
 |---|---|
 | **Container ID** | CNT-ACC-APIGATEWAY |
 | **Purpose** | Single entry point for all inbound requests from ACCommerce, ACCore (via ACCore Commerce Workspace), ACManagement, and ACCMared clients. Performs request routing, authentication verification, rate limiting, and BFF response aggregation. |
-| **Scope Boundary** | Routing, security enforcement, rate limiting, protocol translation. Does NOT contain business logic. |
+| **Scope Boundary** | Routing, token validation/authentication, rate limiting, protocol translation, and request forwarding. Does NOT make authorization decisions; downstream services enforce authorization. |
 
 CONFIRMED (idea.md §3.1): "API Gateway / BFF — استقبال الطلبات من التطبيقات، التوجيه، تحديد المعدل، تجميع الاستجابات المناسبة لكل عميل."
 
@@ -26,7 +26,7 @@ CONFIRMED (idea.md §3.1): "API Gateway / BFF — استقبال الطلبات 
 | ACT-VISITOR (via CNT-ACM-PUBLIC) | Inbound | Public portal requests |
 | ACT-DELIVERY-SUPERVISOR (via CNT-AMD-SUPERVISOR) | Inbound | Supervisor delivery requests |
 | ACT-COURIER (via CNT-AMD-COURIER) | Inbound | Courier delivery requests |
-| CNT-ACC-IDENTITY | Outbound | Token validation and authorization check on every authenticated request |
+| CNT-ACC-IDENTITY | Outbound | Token/session validation and verified identity context for authenticated requests; no Gateway authorization decision |
 | All ACCSystem backend services | Outbound | Routes authenticated and validated requests to appropriate services |
 
 ---

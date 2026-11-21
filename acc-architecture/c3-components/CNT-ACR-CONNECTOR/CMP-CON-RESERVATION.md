@@ -20,7 +20,7 @@ Transport and authentication follow ADR-015's controlled policy. The handler is 
 Atomic last-unit race; duplicate request; accepted response lost; timeout/unknown; definitive rejection; idempotent release; release of consumed reservation rejected; outbox/inbox replay; credential rotation and revocation.
 
 ## Interfaces and collaborators
-- Consumes the logical reservation/release contract from `CMP-INT-RESERVATION` through `IF-ACC-RESERVE-SAGA` semantics.
+- Consumes reservation/release commands relayed by `CMP-INT-RESERVATION` after the Orders-to-Integration `IF-ACC-RESERVE-SAGA` request. The connector leg has no separately registered interface ID; its channel and schema remain OPEN.
 - Returns `ACCEPTED`, `REJECTED`, `UNKNOWN`, or authoritative `EXPIRED` through `IF-ACR-RESERVATION-RESP`.
 - ACCore inventory storage is the local source of truth; ADR-015 governs connectivity/authentication.
 
@@ -30,9 +30,7 @@ Atomic last-unit race; duplicate request; accepted response lost; timeout/unknow
 flowchart LR
     CMP_CON_RESERVATION["CMP-CON-RESERVATION"]
     CMP_INT_RESERVATION["CMP-INT-RESERVATION"]
-    CMP_INT_RESERVATION -->|documented collaborator| CMP_CON_RESERVATION
-    IF_ACC_RESERVE_SAGA["IF-ACC-RESERVE-SAGA"]
-    IF_ACC_RESERVE_SAGA -->|documented collaborator| CMP_CON_RESERVATION
+    CMP_INT_RESERVATION -->|relays Orders IF-ACC-RESERVE-SAGA request; connector leg has no separate interface ID| CMP_CON_RESERVATION
     IF_ACR_RESERVATION_RESP["IF-ACR-RESERVATION-RESP"]
     CMP_CON_RESERVATION -->|documented collaborator| IF_ACR_RESERVATION_RESP
 ```

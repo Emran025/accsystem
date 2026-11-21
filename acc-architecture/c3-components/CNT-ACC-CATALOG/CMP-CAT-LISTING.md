@@ -29,7 +29,7 @@
 | CMP-CAT-SEARCHSYNC | Outbound event | `ListingApproved`, `ListingUpdated`, `ListingRemoved` | Triggers search index update |
 | CNT-ACC-EVENTBUS | Outbound | Event envelope | Publishes listing state events |
 | CNT-ACC-AUDIT | Outbound | Audit entry | Records listing create/update/remove actions |
-| Catalog DB | Read/Write | SQL | Persists Listing records |
+| Catalog DB | Read/Write | Access technology UNKNOWN; SQL wording is an unapproved/provisional record label, not a database decision | Persists Listing projection |
 
 ---
 
@@ -50,6 +50,8 @@ flowchart LR
     CMP_CAT_LISTING -->|documented collaborator| CNT_ACC_AUDIT
 ```
 ## 3. Data Owned
+
+> The following fields are a logical illustrative entity sketch, not approved DDL, database technology, or final type/constraint decisions. The Catalog container record leaves its storage technology UNKNOWN.
 
 **Listing Entity:**
 ```

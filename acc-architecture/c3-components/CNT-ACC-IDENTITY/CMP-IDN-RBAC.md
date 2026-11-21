@@ -6,7 +6,7 @@
 |---|---|
 | **Component ID** | CMP-IDN-RBAC |
 | **Parent Container** | CNT-ACC-IDENTITY |
-| **Purpose** | Manages role assignments and permission resolution for all platform actors. Provides authorization data to API Gateway and downstream services for access control decisions. |
+| **Purpose** | Manages role assignments and resolves role/permission data for token issuance and downstream services. The API Gateway validates tokens and does not make authorization decisions. |
 | **Scope Boundary** | Role definition, assignment, and permission resolution. Does NOT enforce permissions (each service enforces its own authorization). |
 
 ---
@@ -16,10 +16,12 @@
 | Collaborator | Direction | Role |
 |---|---|---|
 | CMP-IDN-AUTH | Inbound | Fetches role claims during token issuance |
-| CNT-ACC-APIGATEWAY | Inbound | Requests role/permission lookup for route-level authorization |
 | CNT-ACC-PLATFORMADMIN | Inbound | Submits role grant/revoke requests after approval |
+| Downstream authorization-consuming services (generic caller set) | Outbound data | Resolves role/permission context; each target service enforces its own policy |
 | CNT-ACC-EVENTBUS | Outbound | Publishes PlatformRoleGranted/Revoked events |
 | CNT-ACC-AUDIT | Outbound | Logs all role changes |
+
+The earlier route-level API Gateway lookup claim conflicted with the Gateway container record and security view, which explicitly assign token validation to the Gateway and authorization decisions to downstream services. That claim is not treated as a current collaborator or approved route.
 
 ---
 
@@ -30,10 +32,10 @@ flowchart LR
     CMP_IDN_RBAC["CMP-IDN-RBAC"]
     CMP_IDN_AUTH["CMP-IDN-AUTH"]
     CMP_IDN_AUTH -->|documented collaborator| CMP_IDN_RBAC
-    CNT_ACC_APIGATEWAY["CNT-ACC-APIGATEWAY"]
-    CNT_ACC_APIGATEWAY -->|documented collaborator| CMP_IDN_RBAC
     CNT_ACC_PLATFORMADMIN["CNT-ACC-PLATFORMADMIN"]
     CNT_ACC_PLATFORMADMIN -->|documented collaborator| CMP_IDN_RBAC
+    TARGET_SERVICES["Downstream authorization-consuming services"]
+    CMP_IDN_RBAC -->|role / permission data only; services enforce authorization| TARGET_SERVICES
     CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
     CMP_IDN_RBAC -->|documented collaborator| CNT_ACC_EVENTBUS
     CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
@@ -99,6 +101,6 @@ flowchart LR
 
 | Scenario | Input / Precondition | Expected Verification Outcome |
 |---|---|---|
-| Authorized permission check | User holds `ORDER_CANCEL` role attempting cancel | Permission check evaluates to `ALLOW`; audit record written |
-| Privilege escalation attempt | Standard buyer attempts platform administration operation | Permission check evaluates to `DENY`; security alert raised |
+| Authorized permission data | User holds `ORDER_CANCEL` role; target service requests role context | RBAC returns applicable role/permission data; the target service independently evaluates its policy; RBAC emits no central `ALLOW` result |
+| Privilege escalation attempt | Standard buyer attempts platform administration operation | RBAC returns role data only; the target service denies under its own policy and raises any required security alert |
 | Dynamic role change | User role updated in Identity DB | Subsequent permission evaluation reflects updated role within token TTL |

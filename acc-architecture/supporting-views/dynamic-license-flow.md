@@ -48,12 +48,13 @@ sequenceDiagram
 
     Note over ADM,AUD: PHASE 1 - LICENSE REQUEST CREATION
 
-    ADM->>AGW: POST /v1/management/institutions/(institution_id)/licenses / Authorization: Bearer <admin_jwt + MFA> / (product_code, plan_id, seat_count, valid_from, valid_until, units[])
-    AGW->>AGW: Validate JWT (MFA claim required), extract admin_id, check role: license:write
-    AGW->>PA: ForwardLicenseRequest(admin_id, institution_id, product_code, plan_id, params)
-    PA->>IA: VerifyAdminPermission(admin_id, action: license:issue, resource: institution_id)
-    IA-->>PA: Permission GRANTED (role + scope confirmed)
-    PA->>LE: CreateLicense(institution_id, product_code, plan_id, seat_count, / valid_from, valid_until, units[], issued_by: admin_id)
+    ADM->>AGW: Submit authenticated admin request, license fields illustrative, token format and MFA claim policy OPEN
+    AGW->>AGW: Validate token/session and extract verified identity context, no authorization decision
+    AGW->>PA: Forward authenticated LicenseRequest and identity context
+    PA->>IA: Resolve role, membership and institution-scope data for this operation
+    IA-->>PA: Role / membership data only, no central ALLOW/DENY verdict
+    PA->>PA: Apply target workflow / approval policy (role matrix and approval rules OPEN)
+    PA->>LE: CreateLicense after workflow authorization (fields and contract OPEN)
 
     Note over LE,BUS: PHASE 2 - LICENSE RECORD CREATION AND SIGNING
 
@@ -68,14 +69,14 @@ sequenceDiagram
 
     Note over IGW,ACC: PHASE 3 - INSTITUTIONAL SIGNING AND DELIVERY
     alt Signing succeeds and delivery is acknowledged
-        LE->>LE: Sign institutional scoped entitlement with grant and credential bounds
-        LE->>IGW: Deliver signed entitlement under approved contract
-        IGW->>ACC: Selected outbound-initiated or optional protected inbound channel
-        ACC->>ACC: Verify signature, workflow, institution/product, grant and credential validity
-        ACC->>ACC: Store validated token locally
-        ACC-->>IGW: Delivery acknowledgment under approved contract
-        IGW->>LE: Forward acknowledgment where supported
-        LE->>LE: Advance ISSUED to ACTIVATED
+        LE->>LE: Sign institutional scoped entitlement (token format, algorithm and key policy OPEN)
+        LE->>IGW: Proposed signed-entitlement delivery via Integration, interface/channel OPEN
+        IGW->>ACC: Logical delivery direction only, receiving component/channel/ACK OPEN
+        ACC->>ACC: Candidate checks for signature, scope and credential bounds, approved contract OPEN
+        ACC->>ACC: Store validated token locally if selected implementation requires it
+        ACC-->>IGW: Candidate receipt, ACK meaning and durable responsibility OPEN
+        IGW->>LE: Forward receipt only if selected by the approved contract
+        LE->>LE: Advance ISSUED to ACTIVATED only after approved contract-valid receipt and policy conditions
         LE->>BUS: Publish LicenseActivated at approved transition
         BUS->>AUD: Audit activation
         ACC->>ACC: Begin authorized licensed operation
@@ -84,6 +85,8 @@ sequenceDiagram
         LE->>LE: Retain recoverable pending work, retry/reconcile under policy
         Note over LE,ACC: No token readiness or activation is inferred from a missing result
     end
+
+    Note over LE,ACC: This remains a PROPOSED logical sequence. Receiver component, interface, transport, ACK/receipt meaning, retry ownership and activation correlation are OPEN. No final delivery contract is asserted.
 
     Note over ADM,AUD: PHASE 4A - ONLINE PERIODIC VALIDATION
 
@@ -124,7 +127,7 @@ sequenceDiagram
     alt ACCSystem unreachable during validation check
         ACC->>ACC: Attempt online validation to timeout/connection failure
         ACC->>ACC: Fall back to local signed entitlement token
-        ACC->>ACC: Verify signature on stored entitlement (RS256 with cached platform public key)
+        ACC->>ACC: Verify signature using an approved algorithm and trust anchor, algorithm and key distribution UNKNOWN, RS256 not selected
         ACC->>ACC: Check scoped identity, authenticated grant validity and credential expiry separately
         ACC->>ACC: If locally observed suspension or revocation applies, restrict, unseen revocations remain an offline limitation
         
@@ -196,7 +199,7 @@ sequenceDiagram
   "grace_policy_ref": "policy-controlled"
 }
 ```
-*Illustrative claim values and signing mechanism only: grant dates differ from credential issue/expiry; TTL, wire mapping and algorithm require approval. ACCore holds the platform public key for offline verification.*
+*Illustrative claim values only: grant dates differ from credential issue/expiry; TTL, wire mapping, algorithm, key distribution and rotation require approval. Offline verification requires an approved trust anchor; its storage and update path are not selected.*
 
 > [!NOTE]
 > Token format (JWT vs custom signed JSON vs signed binary) is **PROPOSED**. JWT (RFC 7519) is recommended for ecosystem compatibility and existing library support.

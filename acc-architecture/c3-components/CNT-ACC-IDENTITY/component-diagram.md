@@ -2,45 +2,45 @@
 
 **Container:** CNT-ACC-IDENTITY  
 **System:** SYS-ACCSYSTEM  
-**Status:** DRAFT | Evidence: component records, CNT-ACC-IDENTITY container record, ADR-010/011/012
+**Status:** DRAFT | Evidence: component records, CNT-ACC-IDENTITY container record, API Gateway record, security view, ADR-010/011/012
 
 ---
 
 ## Component Interaction Diagram
 
 ```mermaid
-flowchart TD
-    subgraph Callers["Callers and Collaborators"]
-        APIGW["CNT-ACC-APIGATEWAY\n(API Gateway)"]
-        PLATFORMADMIN["CNT-ACC-PLATFORMADMIN\n(Platform Administration)"]
-        INSTREG["CNT-ACC-INSTREG\n(Institution Registry)"]
-        AUDIT["CNT-ACC-AUDIT\n(Audit Log)"]
-    end
+flowchart LR
+    APIGW["CNT-ACC-APIGATEWAY\n(API Gateway)"]
+    PLATFORMADMIN["CNT-ACC-PLATFORMADMIN\n(Platform Administration)"]
+    INSTREG["CNT-ACC-INSTREG\n(Institution Registry)"]
+    AUDIT["CNT-ACC-AUDIT\n(Audit Log)"]
+    EVENTBUS["CNT-ACC-EVENTBUS\n(Event Bus)"]
+    TARGETS["Downstream domain services\n(generic consumers, not a new component)"]
 
     subgraph CNT-ACC-IDENTITY["CNT-ACC-IDENTITY — Identity & Access Service"]
         AUTH["CMP-IDN-AUTH\nAuthentication Engine"]
-        RBAC["CMP-IDN-RBAC\nRole & Permission Manager"]
+        RBAC["CMP-IDN-RBAC\nRole & Permission Data Manager"]
         SESSION["CMP-IDN-SESSION\nSession Manager"]
         TENANCY["CMP-IDN-TENANCY\nTenancy Resolver"]
     end
 
-    subgraph Stores["Identity-owned stores (technology undecided)"]
-        IDENTDB[("Identity data store\nTechnology UNKNOWN / OPEN")]
-        SESSSTORE[("Session / revocation store\nTechnology UNKNOWN / OPEN")]
+    subgraph Stores["Identity-owned logical stores, technology/schema undecided"]
+        IDENTDB[("Identity / role / membership data\nTechnology and DDL UNKNOWN")]
+        SESSSTORE[("Session / revocation data\nTechnology and DDL UNKNOWN")]
     end
 
     %% Authentication and session lifecycle
-    APIGW -->|Authentication request| AUTH
+    APIGW -->|Forward authentication request| AUTH
     AUTH -->|Fetch institution membership claims| TENANCY
     TENANCY -->|Verify institution exists and is active| INSTREG
     AUTH -->|Create session after successful login| SESSION
-    APIGW -->|Validate token on each authenticated request| SESSION
+    APIGW -->|Validate token/session on authenticated requests\nauthentication and token validation only| SESSION
     SESSION <-->|Read / write session and revocation state| SESSSTORE
 
-    %% Role and permission data resolution; enforcement remains with each service
-    AUTH -->|Fetch role claims during token issuance| RBAC
-    APIGW -->|Request role / permission data| RBAC
-    RBAC -->|Resolved role / permission data; no enforcement decision| APIGW
+    %% Role and permission data; services enforce their own authorization
+    AUTH -->|Resolve role claims during token issuance| RBAC
+    RBAC -->|Role / permission claim data| AUTH
+    RBAC -->|Provide role / permission data only\nno central ALLOW/DENY decision| TARGETS
     RBAC -->|Read role definitions and assignments| IDENTDB
 
     %% Administrative operations
@@ -52,11 +52,14 @@ flowchart TD
     AUTH <-->|Credential read / write| IDENTDB
     AUTH -->|Authentication audit event| AUDIT
     RBAC -->|Role assignment change audit| AUDIT
+    RBAC -->|PlatformRoleGranted / PlatformRoleRevoked\nevent schema and delivery contract open| EVENTBUS
     SESSION -->|Session create / refresh / revoke audit| AUDIT
     TENANCY -->|Membership change audit| AUDIT
 ```
 
-`CMP-IDN-RBAC` resolves role assignments and permission data; it does **not** enforce permissions. Each target service enforces its own authorization. Token format (JWT or opaque) and the identity/session store technologies remain UNKNOWN/OPEN. No session subscription to CNT-ACC-EVENTBUS is asserted.
+The API Gateway validates the token/session and passes authenticated identity context; it does **not** make the authorization decision. `CMP-IDN-RBAC` resolves role and permission data, but does not enforce it or return a central `ALLOW` / `DENY` result. Each target service applies its own authorization and tenant-isolation checks. `Downstream domain services` is a generic consumer grouping, not a registered C3 component or an exhaustive caller inventory. No Event Bus session subscription is asserted; the documented role-grant/revocation event path is shown separately.
+
+Token format (JWT or opaque), identity/session store technology, DDL, session TTL, and event wire schemas remain **UNKNOWN/OPEN**. Field shapes in component records are logical documentation, not a finalized database schema.
 
 ---
 
@@ -64,9 +67,9 @@ flowchart TD
 
 | Component | ID | Role |
 |---|---|---|
-| Authentication Engine | CMP-IDN-AUTH | Validates credentials and coordinates authentication/session creation; token format remains UNKNOWN |
-| Role & Permission Manager | CMP-IDN-RBAC | Manages assignments and resolves permission data; does not enforce access |
-| Session Manager | CMP-IDN-SESSION | Manages token/session lifecycle, refresh, revocation and expiry |
+| Authentication Engine | CMP-IDN-AUTH | Validates credentials, coordinates authentication/session creation, and resolves claims; token format remains UNKNOWN |
+| Role & Permission Manager | CMP-IDN-RBAC | Manages assignments and resolves permission data; does not enforce access or decide ALLOW/DENY |
+| Session Manager | CMP-IDN-SESSION | Manages token/session lifecycle, refresh, revocation, and expiry |
 | Tenancy Resolver | CMP-IDN-TENANCY | Resolves user-institution membership and verifies institution context via the registry |
 
 ---
@@ -76,18 +79,18 @@ flowchart TD
 ### Flow 1 — Login
 1. API Gateway forwards the authentication request to **CMP-IDN-AUTH**.
 2. AUTH requests institution membership claims from **CMP-IDN-TENANCY**; TENANCY verifies the institution with **CNT-ACC-INSTREG**.
-3. AUTH fetches role claims from **CMP-IDN-RBAC** and creates a session through **CMP-IDN-SESSION**.
-4. AUTH records the authentication event in **CNT-ACC-AUDIT**. Credential/token format is UNKNOWN; no JWT or specific store technology is asserted.
+3. AUTH resolves role data from **CMP-IDN-RBAC** and creates a session through **CMP-IDN-SESSION**.
+4. AUTH records the authentication event in **CNT-ACC-AUDIT**. Credential/token format and the store technologies remain UNKNOWN.
 
 ### Flow 2 — Authenticated API Request
-1. API Gateway requests token/session validation from **CMP-IDN-SESSION** for each authenticated request.
-2. The relevant gateway or target service may retrieve role/permission data from **CMP-IDN-RBAC**.
-3. The target service enforces its own authorization. RBAC does not return a central ALLOW/DENY enforcement result.
+1. API Gateway requests token/session validation from **CMP-IDN-SESSION**.
+2. The verified identity context is passed to the target domain service.
+3. RBAC may provide role/permission data to a target service; the target service performs its own authorization and institution-scope enforcement. RBAC does not return a central ALLOW/DENY enforcement result, and no Gateway authorization decision is implied.
 
 ### Flow 3 — Administrative Session Revocation
 1. **CNT-ACC-PLATFORMADMIN** requests session revocation through **CMP-IDN-SESSION**.
-2. SESSION updates the session/revocation store and records the action in **CNT-ACC-AUDIT**.
-3. Event Bus publication or session-event subscription is not established by the current component sources and is not depicted.
+2. SESSION updates the logical session/revocation data and records the action in **CNT-ACC-AUDIT**.
+3. Role grant/revocation events are emitted by RBAC; a session-event publication or subscription is not established by the current component sources.
 
 ---
 
@@ -95,15 +98,17 @@ flowchart TD
 
 | Concern | Evidence / status |
 |---|---|
-| Multi-tenant isolation | CONFIRMED; institution context and memberships are resolved separately from local ERP roles |
-| Least-privilege for admin/support | CONFIRMED as a policy baseline; detailed approval remains subject to ADR review |
+| Multi-tenant isolation | CONFIRMED; target services enforce tenant scope using verified identity context |
+| RBAC enforcement boundary | Role/permission data is resolved in Identity; each target service enforces its own authorization |
+| Gateway responsibility | Token/session validation and request routing; no authorization decision |
 | Access-token format | UNKNOWN (JWT or opaque); JWT signing remains PROPOSED |
-| Identity data store technology | UNKNOWN / OPEN |
-| Session and revocation store technology | UNKNOWN / OPEN; no Redis claim |
-| Session TTL, token TTL and lockout threshold | UNKNOWN |
-| Event Bus session subscription/events | UNKNOWN / PROPOSED; not shown as a confirmed relation |
+| Identity data store / DDL | UNKNOWN / OPEN |
+| Session and revocation store / DDL | UNKNOWN / OPEN; no Redis claim |
+| Session TTL, token TTL, and lockout threshold | UNKNOWN |
+| Role-change Event Bus path | Documented publisher relationship; exact event schema/implementation remains OPEN |
+| Session Event Bus subscription/events | UNKNOWN / PROPOSED; not shown as a confirmed relation |
 | Audit storage and tamper-evidence details | ASSUMPTION / PROPOSED; implementation not established |
 
 ---
 
-*Generated: 2026-11-21 | Not stakeholder-approved | Not production-ready*
+*Updated: 2026-11-21 | Not stakeholder-approved | Not production-ready*

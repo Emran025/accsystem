@@ -27,7 +27,7 @@
 │  ACManagement Public Portal, software download endpoints           │
 │                              │                                       │
 │                       API Gateway / BFF                             │
-│                        (auth enforcement)                           │
+│            (token authentication / routing; not authorization)      │
 │                              │                                       │
 ├──────────────────────────────▼──────────────────────────────────────┤
 │ AUTHENTICATED CLIENT ZONE                                           │

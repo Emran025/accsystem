@@ -6,8 +6,8 @@
 |---|---|
 | **Component ID** | CMP-ORD-CANCEL |
 | **Parent Container** | CNT-ACC-ORDERS (Order Management Domain — ACCSystem) |
-| **Purpose** | Receives cancellation or return requests, validates that the order state allows the transition, and coordinates compensation across the reservation, payment, and delivery domains. Supports partial compensation when individual steps fail. |
-| **Scope Boundary** | Owns the cancellation/return coordination flow. Does NOT own reservation cancellation logic (ACCore), payment void/refund logic (CMP-PAY-REFUND), or delivery halt logic (CNT-ACC-DELIVERY). |
+| **Purpose** | Receives cancellation or return requests, validates that the order state allows the transition, and coordinates reservation/payment effects plus any policy-required delivery coordination. Supports partial compensation when individual steps fail. |
+| **Scope Boundary** | Owns the cancellation/return coordination flow. Does NOT own reservation cancellation logic (ACCore), payment void/refund logic (CMP-PAY-REFUND), or delivery halt logic (CNT-ACC-DELIVERY); no direct Delivery C3 endpoint or interface is established here. |
 
 ---
 
@@ -19,8 +19,8 @@
 | CMP-ORD-STATEMACHINE | Outbound (calls) | Checks if cancellation/return transition is allowed; requests state transition |
 | CMP-INT-RESERVATION | Outbound (calls) | Sends reservation release/cancel to ACCore seller |
 | CMP-PAY-REFUND | Outbound (calls) | Triggers void (pre-capture) or refund (post-capture) |
-| Settlement/Ledger boundary | Outbound (calls) | Reverses or holds seller credit, commission and settlement effects for each affected SellerOrder/allocation |
-| CNT-ACC-DELIVERY | Outbound (calls) | Requests shipment halt or return initiation |
+| Settlement/Ledger boundary | Future/proposed coordination boundary | Ownership, command authority, interface and route OPEN; no direct call is established |
+| CNT-ACC-DELIVERY | Container-level effect only | Shipment halt/return may be required by policy; no direct C3 endpoint/interface or call route established |
 | Event Bus | Outbound | Publishes `OrderCancelled`, `ReturnRequested` events |
 | Outbox Table | Outbound | Persists event intent for recoverable asynchronous publication |
 
@@ -37,8 +37,6 @@ flowchart LR
     CMP_ORD_CANCEL -->|documented collaborator| CMP_INT_RESERVATION
     CMP_PAY_REFUND["CMP-PAY-REFUND"]
     CMP_ORD_CANCEL -->|documented collaborator| CMP_PAY_REFUND
-    CNT_ACC_DELIVERY["CNT-ACC-DELIVERY"]
-    CMP_ORD_CANCEL -->|documented collaborator| CNT_ACC_DELIVERY
 ```
 ## 3. Behavior, Rules, and State
 
@@ -51,8 +49,8 @@ flowchart LR
 4. Execute eligible compensation steps independently only where their guards and the conservative UNKNOWN rule permit:
    - **Step A:** Coordinate institution-owned stock handling. Do not release a consumed or confirmed-order-linked reservation; any post-confirmation reversal/return rule requires institutional and product approval.
    - **Step B:** Void or refund payment via CMP-PAY-REFUND.
-   - **Step C:** Where capture or external payment has already produced a seller-credit, commission or settlement effect, request the policy-authorized hold/reversal/adjustment through the Settlement/Ledger boundary; do not infer reversal from a refund alone.
-   - **Step D:** Halt or return shipment via CNT-ACC-DELIVERY.
+   - **Step C:** Where capture or external payment has already produced a seller-credit, commission or settlement effect, a policy-authorized hold/reversal/adjustment may be required; the Settlement/Ledger boundary is future/proposed, and its owner, authority, interface and route are OPEN. Do not infer reversal from a refund alone.
+   - **Step D:** If policy requires a shipment halt or return, coordinate it through the delivery-owned contract once defined; the specific Delivery component, interface and route are OPEN and no direct C3 call is asserted.
 5. Record each step as succeeded, failed, skipped/not applicable or UNKNOWN with evidence and stable operation identity. Reconcile a possibly dispatched stock/financial effect before repeating it.
 6. Only when all required steps are definitively settled under policy transition to `Cancelled`; failure, UNKNOWN or exhausted retries remains pending with escalation.
 7. Publish `OrderCancelled` with `correlation_id` only on the final transition.
@@ -132,7 +130,7 @@ flowchart LR
 
 - Cancellation requests require authenticated user with appropriate role (buyer for own orders; institution admin for seller orders; platform support with scoped access).
 - Return requests similarly scoped — buyers can request returns for their orders within policy window.
-- Internal compensation calls (reservation, payment, delivery) are service-to-service only.
+- Internal calls are service-to-service. Reservation and payment collaborators are identified; the Delivery route/interface remains OPEN and is not asserted as a direct C3 call.
 
 ### 5.4 Audit Events
 

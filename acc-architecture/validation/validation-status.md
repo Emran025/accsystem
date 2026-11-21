@@ -11,30 +11,31 @@
 | `validate_architecture.py` | PASS — exit 0 | Registry/reference structure across 4 levels only. |
 | `validate_consistency_artifacts.py` | STRUCTURAL RECORDS PRESENT — 65/65 IDs; 0 structural findings | Required ledger/matrix/report coverage; semantic review remains required. |
 | `validate_references.py` | PASS — exit 0 | Local references checked by the script. |
-| `validate_artifact_depth.py` | STRUCTURE PRESENT — 88 documents; 0 incomplete outlines/findings | Outline depth only; human review remains required. |
-| `validate_diagrams.py` / Mermaid CLI 12.2.0 | PASS — rendered and checked 55 Mermaid blocks | Parser/render acceptance plus registered-ID checks; not C4 semantic correctness. |
+| `validate_traceability.py` | PASS — exit 0 | Traceability mappings checked by the script. |
+| `validate_artifact_depth.py` | STRUCTURE PRESENT — 88 documents; 0 heuristic incomplete outlines/findings | Outline depth only; human review remains required. |
+| `validate_diagrams.py` / Mermaid CLI 12.0.0 | PASS — rendered and checked 55 Mermaid blocks | Parser/render acceptance plus registered-ID checks; not C4 semantic correctness. |
 | `validate_release_status.py` | CONSISTENT — Gate 7 and manifest remain `IN_PROGRESS`; 0 open findings | Status records are coherent; this is not release approval. |
 | `git diff --check` | PASS | No whitespace errors in the reviewed change set. |
 
-The dedicated C1 scope check found one `SYS-ACCSYSTEM` black-box, 8 registered actor nodes, and 7 client/external system or service nodes, with no `CNT-*` or `CMP-*` internals. The C2 diagram contains all 17 registered ACCSystem containers. Its Mermaid block is byte-for-byte unchanged from the former `c1-context/landscape.md` file. The two canonical views also rendered independently.
+The existing C1 scope check found one `SYS-ACCSYSTEM` black-box, 8 registered actor nodes, and 7 client/external system or service nodes, with no `CNT-*` or `CMP-*` internals. The C2 landscape contains all 17 registered ACCSystem containers. No C1 or C2 diagram changed in this correction cycle; the only C2 edit clarifies Gateway authentication/routing scope and leaves authorization to downstream services. The current Mermaid run rendered all 55 blocks.
 
 ## C3 semantic correction cycle
 
 The seven selected C3 diagrams were reviewed against their component/container records, interfaces, events and documented flows. The corrections preserve all 28 registry-listed components across the seven decompositions; no registry entries or new component IDs were added.
 
-- **Catalog:** added the registered `IF-ACC-CATALOG-QUERY` and its documented consumers; corrected `CNT-ACC-SOFTCAT` to a service, added validation audit, and left storage technology and withdrawal-event mapping UNKNOWN/OPEN.
-- **Identity:** separated role/permission resolution from service-owned authorization enforcement; corrected session validation, institution lookup and audit paths; removed unsubstantiated JWT/Postgres/Redis and session Event Bus claims.
-- **Integration:** assigned `IF-ACC-RESERVE-SAGA` to Orders → Integration, retained the documented reservation response/query interface and Event Bus → OrderNotify, added Audit/Orders relations, and removed Event Bus → Gateway.
-- **Licensing:** corrected admin and license-check callers; represented the six documented lifecycle events and internal expiry job; distinguished institutional from marketplace issuance while keeping undecided policy and technology open.
-- **Orders:** corrected cancellation to `CMP-PAY-REFUND`, restored documented state-machine/delivery relations, used canonical external IDs, and removed the unsupported Event Bus → Delivery C3 edge.
-- **Payment:** corrected settlement-report direction to provider → reconciliation, added documented audit relations, and removed the unsupported reconciliation → Event Bus edge.
-- **ACCore connector:** showed Product Master publication through Outbox, changed the license-check caller to the ACCore application layer, and marked the order-confirmation route PROPOSED/OPEN.
+- **Catalog:** retained `IF-ACC-CATALOG-QUERY` at its registered boundary while its internal C3 destination remains UNKNOWN; made the policy-rule store and listing/search state technology/schema-neutral; kept validation caller ordering and event/removal mapping OPEN.
+- **Identity:** separated token/session validation and role-data resolution from authorization enforcement by target services; removed the unsupported Gateway-to-RBAC authorization lookup and kept token/store/schema choices UNKNOWN.
+- **Integration:** kept `IF-ACC-RESERVE-SAGA` on the Orders-to-Integration leg, with the ACCore relay leg explicitly unregistered/OPEN; separated Event Bus subscription from Gateway routing and audit from business-event publication.
+- **Licensing:** corrected the `OrderConfirmed` source and administrative path; kept institutional and marketplace flows distinct and marked token delivery, receiving endpoint, channel, ACK and storage/schema choices OPEN or PROPOSED.
+- **Orders:** kept supported reservation/payment/state-machine relationships, removed unsupported direct Delivery and settlement commands, preserved guarded UNKNOWN recovery, and distinguished `ReturnRequested` from final `OrderReturned`.
+- **Payment:** represented provider settlement evidence flowing into reconciliation, both scheduled and manual triggers, and alerts; left report transfer, corrective-command authority/route and event mapping OPEN, with no direct reconciliation-to-EventBus edge.
+- **ACCore connector:** traced publication through Outbox and delivery-state updates; aligned all five displayed interfaces' provider/consumer roles to `registry/interfaces.json`; made clear that `IF-ACC-RESERVE-SAGA` is not the connector leg and kept its channel/schema OPEN.
 
-The corrections do not establish owner acceptance, stakeholder approval, implementation behavior, or production readiness. Remaining UNKNOWN/OPEN/PROPOSED matters include database and token technologies, withdrawal/marketplace mappings, integration channels, reservation outcomes, settlement/provider details, and ADR-020 arrow-direction review.
+The corrections do not establish owner acceptance, stakeholder approval, implementation behavior, or production readiness. Remaining UNKNOWN/OPEN/PROPOSED matters include the catalog query's internal target, storage engines/DDL, final event and wire schemas, validation invocation order, token delivery/receipt contract, reservation channel/query modality, settlement evidence and correction path, and ADR-020 arrow-direction review.
 
 ## Still open
 
-Arrow direction in ADR-020 remains a reversible technical baseline requiring owner review and is not stakeholder-approved. No implementation completion, owner acceptance, stakeholder approval, security certification, or production readiness is asserted.
+Arrow direction in ADR-020 remains a reversible technical baseline requiring owner review and is not stakeholder-approved. Automated structure, traceability and renderer PASS do not resolve the listed semantic/contract gaps. No implementation completion, owner acceptance, stakeholder approval, security certification, or production readiness is asserted.
 
 ---
 

@@ -6,8 +6,8 @@
 |---|---|
 | **Component ID** | CMP-PAY-RECONCILIATION |
 | **Parent Container** | CNT-ACC-PAYMENT (Payment Orchestration — ACCSystem) |
-| **Purpose** | Periodically reconciles internal payment transaction records against settlement reports received from EXT-PAYMENT-PROVIDER. Flags discrepancies as operational alerts for human review or automated correction. |
-| **Scope Boundary** | Owns reconciliation run records and discrepancy alerts. Does NOT authorize payments, process refunds, or directly modify payment transaction state — it raises alerts that trigger corrective action via CMP-PAY-ORCHESTRATOR or CMP-PAY-REFUND. |
+| **Purpose** | Runs scheduled or manual reconciliation of internal payment transaction records against settlement evidence from EXT-PAYMENT-PROVIDER. Flags discrepancies for operational review. |
+| **Scope Boundary** | Owns reconciliation run records, discrepancy records and alerts. Does NOT authorize payments, process refunds, or directly modify payment transaction state. Corrective action may belong to CMP-PAY-ORCHESTRATOR or CMP-PAY-REFUND, but no direct command route or authority is established. |
 
 ---
 
@@ -26,13 +26,19 @@
 > Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
 ```mermaid
 flowchart LR
+    SCHEDULED["Scheduled reconciliation trigger\nfrequency UNKNOWN"]
+    MANUAL["Manual Operations trigger\ncaller/interface UNKNOWN"]
     CMP_PAY_RECONCILIATION["CMP-PAY-RECONCILIATION"]
+    SCHEDULED -->|scheduled run| CMP_PAY_RECONCILIATION
+    MANUAL -->|ad hoc rerun| CMP_PAY_RECONCILIATION
     CMP_PAY_ORCHESTRATOR["CMP-PAY-ORCHESTRATOR"]
     CMP_PAY_ORCHESTRATOR -->|documented collaborator| CMP_PAY_RECONCILIATION
     EXT_PAYMENT_PROVIDER["EXT-PAYMENT-PROVIDER"]
     EXT_PAYMENT_PROVIDER -->|documented collaborator| CMP_PAY_RECONCILIATION
     CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
     CMP_PAY_RECONCILIATION -->|documented collaborator| CNT_ACC_AUDIT
+    ALERTING["Operational alerting\nlogical destination; route UNKNOWN"]
+    CMP_PAY_RECONCILIATION -.->|discrepancy alert| ALERTING
 ```
 ## 3. Behavior, Rules, and State
 
@@ -72,7 +78,7 @@ flowchart LR
 |---|---|---|
 | `ReconciliationRun` | CMP-PAY-RECONCILIATION | `{run_id, period_start, period_end, status, total_lines, matched, unmatched, discrepancies, completed_at}` |
 | `DiscrepancyRecord` | CMP-PAY-RECONCILIATION | `{discrepancy_id, run_id, type, payment_attempt_id?, seller_order_id?, allocation_id?, aggregate_transaction_id?, provider_transaction_reference?, provider_allocation_reference?, internal_gross?, internal_fee?, internal_commission?, internal_net?, provider_gross?, provider_fee?, provider_commission?, provider_net?, currency?, internal_status, provider_status, flagged_at, resolved_at, resolution_note}` |
-| Ingested settlement report (raw) | CMP-PAY-RECONCILIATION | Stored as blob/JSONB per run for audit; retention policy UNKNOWN |
+| Ingested settlement report (raw) | CMP-PAY-RECONCILIATION | Logical evidence retained per run; earlier blob/JSONB wording is a proposal only. Encoding, storage technology/DDL and retention remain UNKNOWN |
 
 **NOT owned:**
 - `PaymentTransaction` records (owned by CMP-PAY-ORCHESTRATOR — read-only access here)

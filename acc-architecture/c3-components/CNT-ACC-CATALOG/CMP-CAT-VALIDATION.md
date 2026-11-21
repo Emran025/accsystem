@@ -24,6 +24,7 @@
 | Collaborator | Direction | Interface / Event | Purpose |
 |---|---|---|---|
 | CMP-CAT-LISTING | Inbound call | Internal sync call | Receives publication payload; returns PASS or FAIL + rejection reasons |
+| CMP-INT-PUBLICATION | Inbound call | Internal validation call | Publication Worker record also assigns schema/policy validation before listing write; invocation order and duplicate validation remain OPEN |
 | CNT-ACC-SOFTCAT | Outbound query | Internal API | Validates product category is listed in Software Catalog (for software products) |
 | CNT-ACC-AUDIT | Outbound | Audit entry | Records validation outcome with rule IDs |
 | Policy Rule Store | Read | Config / DB | Loads active content policy rules |
@@ -37,6 +38,8 @@ flowchart LR
     CMP_CAT_VALIDATION["CMP-CAT-VALIDATION"]
     CMP_CAT_LISTING["CMP-CAT-LISTING"]
     CMP_CAT_LISTING -->|documented collaborator| CMP_CAT_VALIDATION
+    CMP_INT_PUBLICATION["CMP-INT-PUBLICATION"]
+    CMP_INT_PUBLICATION -->|documented validation call; sequence OPEN| CMP_CAT_VALIDATION
     CNT_ACC_SOFTCAT["CNT-ACC-SOFTCAT"]
     CMP_CAT_VALIDATION -->|documented collaborator| CNT_ACC_SOFTCAT
     CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
@@ -104,8 +107,10 @@ warnings        list of {rule_id, field, message}
 | Concern | Control |
 |---|---|
 | Input sanitization | All text fields sanitized (HTML/script stripping) before rule evaluation |
-| Privilege | No external callers — only CMP-CAT-LISTING can invoke; enforced by internal service boundary |
+| Privilege | Internal callers only. CMP-CAT-LISTING and CMP-INT-PUBLICATION are both named in component records; invocation order/ownership remains OPEN |
 | Policy update access | Policy rules updated only by platform admin via CNT-ACC-PLATFORMADMIN; not writable by institutions |
+
+The component records name both `CMP-CAT-LISTING` and `CMP-INT-PUBLICATION` as validation callers. Their invocation ownership/order and whether both checks run are unresolved; neither an external caller nor a final validation sequence is asserted here.
 
 ---
 
