@@ -31,12 +31,14 @@
 
 | Sub-requirement ID | Parent requirement ID | Statement | Trigger/precondition | Expected outcome | Locations | C4 containers | Acceptance criteria | Verification | Status | Open decisions |
 |---|---|---|---|---|---|---|---|---|---|---|
-| SREQ-PH01-AUTH-001 | REQ-PH01-IDENTITY-AND-TRUST | Identity & Access verifies user credentials and issues access and refresh tokens carrying role and institution-membership claims. | A user submits credentials. | Valid credentials yield tokens with role and membership claims. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-001-01, AC-PH01-AUTH-001-02 | TEST (planned): login/claims test | DRAFT | ADR-022-GATE, IC-002 |
+| SREQ-PH01-AUTH-001 | REQ-PH01-IDENTITY-AND-TRUST | Identity & Access verifies user credentials and issues access and refresh tokens carrying role and institution-membership claims. | A user submits credentials. | Valid credentials yield tokens with role and membership claims. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-001-01, AC-PH01-AUTH-001-02 | TEST (planned): login/claims test | RETIRED | ADR-022-GATE, IC-002 |
 | SREQ-PH01-AUTH-002 | REQ-PH01-IDENTITY-AND-TRUST | Authentication of platform administrators and support staff requires a second factor. | A privileged account signs in. | No privileged token is issued without completed MFA. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY | AC-PH01-AUTH-002-01 | TEST (planned): privileged login test | DRAFT | ADR-017-GATE |
 | SREQ-PH01-AUTH-003 | REQ-PH01-IDENTITY-AND-TRUST | Access tokens are short-lived, refresh tokens rotate on use, and a revoked session or token is rejected on later validation. | Refresh, logout or a security event occurs. | Revoked credentials no longer authenticate. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-003-01, AC-PH01-AUTH-003-02 | TEST (planned): revocation test | DRAFT | ADR-011-GATE, ADR-022-GATE |
 | SREQ-PH01-AUTH-004 | REQ-PH01-IDENTITY-AND-TRUST | Repeated failed authentication attempts are rate-limited at the gateway, subject to a lockout policy and logged as security signals. | Repeated failed logins occur. | Attempts are throttled/locked per policy and visible as signals. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-004-01 | TEST (planned): lockout test | DRAFT | ADR-022-GATE |
 | SREQ-PH01-AUTH-005 | REQ-PH01-IDENTITY-AND-TRUST | When credential, session or revocation stores are unavailable, authenticated requests are rejected while public routes stay available per route policy. | An identity dependency is unavailable. | No authenticated access on unverifiable identity. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-005-01, AC-PH01-AUTH-005-02 | TEST (planned): identity outage test | DRAFT | none recorded |
 | SREQ-PH01-AUTH-006 | REQ-PH01-IDENTITY-AND-TRUST | An institution employee may be linked to a platform membership for marketplace access without transferring ACCore-local roles or credentials. | An employee needs a unified marketplace identity. | A platform identity with institution scope exists; ERP roles stay local. | SYS-ACCSYSTEM, SYS-ACCORE | CNT-ACC-IDENTITY, CNT-ACR-ORGUSERS | AC-PH01-AUTH-006-01, AC-PH01-AUTH-006-02 | REVIEW (planned): identity-linking design review | DRAFT | none recorded |
+| SREQ-PH01-AUTH-007 | REQ-PH01-IDENTITY-AND-TRUST | Identity & Access accepts matching user credentials and rejects non-matching credentials. | A user submits credentials. | The credential attempt is accepted only when credentials match the account store. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-007-01 | TEST (planned): credential verification test | DRAFT | ADR-022-GATE, IC-002 |
+| SREQ-PH01-AUTH-008 | REQ-PH01-IDENTITY-AND-TRUST | After successful credential verification, Identity & Access issues access and refresh tokens carrying role and institution-membership claims. | User credential verification succeeds. | The issued token pair carries the resolved role and institution-membership claims. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-AUTH-008-01 | TEST (planned): token claims test | DRAFT | ADR-022-GATE, IC-002 |
 
 Related function/use case, actors and evidence per sub-requirement:
 
@@ -48,6 +50,12 @@ Related function/use case, actors and evidence per sub-requirement:
 | SREQ-PH01-AUTH-004 | Brute-force limiting | ACT-PLATFORM-ADMIN, ACT-SUPPORT-STAFF, ACT-INST-ADMIN, ACT-INST-EMPLOYEE | TBD (RGAP-PH01-005) | CMP-IDN-AUTH §3, §5 |
 | SREQ-PH01-AUTH-005 | Fail-closed identity | ACT-PLATFORM-ADMIN, ACT-SUPPORT-STAFF, ACT-INST-ADMIN, ACT-INST-EMPLOYEE | TBD (RGAP-PH01-005) | CNT-ACC-IDENTITY §6 |
 | SREQ-PH01-AUTH-006 | Link institution employee to platform membership | ACT-INST-EMPLOYEE | TBD (RGAP-PH01-005) | CNT-ACR-ORGUSERS; CNT-ACC-IDENTITY §1 |
+| SREQ-PH01-AUTH-007 | Credential verification | ACT-PLATFORM-ADMIN, ACT-SUPPORT-STAFF, ACT-INST-ADMIN, ACT-INST-EMPLOYEE | TBD (RGAP-PH01-005) | CMP-IDN-AUTH §3 |
+| SREQ-PH01-AUTH-008 | Issue tokens with claims | ACT-PLATFORM-ADMIN, ACT-SUPPORT-STAFF, ACT-INST-ADMIN, ACT-INST-EMPLOYEE | TBD (RGAP-PH01-005) | CMP-IDN-AUTH §3 |
+
+### Cycle 3 preservation and decomposition record
+
+`SREQ-PH01-AUTH-001` and its original criteria `AC-PH01-AUTH-001-01` and `AC-PH01-AUTH-001-02` remain in the document as historical source records; AUTH-001 is now `RETIRED`. The active decomposition is `SREQ-PH01-AUTH-007` (credential acceptance/rejection) and `SREQ-PH01-AUTH-008` (issuance of the claimed access/refresh token pair), each with a unique criterion. The original audit criterion is preserved only on the retired row; active authentication audit coverage remains in `SREQ-PH01-AUD-007`. Actors, locations, C2 containers, use-case gap and open gates on the new rows are conservatively inherited from AUTH-001 and are not claimed as operation-specific mappings. Token format, TTL and contract field details remain open.
 
 ## 4. Acceptance criteria
 
@@ -63,6 +71,8 @@ Related function/use case, actors and evidence per sub-requirement:
 | AC-PH01-AUTH-005-02 | SREQ-PH01-AUTH-005 | Public-zone routes remain reachable per route policy. | RGAP-PH01-002 | CNT-ACC-APIGATEWAY §6 | CNT-ACC-IDENTITY §6 |
 | AC-PH01-AUTH-006-01 | SREQ-PH01-AUTH-006 | The linked identity carries the institution claim but no copy of ACCore-local roles. | RGAP-PH01-002 | CNT-ACR-ORGUSERS §1; CMP-IDN-TENANCY | CNT-ACR-ORGUSERS; CNT-ACC-IDENTITY §1 |
 | AC-PH01-AUTH-006-02 | SREQ-PH01-AUTH-006 | ACCSystem does not read the ACCore user store. | RGAP-PH01-002 | CON-001, CON-002 | CNT-ACR-ORGUSERS; CNT-ACC-IDENTITY §1 |
+| AC-PH01-AUTH-007-01 | SREQ-PH01-AUTH-007 | Credentials matching the account store are accepted; credentials that do not match are rejected. | RGAP-PH01-002 | CMP-IDN-AUTH §3 | CMP-IDN-AUTH §3 |
+| AC-PH01-AUTH-008-01 | SREQ-PH01-AUTH-008 | Following successful credential verification, the issued access and refresh tokens carry the resolved role and institution-membership claims; token format and exact wire fields remain unspecified. | RGAP-PH01-002 | CMP-IDN-AUTH §3; IC-002 | CMP-IDN-AUTH §3 |
 
 ## 5. Alternate paths, failure, exception and uncertainty handling
 
@@ -76,8 +86,8 @@ Open decisions below are preserved as the source states them; this draft does no
 
 | Decision / gate ID | Source meaning | Affected sub-requirements |
 |---|---|---|
-| ADR-022-GATE | ADR-022 numeric thresholds are owner-approval-required; no value asserted. | SREQ-PH01-AUTH-001, SREQ-PH01-AUTH-003, SREQ-PH01-AUTH-004 |
-| IC-002 | Exact field names/types require formal OpenAPI/AsyncAPI specification. | SREQ-PH01-AUTH-001 |
+| ADR-022-GATE | ADR-022 numeric thresholds are owner-approval-required; no value asserted. | SREQ-PH01-AUTH-001 (historical), SREQ-PH01-AUTH-007, SREQ-PH01-AUTH-008, SREQ-PH01-AUTH-003, SREQ-PH01-AUTH-004 |
+| IC-002 | Exact field names/types require formal OpenAPI/AsyncAPI specification. | SREQ-PH01-AUTH-001 (historical), SREQ-PH01-AUTH-007, SREQ-PH01-AUTH-008 |
 | ADR-017-GATE | ADR-017 policy values (capture timing, tax, accounting trigger, retention, SLA, support access, license plans) need owner ratification. | SREQ-PH01-AUTH-002 |
 | ADR-011-GATE | ADR-011 approval flow (4-eyes) and session TTL policy keys not defined; assumption only. | SREQ-PH01-AUTH-003 |
 

@@ -90,3 +90,39 @@
 ### البوابات التي بقيت مفتوحة والخطوة التالية
 
 تظل `RGAP-PH01-005` و`RGAP-PH01-004` و`UNKN-002` و`ODEC-010` وغيرها مفتوحة. لا توجد صفوف `ACCEPTED`، ولا تُعد الحزمة جاهزة للتنفيذ. الدورة التالية تعالج findings الحية وفق الأدلة والقرارات المتاحة فقط.
+
+
+## Cycle 3: ARH-2026-11-21-C3
+
+**Base commit:** `254d43bb239dcf2849e01818855751133e8154f0` (`origin/main` بعد fetch عند بدء الدورة الثالثة).<br>
+**Implementation commit:** سيُسجل بعد إنشاء commit التغيير.<br>
+**Push target:** `origin/main` وفق التفويض الصريح السابق؛ بلا force push.
+
+### التغييرات ضمن النطاق
+
+- `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md`: فُكك `SREQ-PH01-AUTH-001` إلى AUTH-007 (التحقق من بيانات الاعتماد) وAUTH-008 (إصدار الرموز وclaims). احتُفظ بالصف الأصلي ومعياريه بحالة `RETIRED` مع ملاحظة الحفظ، وبقيت بوابات ADR-022/IC-002 وفجوة `RGAP-PH01-005` مفتوحة.
+- `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md`: فُكك `SREQ-PH01-LIC-001` إلى LIC-007 (رفض طلب غير مؤهل دون إنشاء سجل ترخيص) وLIC-008 (إنشاء سجل ترخيص مؤسسي بحالة `ISSUED`). حُفظ الصف الأصلي ومعياراه بحالة `RETIRED`، وظلت `UNKN-003` و`ODEC-011` و`ADR-017-GATE` وRGAP قائمة دون حسم.
+- `acc-architecture/execution-phases/requirements-registry.csv`: أُضيفت 4 SREQ جديدة بمعايير AC فريدة ومراجع تحقق مخططة، ورُبطت بالمتطلبات والفجوات والقرارات القائمة؛ لم يُحذف أي صف أو capability أو state أو flow أو alternative.
+- `acc-architecture/validation/atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`: عُدلت التصنيفات والمجاميع والتغطية والجاهزية لهذه الدورة، مع إبقاء DOP-004 مرشح دمج وDEN-003 محجوباً بقرار `ODEC-010`.
+- `acc-architecture/validation/requirements-change-report.md`: هذا سجل الدورة الثالثة؛ ستضاف نتيجة الدفع بعد إتمامه.
+
+### الأعداد القابلة لإعادة الحساب
+
+- إجمالي السجل 260 → 264 صفاً: 45 متطلباً رئيسياً ثابتة، و215 → 219 SREQ. PH-01 صار 15 REQ و88 SREQ. الحالات الحالية: 211 `DRAFT` و50 `OWNER_REVIEW` و3 `RETIRED` و0 `ACCEPTED`.
+- صُنفت 219/219 SREQ في سجل الذرية التفصيلي بلا صفوف ناقصة أو معرفات مكررة: `ATOMIC` 43، `SPLIT_REQUIRED` 18 (3 مصادر تاريخية متقاعدة بعد إتمام تفكيكها و15 finding حيّة)، `MERGE_CANDIDATE` 1، `ARCHITECTURAL_CONSTRAINT` 32، `POLICY_RULE` 33، `ACCEPTANCE_CRITERION_ONLY` 3، `NEEDS_USE_CASE` 42، `DUPLICATE` 0، `OUT_OF_PHASE` 0، `BLOCKED_BY_OWNER_DECISION` 47. جرى التحقق آلياً من وجود جميع SREQ الـ219 في جدول التقرير دون نقص أو تكرار.
+- TBD في `use_case_id`: 174 → 178 (PH-01: 96؛ PH-02: 12؛ PH-03: 35؛ PH-04: 35). صفوف السجل ذات القرارات المفتوحة: 193 → 197؛ عدد المعرفات الفريدة 60. لم تُغلق فجوة Use Case.
+- C4 bindings المفقودة حسب المدقق البنيوي: 0 → 0. الممثلون و6 مواقع C1 و29 حاوية C2 مرجعية سليمة بحسب المدقق؛ ذلك لا يثبت ملاءمة الإسناد الدلالية للعملية.
+- SREQ ذات AC ومراجع تحقق مخططة: 219/219؛ معرّفات AC الفريدة في السجل 255. جميع نتائج التحقق الوظيفي ما زالت غير منفذة.
+- أعاد الاستعلام `--phase PH-01` عدد 103 صفوف، و`--phase PH-02 --location SYS-ACCORE` عدد 30، و`--container CNT-ACC-CATALOG` عدد 20.
+
+### نتائج التحقق
+
+- `validate_requirements.py --check` و`--check --require-rows`: PASS على 264 صفاً. الاستعلامات الثلاثة خرجت برمز 0 وأعادت 103/30/20. اختبارات `acc-architecture/execution-phases/tests`: 9/9 ناجحة.
+- `--check --strict-ready`: FAIL متوقع بعدد 858 مخالفة؛ ما زالت صفوف Draft/Owner Review وTBD والقرارات المفتوحة والتحقق المخطط تمنع الجاهزية. لا يعد ذلك PASS ولا خطأ بنيوياً؛ لا توجد صفوف `ACCEPTED`.
+- اختبارات `architecture-assistant/tests`: 65/65 ناجحة. مدققات `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py` وتقرير `generate_coverage_report.py` خرجت جميعها برمز 0 بعد تمرير مجلد `acc-architecture` كوسيط. العمق: 88 reviewed و0 incomplete/findings مع اشتراط مراجعة بشرية؛ الاتساق: 65/65 مع اشتراط مراجعة دلالية؛ المخططات: 55 Mermaid؛ حالة الإصدار `IN_PROGRESS`؛ تقرير التغطية يصف حالات registry/decomposition فقط.
+- أعيد التحقق من غياب `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` و`/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py`؛ المجلد غير موجود، لذلك لم يُدّع تشغيلهما. استُخدمت بدائل architecture-assistant المتاحة أعلاه.
+- `git diff --name-only` أظهر الملفات السبعة أعلاه فقط وكلها تحت `acc-architecture/`. الأمر الخام `git diff --check` يعتبر CR في أسطر CSV ذات CRLF مسافات زائدة؛ بعد اعتماد CRLF كنهاية السطر (`git -c core.whitespace=cr-at-eol diff --check`) ينجح الفحص. لم تُحوّل نهايات CSV الأصلية.
+
+### إعادة تقييم البوابات والخطوة التالية
+
+أُعيد تقييم 17 finding تفكيك حية من الدورة السابقة؛ اكتمل تفكيك AUTH-001 وLIC-001، وبقيت 15 حالة `SPLIT_REQUIRED` حيّة. لم يُنفذ merge: DOP-004 ما زال `MERGE_CANDIDATE` لأن تداخل المؤشرات الجزئي مع DEX-001 لا يثبت التكافؤ مع المقاييس التشغيلية أو DOP-003؛ وظل DEN-003 غير مثبت التكرار ومحجوباً بـ`ODEC-010`. لا تزال فجوات Use Case وقرارات أصحاب المصلحة والسياسات دون حسم، ولا تثبت validators دلالية المتطلبات أو التنفيذ أو الأمن أو قبول المالك. الدورة التالية تراجع findings الـ15 المتبقية بالأدلة نفسها، مع إبقاء كل بوابة مالك مفتوحة إلى حين قرار موثق.

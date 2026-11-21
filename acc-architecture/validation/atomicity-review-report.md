@@ -1,25 +1,25 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C2<br>
-**الأساس:** `ea00eb2816722e20a976d6a842c7aaa9c669638c` (`origin/main` عند بدء الدورة الثانية)<br>**الدورة السابقة:** ARH-2026-11-21-C1؛ تفاصيلها محفوظة في تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C3<br>
+**الأساس:** `254d43bb239dcf2849e01818855751133e8154f0` (`origin/main` عند بدء الدورة الثالثة)<br>**الدورة السابقة:** ARH-2026-11-21-C2؛ تفاصيلها محفوظة في تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل الحالي تصنيف **215 من 215** صف SREQ بعد إضافة سبعة صفوف تدقيق ذرية. أعيدت مراجعة 23 finding من الدورة السابقة: لم يُنفذ أي دمج؛ بقيت 17 حالة تفكيك حية (منها MSG-002 بعد إعادة التصنيف)، ومرشح دمج واحد هو DOP-004، ولم تثبت ازدواجية DEN-003 فأُبقي محجوباً بقرار ODEC-010. اكتمل تفكيك AUD-001: حُفظ السجل الواسع ومعياره الأصليان بحالة RETIRED، وأضيفت سبعة متطلبات DRAFT ذرية بمعايير قبول فريدة. بقيت حالات المالك والفجوات الأخرى مفتوحة.
+يعرض السجل الحالي تصنيف **219 من 219** صف SREQ بعد تفكيك AUTH-001 وLIC-001 مع حفظ المصدر التاريخي، إضافة إلى تفكيك AUD-001 في الدورة السابقة. من 17 finding تفكيك حية أُعيد تقييمها، عولج AUTH-001 وLIC-001؛ بقيت 15 حالة `SPLIT_REQUIRED` حية (ومنها MSG-002 بعد إعادة التصنيف). لم يُنفذ دمج؛ بقي DOP-004 مرشحاً واحداً دون إثبات تداخل كافٍ لدمجه، ولم تثبت ازدواجية DEN-003 فظل محجوباً بقرار ODEC-010. ظلت قرارات المالك والفجوات الأخرى مفتوحة.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PH-01 — تأسيس المنصة | 84 | 10 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
+| PH-01 — تأسيس المنصة | 88 | 14 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
 | PH-02 — الكتالوج والاكتشاف والحجز | 45 | 14 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
 | PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 59 | 8 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
 | PH-04 — التسليم الداخلي عبر ACCMared | 27 | 7 | 0 | 1 | 3 | 3 | 0 | 1 | 0 | 0 | 12 |
-| **الإجمالي** | **215** | **39** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
+| **الإجمالي** | **219** | **43** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه هو حكم تصنيفي واحد على SREQ بعينه في مراجعة Cycle 2. أرقام الجدول تشمل SREQ-PH01-AUD-001 التاريخي المصنف SPLIT_REQUIRED رغم حالته RETIRED؛ اكتمال تقسيمه موثق منفصلاً ولا يدخل ضمن الـ17 finding الحي المتبقي.
+كل صف أدناه هو حكم تصنيفي واحد على SREQ بعينه بالحالة الراهنة بعد Cycle 3. أرقام الجدول تشمل ثلاثة صفوف تاريخية مصنفة `SPLIT_REQUIRED` رغم حالتها `RETIRED`: AUD-001 وAUTH-001 وLIC-001؛ أُنجز تفكيكها واحتُفظ بها للتتبع، ولا تدخل ضمن الـ15 finding الحي المتبقي.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|
@@ -30,6 +30,8 @@
 | PH-01 | `SREQ-PH01-INST-005` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Credential rotation without disruption | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-INST-006` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Institution deactivation | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-AUTH-001` | `REQ-PH01-IDENTITY-AND-TRUST` | Authenticate platform users | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
+| PH-01 | `SREQ-PH01-AUTH-007` | `REQ-PH01-IDENTITY-AND-TRUST` | Credential verification | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
+| PH-01 | `SREQ-PH01-AUTH-008` | `REQ-PH01-IDENTITY-AND-TRUST` | Issue tokens with claims | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
 | PH-01 | `SREQ-PH01-AUTH-002` | `REQ-PH01-IDENTITY-AND-TRUST` | MFA for privileged accounts | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
 | PH-01 | `SREQ-PH01-AUTH-003` | `REQ-PH01-IDENTITY-AND-TRUST` | Short-lived tokens and revocation | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
 | PH-01 | `SREQ-PH01-AUTH-004` | `REQ-PH01-IDENTITY-AND-TRUST` | Brute-force limiting | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
@@ -52,6 +54,8 @@
 | PH-01 | `SREQ-PH01-SUP-005` | `REQ-PH01-SUPPORT-ACCESS` | Least-privilege read-only default | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-SUPPORT-ACCESS.md` |
 | PH-01 | `SREQ-PH01-SUP-006` | `REQ-PH01-SUPPORT-ACCESS` | Session events and audit | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-SUPPORT-ACCESS.md` |
 | PH-01 | `SREQ-PH01-LIC-001` | `REQ-PH01-LICENSE-LIFECYCLE` | Issue institutional license | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-007` | `REQ-PH01-LICENSE-LIFECYCLE` | Reject ineligible issuance request | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-008` | `REQ-PH01-LICENSE-LIFECYCLE` | Create institutional license in ISSUED | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LIC-002` | `REQ-PH01-LICENSE-LIFECYCLE` | Signed entitlement | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LIC-003` | `REQ-PH01-LICENSE-LIFECYCLE` | Activation progression | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LIC-004` | `REQ-PH01-LICENSE-LIFECYCLE` | Renew, suspend, revoke, expire | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
@@ -248,9 +252,7 @@
 |---|---|---|---|
 | PH-01 | `SREQ-PH01-INST-004` | Integration configuration and credential issuance | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-INST-005` | Credential rotation without disruption | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-AUTH-001` | Authenticate platform users | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-ADM-001` | Account lifecycle administration | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-LIC-001` | Issue institutional license | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-LIC-004` | Renew, suspend, revoke, expire | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-LIC-005` | Propagation to ACCore | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-LICV-003` | Offline local verification | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
@@ -266,11 +268,11 @@
 
 ### مرشح الدمج المتبقي
 
-لم يُنفذ دمج؛ لا يوجد دمج آمن مثبت في هذه الدورة. بقي `SREQ-PH04-DOP-004` فقط مرشحاً دون تغيير.
+لم يُنفذ دمج؛ لا يوجد دمج آمن مثبت في هذه الدورة. بقي `SREQ-PH04-DOP-004` مرشحاً دون تغيير: تتداخل بعض أسماء المؤشرات مع قائمة الرؤية الاستثنائية في DEX-001، لكن مصدر الحاوية يعرّفها كمقاييس تشغيلية ويعرّف DEX-001 كاسترجاع استثناءات؛ لا يثبت ذلك تطابق النتيجة أو البيانات، كما أن تعريفات المقاييس ونطاقها غير مكتملين. ولا يندمج ذلك مع DOP-003، الذي يغطي سجلات التدقيق لا مقاييس التشغيل.
 
 | المرحلة | SREQ | التصنيف الحالي | ملاحظة |
 |---|---|---|---|
-| PH-04 | `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | بقي دون قرار دمج؛ يتطلب مراجعة مستقلة للتداخل مع متطلبات التدقيق/المؤشرات. |
+| PH-04 | `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | بقي دون دمج؛ لا دليل يثبت التكافؤ مع DEX-001 أو DOP-003، وتعريفات المؤشرات وعتباتها/نطاقها لا تزال مفتوحة. |
 
 ### نتيجة إعادة تقييم findings الدورة الثانية
 
@@ -285,6 +287,17 @@
 | `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | `MERGE_CANDIDATE` | بقي مرشحاً، دون دمج. |
 
 من أصل 17 finding تفكيك في الدورة الأولى، أُغلق واحد فقط (AUD-001) وأعيد تصنيف MSG-002 من المرشحين؛ بقي 17 finding تفكيك حياً. لا تحسم هذه النتائج قراراً أو اعتماداً من المالك.
+
+## نتيجة إعادة التقييم في Cycle 3
+
+| SREQ | التصنيف السابق | قرار Cycle 3 | الإجراء/الحالة |
+|---|---|---|---|
+| `SREQ-PH01-AUTH-001` | `SPLIT_REQUIRED` | `SPLIT_REQUIRED` — أُنجز التفكيك | الصف والمعياران الأصليان محفوظان بحالة `RETIRED`؛ أضيف AUTH-007 وAUTH-008 كصفين ذريين DRAFT بمعيارين فريدين. معيار التدقيق التاريخي لا يتكرر على الصفوف الجديدة؛ تغطيه AUD-007. |
+| `SREQ-PH01-LIC-001` | `SPLIT_REQUIRED` | `SPLIT_REQUIRED` — أُنجز التفكيك | الصف ومعياراه الأصليان محفوظان بحالة `RETIRED`؛ أضيف LIC-007 وLIC-008 كصفين ذريين DRAFT بمعيارين فريدين. بوابات UNKN-003 وODEC-011 وADR-017-GATE باقية. |
+| `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | `MERGE_CANDIDATE` | لا دمج: دليل المؤشرات التشغيلية منفصل عن التدقيق، والتقاطع الجزئي مع DEX-001 لا يثبت تطابق متطلب أو بديل صالح للدمج. تبقى تعريفات المؤشرات وعتباتها ونطاقها بحاجة إلى مراجعة. |
+| `SREQ-PH04-DEN-003` | `BLOCKED_BY_OWNER_DECISION` | `BLOCKED_BY_OWNER_DECISION` | لا حذف أو دمج؛ التعايش/اختيار نطاق التسليم مرتبط بقرار `ODEC-010`، والتشابه لا يثبت التكرار. |
+
+أعيد تقييم الـ17 finding التفكيكية الحية السابقة؛ اكتمل اثنان بحفظ المصدر وإضافة الصفوف أعلاه، وبقي 15 finding حياً دون إعادة تصنيف. لا يوجد دمج أو تكرار مؤكد، ولا تحسم هذه الدورة قرارات أصحاب المصلحة.
 
 ## حدود المرحلة وملاحظات التدقيق
 

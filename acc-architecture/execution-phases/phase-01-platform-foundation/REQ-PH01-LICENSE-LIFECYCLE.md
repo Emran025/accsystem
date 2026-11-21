@@ -31,12 +31,14 @@
 
 | Sub-requirement ID | Parent requirement ID | Statement | Trigger/precondition | Expected outcome | Locations | C4 containers | Acceptance criteria | Verification | Status | Open decisions |
 |---|---|---|---|---|---|---|---|---|---|---|
-| SREQ-PH01-LIC-001 | REQ-PH01-LICENSE-LIFECYCLE | On an authorized request License & Entitlement validates institution eligibility and plan and issues an institutional license in state ISSUED bound to the institution and product. | Administrator submits a license request through ACManagement. | A license record with product, modules, seats/capacity and validity exists. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN, CNT-ACC-INSTREG | AC-PH01-LIC-001-01, AC-PH01-LIC-001-02 | TEST (planned): issuance test | DRAFT | UNKN-003, ODEC-011, ADR-017-GATE |
+| SREQ-PH01-LIC-001 | REQ-PH01-LICENSE-LIFECYCLE | On an authorized request License & Entitlement validates institution eligibility and plan and issues an institutional license in state ISSUED bound to the institution and product. | Administrator submits a license request through ACManagement. | A license record with product, modules, seats/capacity and validity exists. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN, CNT-ACC-INSTREG | AC-PH01-LIC-001-01, AC-PH01-LIC-001-02 | TEST (planned): issuance test | RETIRED | UNKN-003, ODEC-011, ADR-017-GATE |
 | SREQ-PH01-LIC-002 | REQ-PH01-LICENSE-LIFECYCLE | Every issued institutional entitlement is cryptographically signed by the platform. | A license is issued. | The entitlement is verifiable with the platform public key. | SYS-ACCSYSTEM | CNT-ACC-LICENSE | AC-PH01-LIC-002-01 | TEST (planned): signature verification test | DRAFT | LIC-005 |
 | SREQ-PH01-LIC-003 | REQ-PH01-LICENSE-LIFECYCLE | An institutional subscription progresses ISSUED to ACTIVATED to ACTIVE, and transitions outside the permitted graph are rejected. | An administrator activates a subscription. | State follows the permitted graph. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN | AC-PH01-LIC-003-01 | TEST (planned): state machine test | DRAFT | none recorded |
 | SREQ-PH01-LIC-004 | REQ-PH01-LICENSE-LIFECYCLE | License state changes are applied by authorized actors or scheduled policy with actor, reason, timestamp and affected institution/product recorded; revocation is permanent. | An administrator action, scheduled expiry or policy trigger occurs. | The license is in the new state with a record. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN, CNT-ACC-AUDIT | AC-PH01-LIC-004-01, AC-PH01-LIC-004-02 | TEST (planned): lifecycle test | DRAFT | UNKN-003, LIC-001 |
 | SREQ-PH01-LIC-005 | REQ-PH01-LICENSE-LIFECYCLE | A license state-change event reaches the ACCore license connector, which restricts or restores licensed modules within the approved propagation window. | A suspension, revocation, expiry or renewal event is published. | ACCore applies the restriction or restoration. | SYS-ACCSYSTEM, SYS-ACCORE | CNT-ACC-LICENSE, CNT-ACC-EVENTBUS, CNT-ACC-INTEGRATION, CNT-ACR-CONNECTOR | AC-PH01-LIC-005-01, AC-PH01-LIC-005-02 | TEST (planned): propagation test (acceptance-test-plan.md item 8) | DRAFT | LIC-002, UNKN-009, ADR-017-GATE |
 | SREQ-PH01-LIC-006 | REQ-PH01-LICENSE-LIFECYCLE | License entitlement does not grant platform user permissions, and user permissions do not confer entitlement. | A license is issued or a role is granted. | The other dimension is unchanged. | SYS-ACCSYSTEM | CNT-ACC-LICENSE, CNT-ACC-IDENTITY | AC-PH01-LIC-006-01 | TEST (planned): orthogonality test | DRAFT | none recorded |
+| SREQ-PH01-LIC-007 | REQ-PH01-LICENSE-LIFECYCLE | License & Entitlement rejects an institutional license request when institution eligibility or plan validation fails, without creating a license record. | An administrator submits an institutional license request. | An ineligible institution or invalid plan does not produce a license record. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN, CNT-ACC-INSTREG | AC-PH01-LIC-007-01 | TEST (planned): eligibility and plan rejection test | DRAFT | UNKN-003, ODEC-011, ADR-017-GATE |
+| SREQ-PH01-LIC-008 | REQ-PH01-LICENSE-LIFECYCLE | After an authorized institutional license request passes eligibility and plan validation, License & Entitlement creates a license bound to the institution and product in state ISSUED. | An authorized administrator request passes institution and plan validation. | The institutional license record exists in state ISSUED. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-LICENSE, CNT-ACM-ADMIN, CNT-ACC-INSTREG | AC-PH01-LIC-008-01 | TEST (planned): institutional ISSUED-record test | DRAFT | UNKN-003, ODEC-011, ADR-017-GATE |
 
 Related function/use case, actors and evidence per sub-requirement:
 
@@ -48,6 +50,12 @@ Related function/use case, actors and evidence per sub-requirement:
 | SREQ-PH01-LIC-004 | Renew, suspend, revoke, expire | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005; related FN-LIC-VALIDATE in REQ-PH01-LICENSE-VALIDATION) | FR-013 |
 | SREQ-PH01-LIC-005 | Propagation to ACCore | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005; related FN-LIC-VALIDATE in REQ-PH01-LICENSE-VALIDATION) | FR-013; FR-005 |
 | SREQ-PH01-LIC-006 | Entitlement is not permission | ACT-PLATFORM-ADMIN, ACT-INST-ADMIN | TBD (RGAP-PH01-005; related FN-LIC-VALIDATE in REQ-PH01-LICENSE-VALIDATION) | CON-007; FR-005 AC5 |
+| SREQ-PH01-LIC-007 | Reject ineligible issuance request | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005; related FN-LIC-VALIDATE in REQ-PH01-LICENSE-VALIDATION) | FR-005; CMP-LIC-ISSUANCE §3 |
+| SREQ-PH01-LIC-008 | Create institutional license in ISSUED | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005; related FN-LIC-VALIDATE in REQ-PH01-LICENSE-VALIDATION) | FR-005; CMP-LIC-ISSUANCE §3-4 |
+
+### Cycle 3 preservation and decomposition record
+
+`SREQ-PH01-LIC-001` and its original criteria `AC-PH01-LIC-001-01` and `AC-PH01-LIC-001-02` remain unchanged as historical source records; LIC-001 is now `RETIRED`. The active decomposition is `SREQ-PH01-LIC-007` (reject failed eligibility/plan validation without creating a record) and `SREQ-PH01-LIC-008` (create the institution/product-bound license in `ISSUED` state), each with a unique criterion. The declared actor, locations, C2 set, function gap and owner-gated license references are inherited conservatively; no operation-specific container ownership or license-policy values are inferred. Plan granularity, validity/units semantics and other existing license decisions remain open.
 
 ## 4. Acceptance criteria
 
@@ -62,6 +70,8 @@ Related function/use case, actors and evidence per sub-requirement:
 | AC-PH01-LIC-005-01 | SREQ-PH01-LIC-005 | After a LicenseSuspended event ACCore restricts the module; no numeric window is asserted. | RGAP-PH01-009 | FR-013 AC2; FR-005 A2 | FR-013; FR-005 |
 | AC-PH01-LIC-005-02 | SREQ-PH01-LIC-005 | Event delivery follows the Outbox/Inbox rules. | IF-ACC-EVENT-ENVELOPE §5.6 | CNT-ACC-LICENSE §2 | FR-013; FR-005 |
 | AC-PH01-LIC-006-01 | SREQ-PH01-LIC-006 | Issuing a license changes no role assignment; granting a role makes no license valid. | RGAP-PH01-009 | FR-005 AC5; CON-007 | CON-007; FR-005 AC5 |
+| AC-PH01-LIC-007-01 | SREQ-PH01-LIC-007 | An ineligible institution or invalid plan is rejected and no license record is created. | RGAP-PH01-009 | FR-005 normal path; CMP-LIC-ISSUANCE §3 | FR-005; CMP-LIC-ISSUANCE §3 |
+| AC-PH01-LIC-008-01 | SREQ-PH01-LIC-008 | A successful authorized institutional request creates a record bound to institution_id and product_code in state ISSUED, carrying units and validity as specified by the applicable license configuration; no policy values are asserted. | RGAP-PH01-009 | CNT-ACC-LICENSE §4; CMP-LIC-ISSUANCE §3-4 | FR-005; CMP-LIC-ISSUANCE §3-4 |
 
 ## 5. Alternate paths, failure, exception and uncertainty handling
 
@@ -75,9 +85,9 @@ Open decisions below are preserved as the source states them; this draft does no
 
 | Decision / gate ID | Source meaning | Affected sub-requirements |
 |---|---|---|
-| UNKN-003 | License model granularity, renewal cycle and grace-period duration not defined. | SREQ-PH01-LIC-001, SREQ-PH01-LIC-004 |
-| ODEC-011 | License model: type, granularity, renewal, grace period. | SREQ-PH01-LIC-001 |
-| ADR-017-GATE | ADR-017 policy values (capture timing, tax, accounting trigger, retention, SLA, support access, license plans) need owner ratification. | SREQ-PH01-LIC-001, SREQ-PH01-LIC-005 |
+| UNKN-003 | License model granularity, renewal cycle and grace-period duration not defined. | SREQ-PH01-LIC-001 (historical), SREQ-PH01-LIC-007, SREQ-PH01-LIC-008, SREQ-PH01-LIC-004 |
+| ODEC-011 | License model: type, granularity, renewal, grace period. | SREQ-PH01-LIC-001 (historical), SREQ-PH01-LIC-007, SREQ-PH01-LIC-008 |
+| ADR-017-GATE | ADR-017 policy values (capture timing, tax, accounting trigger, retention, SLA, support access, license plans) need owner ratification. | SREQ-PH01-LIC-001 (historical), SREQ-PH01-LIC-007, SREQ-PH01-LIC-008, SREQ-PH01-LIC-005 |
 | LIC-005 | Platform public-key rotation propagation to ACCore instances. | SREQ-PH01-LIC-002 |
 | LIC-001 | Offline tolerance window: entitlement TTL and grace-period duration. | SREQ-PH01-LIC-004 |
 | LIC-002 | License revocation propagation: how quickly ACCore must honor a revocation. | SREQ-PH01-LIC-005 |
