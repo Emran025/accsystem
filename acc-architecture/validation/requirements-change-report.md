@@ -600,8 +600,11 @@ Exactly four reports under `acc-architecture/validation/`: `atomicity-review-rep
 - All eight available architecture checks exited 0 against an isolated temporary copy: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py`, and `generate_coverage_report.py`. Artifact depth: 88 reviewed, 0 incomplete/findings; consistency: 65/65 IDs, 0 findings; diagram validation rendered and checked 55 Mermaid blocks. Release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition: C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0 (in-scope/decomposition-complete/exceptions-not-complete); none of these measures establishes semantic completeness or owner approval.
 - Mermaid rendering used `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium`; this does not prove semantic C4 correctness.
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively); both checks are **NOT_VERIFIED**, not PASS. Available validators are not substitutes for these checks.
-- Scope review is limited to the four listed validation reports. Markdown diff checks and CRLF-aware diff checks must pass before committing; the unchanged registry must retain 279 CRLF lines and zero bare LF.
+- Scope review found only the four listed validation reports. Markdown and CRLF-aware diff checks passed before commit; the unchanged registry retained 279 CRLF lines and zero bare LF.
 
 ### Cycle 14 content push and post-push verification
 
-Push and post-push commit identities will be recorded after the verified report-only content batch is committed and pushed.
+- Content commit `ad0d60451a95ce096c385ba536cba3f983bec2d6` has Cycle 14 base `ec71a5ba15e38d11dab239c6e56bc6606390b760` as its parent and changes exactly the four listed validation reports.
+- Immediately before push, a fresh `git fetch origin main` confirmed `HEAD == origin/main == ec71a5ba15e38d11dab239c6e56bc6606390b760`; staged scope and both whitespace checks passed.
+- `git push origin HEAD:main` succeeded without force; Git reported a fast-forward from `ec71a5b` to `ad0d604`.
+- After push and another fetch, `HEAD == origin/main == ad0d60451a95ce096c385ba536cba3f983bec2d6` and the worktree was clean. This observed push record is being pushed as a separate report-only follow-up.
