@@ -344,7 +344,7 @@ The package remains a reviewable draft, not an implementation-ready baseline.
 ## Cycle 9: ARH-2026-11-21-C9
 
 **Base commit:** `5ff34b84f80327e696c60c265615f48706143d73` (`origin/main` at cycle start).
-**Content commit:** to be recorded in the post-push report-only follow-up.
+**Content commit:** `58be1bc4c581dfff1462e707530e3c138f6fbfd2` (four validation reports; pushed to `origin/main` without force).
 **Push target:** `origin/main` under the previously approved iterative workflow; no force push.
 
 ### Reassessment and evidence-supported outcome
@@ -371,4 +371,6 @@ The package remains a reviewable draft, not an implementation-ready baseline.
 
 ### Content push and post-push verification
 
-The content commit, fresh pre-push fetch/base check, push result, and post-push `HEAD == origin/main`/clean-worktree evidence will be entered in the report-only follow-up after they are observed. The package remains a reviewable draft, not an implementation-ready baseline.
+- Immediately before content commit, a fresh fetch confirmed `HEAD == origin/main == 5ff34b84f80327e696c60c265615f48706143d73`. Content commit `58be1bc4c581dfff1462e707530e3c138f6fbfd2` has that base as its parent and contains exactly the four validation reports listed above.
+- Immediately before push, another fetch confirmed `origin/main` remained at `5ff34b84f80327e696c60c265615f48706143d73`; the commit was pushed to `main` without force (fast-forward from `5ff34b8` to `58be1bc`).
+- After push and a further fetch, `HEAD == origin/main == 58be1bc4c581dfff1462e707530e3c138f6fbfd2`; `git show --check` passed and the worktree was clean. This report-only follow-up records the observed content-push evidence. The package remains a reviewable draft, not an implementation-ready baseline.
