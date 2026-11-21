@@ -1,4 +1,4 @@
-# C4 Diagram Overlay — Registry-Driven C1 and C2 Views
+# C4 Diagram Overlay — Registry-Driven C1 Portfolio and C2 Overlays
 
 **Status:** PROPOSED documentation overlay on ACC Final-v3; Mermaid source only. The registry and source documents are authoritative. This file does not change system membership or ownership.
 
@@ -17,7 +17,7 @@
 
 ## C1 — System Landscape
 
-### C1-LANDSCAPE — ACC Ecosystem Portfolio
+### C1-PORTFOLIO — ACC Ecosystem Portfolio
 
 ```mermaid
 flowchart LR

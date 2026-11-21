@@ -25,7 +25,7 @@ The coverage matrix contains rows for the 7 C1, 30 C2, and 28 selected C3 elemen
 
 ## Semantic completeness and traceability
 
-The ACCSystem focal C1 overlay is semantically incomplete relative to `c1-context/systems/SYS-ACCSYSTEM.md` and `c1-context/landscape.md`: the view does not show several documented direct client-system relationships and CDN distribution, despite relevant system IDs appearing elsewhere in the file. A generic `ACTORS` node in focal views also does not identify which registered actors have which documented relationships. This finding is distinct from the 7/7 C1 ID-presence result.
+The ACCSystem focal C1 overlay is semantically incomplete relative to the C1 system record and its embedded black-box context diagram; the canonical C2 container view is `c1-context/landscape.md`: the view does not show several documented direct client-system relationships and CDN distribution, despite relevant system IDs appearing elsewhere in the file. A generic `ACTORS` node in focal views also does not identify which registered actors have which documented relationships. This finding is distinct from the 7/7 C1 ID-presence result.
 
 Nine interface IDs are registered. Five were found as literal labels in Mermaid. Four—`IF-ACC-CATALOG-QUERY`, `IF-ACC-ORDER-CREATE`, `IF-ACC-EVENT-ENVELOPE`, and `IF-ACC-SOFTDL`—were not found as literal interface IDs in Mermaid. Some corresponding edges may be drawn without their interface IDs. C4 does not require an ID on every edge; this is a low-severity traceability improvement, not a claim that relationships are absent.
 

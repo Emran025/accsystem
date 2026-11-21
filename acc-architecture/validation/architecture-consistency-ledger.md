@@ -18,7 +18,7 @@
 ## Decisions and architecture rules
 
 - Reservation uncertainty remains `UNKNOWN` until authoritative evidence or trusted reconciliation.
-- The two ACCSystem C2 diagrams remain separate views: the overlay is registry-derived/internal-focused; the standalone diagram adds selected client/external context and broader primary relationships. Precedence versus complementary retention is unresolved.
+- The ACCSystem C2 organization has one canonical container view at `c1-context/landscape.md`; the registry-derived C2 overlay in `c1-context/c4-context-and-container-overlays.md` is retained as a cross-check. The C1 black-box context view is in `c1-context/systems/SYS-ACCSYSTEM.md`.
 - Historical findings are retained and labeled as historical; no report claims owner approval or release readiness.
 
 ## Open decision gates

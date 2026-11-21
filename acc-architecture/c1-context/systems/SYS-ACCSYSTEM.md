@@ -1,7 +1,7 @@
 # SYS-ACCSYSTEM — ACCSystem Platform
 
-**Viewpoint:** C1 System Context  
-**Level:** C1 — System  
+**Viewpoint:** C1 System Context
+**Level:** C1 — System
 **Label convention:** `CONFIRMED (idea.md §X.X)` | `ASSUMPTION` | `PROPOSAL` | `UNKNOWN`
 
 ---
@@ -41,6 +41,52 @@
 |-------------------|------|---------|----------|-------|
 | EXT-PAYMENT-PROVIDER | External Payment Provider(s) | Payment authorization, capture, refund via tokenized integration; no card data stored in ACCSystem | REST/HTTPS + Webhook callbacks | CONFIRMED (idea.md §3.1, §9) |
 | EXT-PACKAGE-CDN | Software Package CDN / Object Storage | Hosting signed software installation packages; ACCSystem issues signed/time-limited download URLs | HTTPS + signed URLs | CONFIRMED (idea.md §2.1.1, §3.1) |
+
+---
+
+## 3A. C1 System Context Diagram
+This is the C4 system-context view for `SYS-ACCSYSTEM`. ACCSystem is intentionally shown as a black-box system; internal containers belong only in the C2 view at [`c1-context/landscape.md`](../landscape.md).
+
+```mermaid
+flowchart LR
+    BUYER["ACT-INDIVIDUAL\nIndividual Buyer"]
+    EMP["ACT-INST-EMPLOYEE\nInstitution Employee / Seller"]
+    IADMIN["ACT-INST-ADMIN\nInstitution Administrator"]
+    PADMIN["ACT-PLATFORM-ADMIN\nPlatform Administrator"]
+    SUPPORT["ACT-SUPPORT-STAFF\nPlatform Support Staff"]
+    SUP["ACT-DELIVERY-SUPERVISOR\nDelivery Supervisor"]
+    COURIER["ACT-COURIER\nCourier / Delivery Agent"]
+    VISITOR["ACT-VISITOR\nPublic Portal Visitor"]
+    COM["SYS-ACCOMMERCE\nACCommerce"]
+    CORE["SYS-ACCORE\nACCore per institution"]
+    MGT["SYS-ACMANAGEMENT\nACManagement Portal"]
+    MS["SYS-ACCMARED-SUP\nACCMared Supervisor"]
+    MC["SYS-ACCMARED-COU\nACCMared Courier"]
+    PAY["EXT-PAYMENT-PROVIDER\nExternal Payment Provider"]
+    CDN["EXT-PACKAGE-CDN\nSoftware Package CDN"]
+    ACC["SYS-ACCSYSTEM\nACCSystem Platform\nblack-box system"]
+
+    BUYER -->|browse, cart, checkout, tracking| COM
+    COM -->|catalog, cart, checkout, order APIs| ACC
+    EMP -->|institution product and order work| CORE
+    IADMIN -->|ERP and marketplace administration| CORE
+    PADMIN -->|platform administration and license issuance| MGT
+    SUPPORT -->|scoped support sessions| MGT
+    SUP -->|dispatch and delivery monitoring| MS
+    COURIER -->|task status and proof of delivery| MC
+    VISITOR -->|public catalog and downloads| MGT
+    CORE -->|publication events and license validation| ACC
+    ACC -->|reservation/order commands; mode policy-gated| CORE
+    MGT -->|public, license, admin, and support APIs| ACC
+    MS -->|dispatch and status events| ACC
+    MC -->|task and status APIs| ACC
+    ACC -->|authorization, capture, and refund| PAY
+    PAY -->|payment webhooks| ACC
+    ACC -->|signed package distribution| CDN
+```
+
+> [!NOTE]
+> C1 arrows show the control/data-flow initiator. Responses, callbacks, and events are shown only where they affect the system-context relationship. This view does not claim a selected ACCore deployment mode; ADR-015 remains policy-gated.
 
 ---
 
@@ -118,7 +164,7 @@ Sourced from idea.md §12 — Open Decisions:
 
 ## 8. C2 Disposition — Containers
 
-ACCSystem is decomposed into **17 containers** in the C2 layer:
+ACCSystem is decomposed into **17 containers** in the C2 layer. The canonical relationship diagram is [`c1-context/landscape.md`](../landscape.md); the table below maps each container to its individual record.
 
 | Container ID | Name | C2 Doc | Decomposition Status |
 |-------------|------|--------|---------------------|

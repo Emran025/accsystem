@@ -4,7 +4,7 @@
 
 ## Findings and disposition
 
-The current source artifacts preserve the `UNKNOWN` reservation outcome and do not assert a numeric TTL. The C1 alias corrections are source-supported, and the two ACCSystem C2 diagrams are explicitly documented as distinct views without invented precedence. Remaining semantic questions are retained as open gates rather than silently resolved: connectivity initiation, response modality, arrow meaning, accounting/finance triggers, settlement, security controls, operational targets, and owner approval.
+The current source artifacts preserve the `UNKNOWN` reservation outcome and do not assert a numeric TTL. The C1 black-box context and canonical C2 container view are source-supported; the registry-derived C2 overlay is explicitly retained as a cross-check rather than a competing authoritative view. Remaining semantic questions are retained as open gates rather than silently resolved: connectivity initiation, response modality, arrow meaning, accounting/finance triggers, settlement, security controls, operational targets, and owner approval.
 
 Historical reports that describe the prior TTL contradiction, duplicate aliases, or failed Mermaid blocks are provenance records and are not current closure claims.
 

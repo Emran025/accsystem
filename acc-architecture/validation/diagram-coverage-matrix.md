@@ -6,7 +6,7 @@ The table below is the existing registry-derived coverage matrix. Its COMPLETE/P
 
 ## Diagram partition index
 
-The matrix retains separate C1/C2/C3 views and records the two ACCSystem C2 diagrams as distinct views; precedence remains unresolved.
+The matrix retains separate C1/C2/C3 views: the C1 black-box context is in the ACCSystem system record, the canonical C2 container view is `c1-context/landscape.md`, and the registry-derived overlay is a cross-check.
 
 ## Coverage reconciliation
 
