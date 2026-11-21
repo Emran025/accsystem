@@ -686,4 +686,40 @@ Exactly four reports under `acc-architecture/validation/`: `atomicity-review-rep
 
 The content commit `657962cbfdb39e9eace31fb76b7b48cd522ee8df` has Cycle 16 base `ff1110fe5fd2d37dbbaf474e21e29883d0f79821` as its parent and changes exactly the four listed validation reports. Immediately before pushing, a fresh fetch confirmed `HEAD == origin/main == ff1110fe5fd2d37dbbaf474e21e29883d0f79821`; staged scope and whitespace checks passed. `git push origin HEAD:main` succeeded without force as a fast-forward from `ff1110f` to `657962c`. After the push and another fetch, `HEAD == origin/main == 657962cbfdb39e9eace31fb76b7b48cd522ee8df` and the worktree was clean before this report-only verification follow-up.
 
-This observed content-push record is being committed and pushed separately as a report-only follow-up; the final remote tip will be verified again after that push.
+The report-only follow-up was committed as `bf43d2802ee39133b6edf72557db6e09fa58aaa2`; Cycle 17 began from a fresh clone with `HEAD == origin/main == bf43d2802ee39133b6edf72557db6e09fa58aaa2` and a clean worktree.
+
+## Cycle 17: ARH-2026-11-21-C17
+
+**Base commit:** `bf43d2802ee39133b6edf72557db6e09fa58aaa2` (`origin/main` at Cycle 17 start).<br>
+**Cycle type:** report-only reassessment; no requirement, AC, registry row, child ID, contract, ADR, decision, or architecture source changed.<br>
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- Seven independent read-only reviews (one per live finding) and one synthesis completed without failures or substantive disagreements. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` all remain `SPLIT_REQUIRED`; only `PAY-002` remains additionally `OWNER_BLOCKED`. `REC-004` remains `SPLIT_REQUIRED` only.
+- Current source artifacts still lack new approved contracts, resolved owner decisions, or executed SREQ acceptance results. Evidence continues to support distinct behavioral boundaries, but not committed child IDs or policy choices. The unresolved contract, owner, acceptance, and Use Case gaps remain as listed in the atomicity review; no policy, alternative, owner decision, or ID was inferred. No PH-05 item was added.
+- No requirement text, AC, registry row, status, architecture source, ADR, interface, decision, capability, state, flow, path, or alternative changed. The work is limited to updating four validation reports under `acc-architecture/`.
+
+### Changed files
+
+Exactly four reports under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this report. No application code or file outside `acc-architecture/` changed.
+
+### Exact counts (unchanged from Cycle 16)
+
+- Registry: 278 rows (45 main requirements, 233 SREQ); 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired source rows and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`.
+- `use_case_id` `TBD`: 188 rows. Nonempty open-decision rows: 209. Unique AC IDs: 270; unique C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows retain an AC and planned-verification reference (233/233); these are not executed test evidence. The unchanged registry is 279 CRLF lines with zero bare LF.
+
+### Validation outcomes before content push
+
+- `validate_requirements.py --check --require-rows`: PASS on 278 rows. Required queries exited 0: PH-01 returned 113 rows; PH-02 with `SYS-ACCORE` returned 30; `CNT-ACC-CATALOG` returned 22.
+- `--check --strict-ready`: FAIL (exit 1, 908 errors). The package remains blocked from implementation readiness.
+- Unit suites, run from the repository root: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS. These are not executed SREQ acceptance tests.
+- All eight available architecture checks exited 0 against an isolated temporary copy: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `generate_coverage_report.py`, and `validate_release_status.py`. The diagram validator rendered and checked 55 Mermaid blocks when rerun with `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium` after the default Puppeteer browser lookup failed. Artifact depth: 88 reviewed, 0 incomplete/findings; consistency: 65/65 IDs, 0 findings; release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`; coverage decomposition: C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0 (in-scope/decomposition-complete/exceptions-not-complete). These checks do not establish semantic completeness, approval, or readiness.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` remain absent (exit 127 and 2 respectively); both checks are **NOT_VERIFIED**, not PASS.
+- The registry is unchanged at 279 CRLF lines with zero bare LF. The report-only diff must stay within the four listed validation reports; CRLF-aware whitespace checks are required for the retained CSV line-ending convention.
+
+### Cycle 17 content push and post-push verification
+
+The content commit SHA, pre-push remote comparison, push result, and post-push `HEAD`/`origin/main` verification will be recorded in a separate report-only follow-up after they are observed. No commit SHA is claimed before verification.
