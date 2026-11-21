@@ -339,3 +339,36 @@ The package remains a reviewable draft, not an implementation-ready baseline.
 - After push, another fetch confirmed `HEAD == origin/main == 6fac95369f38c5e608d506ee273a9482e745f03a`; the worktree was clean. `git show --check` passed, and the commit contains exactly the four validation reports listed above.
 
 **Next cycle:** continue evidence-based review from the latest `origin/main`; preserve owner gates and alternatives, distinguish planned from executed acceptance evidence, and do not assert readiness while blockers remain.
+
+
+## Cycle 9: ARH-2026-11-21-C9
+
+**Base commit:** `5ff34b84f80327e696c60c265615f48706143d73` (`origin/main` at cycle start).
+**Content commit:** to be recorded in the post-push report-only follow-up.
+**Push target:** `origin/main` under the previously approved iterative workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- Seven live `SPLIT_REQUIRED` findings were independently reviewed, one dedicated reviewer per finding, then synthesized. All seven reviews and the synthesis completed without failures. `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002` remain `SPLIT_REQUIRED`; `PAY-002` remains additionally `OWNER_BLOCKED`. No evidence supports changing requirement text, ACs, registry rows, child IDs, or classifications.
+- No owner decision or requirement/acceptance test was added. `ORD-001` remains preserved as `RETIRED` and distinct from `ORD-002` and `ORD-007/008`. Institution membership in `ADM-001`, license lifecycle/policy gates, and incomplete `REC-004`/`CHK-003` evidence remain open. `DOP-004` remains an unproven merge candidate; `DEN-003` remains unconfirmed as duplicate and blocked by `ODEC-010`. No OAuth/mTLS, TTL, settlement, commission, refund, or provider-behavior choice was inferred.
+- This is a report-only cycle: no requirements, ACs, registry rows, architecture elements, capabilities, states, flows, alternatives, or ADRs changed.
+
+### Exact counts from the current registry
+
+- Registry: 278 rows (45 main requirements and 233 SREQ); statuses are 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired source rows and 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`. All 233 SREQ rows are classified.
+- `TBD` in `use_case_id`: 188 rows. Nonempty open-decision rows: 209, with 60 distinct decision/gate references excluding the separate `RGAP-PH02-004` reference. Unique AC IDs: 270; distinct C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows have an AC and planned-verification reference (233/233); planned references are not executed evidence. The unchanged CSV is 279 CRLF lines with no bare LF.
+
+### Validation outcomes before content push
+
+- `validate_requirements.py --check` and `--check --require-rows`: PASS on 278 rows. Required queries exited 0 and returned 113 rows for PH-01, 30 for PH-02 with `SYS-ACCORE`, and 22 for `CNT-ACC-CATALOG`.
+- `--check --strict-ready`: FAIL, as expected, with 908 errors. Open owner/use-case gates, draft/review status, and planned-only verification continue to block readiness; this is not a structural-validation failure or a readiness pass.
+- Tests: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
+- Eight available `architecture-assistant/scripts/` checks on a temporary copy of `acc-architecture/` exited 0: `validate_architecture.py`, `validate_artifact_depth.py`, `validate_consistency_artifacts.py`, `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `validate_release_status.py`, and `generate_coverage_report.py`. Artifact depth reviewed 88 records (0 incomplete/findings; human review still required); consistency covered 65/65 IDs (0 findings; semantic review still required); diagram validation rendered/checked 55 Mermaid blocks. Release status remains `Gate7=IN_PROGRESS` and `manifest=IN_PROGRESS`. Coverage decomposition counts were C1 15/7/8, C2 40/17/23, C3 35/35/0, and DECISION 22/22/0; these counts do not prove semantic completeness, runtime behavior, owner approval, or readiness.
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent. Both checks remain `NOT_VERIFIED`, not PASS; the available architecture checks do not substitute for claiming those utilities ran.
+- Scope/whitespace: the content batch is limited to the four reports under `acc-architecture/validation/`; the registry remains unchanged with its CRLF endings. Raw `git diff --check` and the CRLF-aware `git -c core.whitespace=cr-at-eol diff --check` passed. Observed changes remain report-only.
+
+### Content push and post-push verification
+
+The content commit, fresh pre-push fetch/base check, push result, and post-push `HEAD == origin/main`/clean-worktree evidence will be entered in the report-only follow-up after they are observed. The package remains a reviewable draft, not an implementation-ready baseline.

@@ -1,13 +1,29 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C8<br>
-**الأساس:** `c100b641d63e918cc1325bf17dde8a9d1732eb55` (`origin/main` عند بدء الدورة الثامنة)<br>**الدورة السابقة:** ARH-2026-11-21-C7؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C9<br>
+**الأساس:** `5ff34b84f80327e696c60c265615f48706143d73` (`origin/main` عند بدء الدورة التاسعة)<br>**الدورة السابقة:** ARH-2026-11-21-C8؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل تصنيف **233 من 233** صف SREQ. أعادت Cycle 8 تقييم findings التفكيك السبعة الحية بصورة مستقلة ثم وُحّدت نتائجها؛ بقيت جميعها `SPLIT_REQUIRED`. لم تدعم الأدلة إنشاء child IDs جديدة أو إعادة تصنيف أي finding، وحالة `PAY-002` مسدودة أيضاً بقرارات المالك والعقد. تظل نتيجة Cycle 5 الخاصة بـ`SREQ-PH01-LICV-003` (`ATOMIC`) كما هي. الأعداد الحالية: `ATOMIC` 58 و`SPLIT_REQUIRED` 17 (عشرة مصادر تاريخية متقاعدة وسبعة findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لا قرار مالك أو اعتماد جديد؛ التحقق الوظيفي غير منفذ.
+يعرض السجل تصنيف **233 من 233** صف SREQ. أعادت Cycle 9 تقييم findings التفكيك السبعة الحية بصورة مستقلة ثم وُحّدت النتائج؛ بقيت جميعها `SPLIT_REQUIRED`، و`PAY-002` ما زال `OWNER_BLOCKED` أيضاً. لم تدعم الأدلة أي تعديل على المتطلبات أو AC أو صفوف registry أو إنشاء child IDs أو إعادة تصنيف. الأعداد الحالية: `ATOMIC` 58 و`SPLIT_REQUIRED` 17 (عشرة مصادر تاريخية متقاعدة وسبعة findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لا قرار مالك أو اعتماد جديد؛ التحقق الوظيفي غير منفذ.
+
+## إعادة التقييم في Cycle 9
+
+اكتملت المراجعات السبعة المستقلة دون إخفاق، ثم وُحّدت النتائج. بقيت حدود السلوك/الاختبار والبوابات كما هي؛ لم يظهر دليل جديد يغلق عقداً أو قرار مالك أو اختبار قبول منفذاً يبرر تغييراً في المصدر أو السجل.
+
+| SREQ | التصنيف الحالي | نتيجة Cycle 9 والبوابة المفتوحة |
+|---|---|---|
+| `SREQ-PH01-INST-004` | `SPLIT_REQUIRED` | لا تعديل؛ `ADR-015-GATE` و`RP-16`، وحدود العقد/الأمن وربط الوظيفة/Use Case غير محسومة. |
+| `SREQ-PH01-MSG-002` | `SPLIT_REQUIRED` | لا تعديل؛ `ADR-022-GATE` وعقد receiver وACK/key/recovery/retention واختبار duplicate delivery مفتوحة. |
+| `SREQ-PH02-PUB-004` | `SPLIT_REQUIRED` | لا تعديل؛ `PUB-005` و`IF-ACR-PUBLISH-EVENT` لم تحسما receipt/listing ID وduplicate/rejection/retry semantics. |
+| `SREQ-PH02-REC-004` | `SPLIT_REQUIRED` | لا تعديل؛ `PUB-005/006` وحالة الرفض/الفشل وقنوات الرؤية والقبول غير مكتملة. |
+| `SREQ-PH02-CHK-003` | `SPLIT_REQUIRED` | لا تعديل؛ عقد جلسة checkout وTTL/state وsnapshot/policy boundary وACs ما زالت مفتوحة. |
+| `SREQ-PH03-CNF-005` | `SPLIT_REQUIRED` | لا تعديل؛ recipient/role projection وعقد ACK/retry/recovery وpartial-effect evidence مفتوحة؛ يبقى accounting trigger منفصلاً ضمن CNF-006. |
+| `SREQ-PH03-PAY-002` | `SPLIT_REQUIRED` | لا تعديل؛ `OWNER_BLOCKED` حتى قرارات provider/cardinality والسياسة المالية والعقد؛ يبقى منفصلاً عن PAY-003 دون child IDs. |
+
+تبقى قيود الحفظ السابقة: لا يُخلط `ORD-001` مع `ORD-002` أو `ORD-007/008`؛ ولا تغيير في عضوية `ADM-001` أو lifecycle/policy الترخيص. ولا استنتاج لـOAuth/mTLS أو TTL أو settlement/commission/refund أو provider behavior. لا اختبار SREQ منفذ أو `ACCEPTED` جديد.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -19,7 +35,7 @@
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه يعرض التصنيف الحالي لـSREQ واحد بعد مراجعة Cycle 8. لم يتغير أي تصنيف عن Cycle 7. تحتفظ المصادر المفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ يبلغ عددها عشرة، مع سبعة findings حية حالياً.
+كل صف أدناه يعرض التصنيف الحالي لـSREQ واحد بعد مراجعة Cycle 9؛ لم يتغير أي تصنيف عن Cycle 8. تحتفظ المصادر المفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ يبلغ عددها عشرة، مع سبعة findings حية حالياً.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 # مصفوفة تغطية متطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C8<br>**الأساس:** `c100b641d63e918cc1325bf17dde8a9d1732eb55` (`origin/main` عند بدء الدورة الثامنة)<br>
+**الدورة:** ARH-2026-11-21-C9<br>**الأساس:** `5ff34b84f80327e696c60c265615f48706143d73` (`origin/main` عند بدء الدورة التاسعة)<br>
 **مصادر الربط:** `requirements-registry.csv`، `registry/functions.json`، `registry/interfaces.json`، `registry/elements.json`، ومراجعات الذرية المرحلية.<br>
 **ملاحظة:** هذه مصفوفة تغطية مرجعية/اسمية؛ ليست إثباتاً بأن وظيفة أو قناة أو حاوية مطبقة فعلياً.
 
@@ -62,6 +62,12 @@
 - الحدود الاختبارية باقية: `INST-004` configuration retrieval مقابل سرية الأسرار؛ `MSG-002` receipt/claim مقابل once-only effect وduplicate recovery؛ `PUB-004` ثبات المفتاح مقابل lifecycle الاستجابة/Outbox؛ `REC-004` الرفض السابق للإرسال مقابل failure/recovery؛ `CHK-003` validation failure مقابل snapshot الناجح؛ `CNF-005` recipient/role projection مقابل dispatch/recovery؛ `PAY-002` allocation completeness مقابل aggregate/separate provider attempts.
 - لم تتغير المتطلبات أو ACs أو الصفوف. السجل يبقى 278 صفاً (45 رئيسياً و233 SREQ): 218 `DRAFT` و50 `OWNER_REVIEW` و10 `RETIRED` و0 `ACCEPTED`. الذرية 58 `ATOMIC` و17 `SPLIT_REQUIRED` (10 مصادر متقاعدة و7 findings حية)، و1 `MERGE_CANDIDATE`؛ تبقى `TBD` عند 188 والصفوف ذات قرارات مفتوحة عند 209 (60 مرجع قرار/بوابة فريداً، باستثناء RGAP المنفصل). معرفات AC الفريدة 270، وحاويات C2 الفريدة 29، والـC4 bindings المفقودة بنيوياً 0.
 - بوابات كل finding وتفاصيل gaps مسجلة في مراجعة الذرية. جميع مراجع التحقق تظل مخططة؛ لا owner gate أُغلق ولا اختبار SREQ نُفذ أو قُبل في هذه الدورة.
+
+## Cycle 9 update
+
+- أعادت سبعة مراجعين مستقلين فحص findings الحية على الأساس `5ff34b84f80327e696c60c265615f48706143d73`؛ اكتملت المراجعات السبعة ثم التوليف دون إخفاق. التصنيفات بقيت كما في Cycle 8، ولم تدعم الأدلة تغييراً في المتطلبات أو AC أو registry أو إنشاء child IDs.
+- أُعيد حساب السجل: 278 صفاً (45 REQ و233 SREQ)، منها 218 `DRAFT` و50 `OWNER_REVIEW` و10 `RETIRED` و0 `ACCEPTED`؛ 188 `TBD` في `use_case_id` و209 صفوف بقرارات مفتوحة (60 مرجعاً فريداً باستثناء `RGAP-PH02-004`)؛ 270 AC IDs فريدة و29 حاوية C2؛ لا missing C4 binding بنيوي. لكل SREQ AC ومرجع تحقق مخطط (233/233)، وليس ذلك دليلاً على التنفيذ.
+- بقيت `INST-004`, `MSG-002`, `PUB-004`, `REC-004`, `CHK-003`, `CNF-005` و`PAY-002` مصنفة `SPLIT_REQUIRED`؛ `PAY-002` يظل `OWNER_BLOCKED`. تفاصيل الحدود والبوابات في مراجعة الذرية. يظل `ORD-001` محفوظاً ومتميزاً عن `ORD-002` و`ORD-007/008`، وعضوية `ADM-001` وبوابات lifecycle/policy الترخيص و`REC-004`/`CHK-003` غير محسومة. `DOP-004` لا يزال merge candidate غير مثبت و`DEN-003` محجوباً بـ`ODEC-010`.
 
 ## Capability / requirement areas
 
