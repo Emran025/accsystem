@@ -217,7 +217,7 @@ Four reports only, all within `acc-architecture/validation/`: `atomicity-review-
 ## Cycle 6: ARH-2026-11-21-C6
 
 **Base commit:** `c2ad68e5f0ee27880f2511758a6fdfeff0efbd1b` (`origin/main` at cycle start).<br>
-**Content commit:** to be recorded in the post-push follow-up below.<br>
+**Content commit:** `4b6aaff6226bf82674aa9fee862911dc377b257c` (pushed to `origin/main` without force).<br>
 **Push target:** `origin/main` under the previously approved iterative workflow; no force push.
 
 ### Reassessment and evidence-supported outcome
@@ -246,3 +246,8 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 - Available architecture validators all exited 0: `validate_architecture.py` (structural checks only), `validate_artifact_depth.py` (88 reviewed; human review still required), `validate_consistency_artifacts.py` (65/65; semantic review still required), `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py` (55 Mermaid blocks rendered/checked; semantic C4 correctness not proven), `validate_release_status.py` (Gate7/manifest remain `IN_PROGRESS`), and `generate_coverage_report.py` (C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0; decomposition counts are not semantic completeness).
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent (exit 127 and 2 respectively). These two checks are `NOT_VERIFIED`, not PASS; the available architecture-assistant validators are substitutes only.
 - The final diff/scope and pre-push fetch, commit, push, and post-push verification are recorded below after they occur.
+
+### Content push and post-push confirmation
+
+- Final scope review found exactly the four validation reports listed above; `git diff --check` and the CRLF-aware check passed. Immediately before commit, a fresh `git fetch origin main` confirmed `HEAD == origin/main == c2ad68e5f0ee27880f2511758a6fdfeff0efbd1b`.
+- Content commit `4b6aaff6226bf82674aa9fee862911dc377b257c` was pushed to `main` without force. After a second fetch, `HEAD == origin/main == 4b6aaff6226bf82674aa9fee862911dc377b257c` and the worktree was clean. This report-only follow-up records the observed results.
