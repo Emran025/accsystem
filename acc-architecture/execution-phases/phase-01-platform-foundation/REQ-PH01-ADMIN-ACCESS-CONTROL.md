@@ -31,12 +31,14 @@
 
 | Sub-requirement ID | Parent requirement ID | Statement | Trigger/precondition | Expected outcome | Locations | C4 containers | Acceptance criteria | Verification | Status | Open decisions |
 |---|---|---|---|---|---|---|---|---|---|---|
-| SREQ-PH01-ADM-001 | REQ-PH01-ADMIN-ACCESS-CONTROL | An authorized administrator can activate, suspend and reactivate platform accounts and manage institution memberships, and the change takes effect on subsequent authentication. | Administrator performs an account operation in the console. | Account state changes and is enforced. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-PLATFORMADMIN, CNT-ACC-IDENTITY | AC-PH01-ADM-001-01, AC-PH01-ADM-001-02 | TEST (planned): account lifecycle test | DRAFT | none recorded |
+| SREQ-PH01-ADM-001 | REQ-PH01-ADMIN-ACCESS-CONTROL | An authorized administrator can activate, suspend and reactivate platform accounts and manage institution memberships, and the change takes effect on subsequent authentication. | Administrator performs an account operation in the console. | Account state changes and is enforced. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-PLATFORMADMIN, CNT-ACC-IDENTITY | AC-PH01-ADM-001-01, AC-PH01-ADM-001-02 | TEST (planned): account lifecycle test | RETIRED | none recorded |
 | SREQ-PH01-ADM-002 | REQ-PH01-ADMIN-ACCESS-CONTROL | A platform role grant or revocation takes effect only after the approval required by policy; until then it remains pending and visible. | A role change is requested. | The change is pending until approved, then applied. | SYS-ACCSYSTEM, SYS-ACMANAGEMENT | CNT-ACC-PLATFORMADMIN, CNT-ACC-IDENTITY, CNT-ACM-ADMIN | AC-PH01-ADM-002-01, AC-PH01-ADM-002-02 | TEST (planned): approval workflow test | OWNER_REVIEW | ADR-011-GATE |
 | SREQ-PH01-ADM-003 | REQ-PH01-ADMIN-ACCESS-CONTROL | Authorization applies role permissions with contextual conditions (institution, branch, operation scope), and each service enforces its own authorization from resolved role data. | An authenticated request reaches a protected operation. | ALLOW or DENY per role and context. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-APIGATEWAY | AC-PH01-ADM-003-01, AC-PH01-ADM-003-02 | TEST (planned): permission matrix test | DRAFT | none recorded |
 | SREQ-PH01-ADM-004 | REQ-PH01-ADMIN-ACCESS-CONTROL | ACManagement performs administration only through published platform service APIs and never reads or writes the Identity & Access store directly. | Any console administrative operation. | Every operation is traceable to a platform API call. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-APIGATEWAY, CNT-ACC-PLATFORMADMIN | AC-PH01-ADM-004-01 | REVIEW (planned): architecture/integration review | DRAFT | none recorded |
 | SREQ-PH01-ADM-005 | REQ-PH01-ADMIN-ACCESS-CONTROL | Platform administrator accounts are distinct from institution ERP accounts. | A platform administrator account is created. | The account is not an ERP account. | SYS-ACCSYSTEM | CNT-ACC-IDENTITY, CNT-ACC-PLATFORMADMIN | AC-PH01-ADM-005-01 | TEST (planned): identity separation test | DRAFT | none recorded |
 | SREQ-PH01-ADM-006 | REQ-PH01-ADMIN-ACCESS-CONTROL | Institution administrators use the protected console only within institution-scoped functions defined by an approved role matrix. | An institution administrator opens the console. | Only approved institution-scoped functions are available. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-IDENTITY | AC-PH01-ADM-006-01 | REVIEW (planned): role-matrix review | OWNER_REVIEW | ADR-011-GATE |
+| SREQ-PH01-ADM-007 | REQ-PH01-ADMIN-ACCESS-CONTROL | An authorized administrator can activate, suspend, or reactivate platform accounts; subsequent authentication reflects account state, and a suspended account cannot obtain new tokens. | An administrator performs an account-state operation in the console. | Account state governs subsequent authentication; a suspended account cannot obtain new tokens. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-PLATFORMADMIN, CNT-ACC-IDENTITY | AC-PH01-ADM-007-01, AC-PH01-ADM-007-02 | TEST (planned): account-state enforcement test | DRAFT | none recorded |
+| SREQ-PH01-ADM-008 | REQ-PH01-ADMIN-ACCESS-CONTROL | ACCSystem publishes the corresponding PlatformUserSuspended, PlatformUserActivated, or PlatformUserReactivated event when that account state change occurs. | An authorized platform account activation, suspension, or reactivation occurs. | The corresponding account lifecycle event is published. | SYS-ACMANAGEMENT, SYS-ACCSYSTEM | CNT-ACM-ADMIN, CNT-ACC-PLATFORMADMIN, CNT-ACC-IDENTITY | AC-PH01-ADM-008-01 | TEST (planned): account lifecycle event publication test | DRAFT | none recorded |
 
 Related function/use case, actors and evidence per sub-requirement:
 
@@ -48,8 +50,15 @@ Related function/use case, actors and evidence per sub-requirement:
 | SREQ-PH01-ADM-004 | ACManagement acts only as service client | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005) | CON-006; ADR-009 |
 | SREQ-PH01-ADM-005 | Separate admin identities | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005) | FR-006 AC3 |
 | SREQ-PH01-ADM-006 | Institution-admin console scope | ACT-INST-ADMIN | TBD (RGAP-PH01-005) | CNT-ACM-ADMIN; traceability-24-topics.md topic 14 |
+| SREQ-PH01-ADM-007 | Platform account state enforcement | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005) | FR-006 |
+| SREQ-PH01-ADM-008 | Platform account lifecycle event publication | ACT-PLATFORM-ADMIN | TBD (RGAP-PH01-005) | FR-006; CNT-ACC-IDENTITY §2 |
 
 ## 4. Acceptance criteria
+
+### Cycle 4 preservation and decomposition record
+
+`SREQ-PH01-ADM-001` and both original criteria remain unchanged as a `RETIRED` source record. `ADM-007` separates account-state enforcement from `ADM-008` event publication. The existing criteria cover suspended-account token denial, event publication, and an MFA-authenticated administrator session; explicit acceptance coverage for the activation/reactivation outcomes remains incomplete. The source phrase about institution-membership management has no defined operation, authorization/effect rule, or criterion and remains a blocking gap in `RGAP-PH01-003`; no child or function/use-case ID is assigned to it.
+
 
 | Acceptance criterion | Proves | Criterion | API/event/UI contract reference | Scope/data/state/container reference | Source/evidence |
 |---|---|---|---|---|---|
@@ -62,6 +71,9 @@ Related function/use case, actors and evidence per sub-requirement:
 | AC-PH01-ADM-004-01 | SREQ-PH01-ADM-004 | No direct data path from the console to the identity store exists; all operations pass the gateway. | RGAP-PH01-003 | FR-006 AC5; CON-006 | CON-006; ADR-009 |
 | AC-PH01-ADM-005-01 | SREQ-PH01-ADM-005 | An administrator identity cannot be used as, nor shares credentials with, an ACCore ERP account. | RGAP-PH01-002 | FR-006 AC3 | FR-006 AC3 |
 | AC-PH01-ADM-006-01 | SREQ-PH01-ADM-006 | Scope is enforced by the approved role matrix; functions outside it are denied. | RGAP-PH01-012 | CNT-ACM-ADMIN §2 (ASSUMPTION) | CNT-ACM-ADMIN; traceability-24-topics.md topic 14 |
+| AC-PH01-ADM-007-01 | SREQ-PH01-ADM-007 | A suspended account cannot obtain new tokens. | RGAP-PH01-003 | CNT-ACC-IDENTITY §2 | FR-006 |
+| AC-PH01-ADM-007-02 | SREQ-PH01-ADM-007 | The account-state operation requires an MFA-authenticated administrator session. | RGAP-PH01-002 | FR-006 normal path | FR-006 |
+| AC-PH01-ADM-008-01 | SREQ-PH01-ADM-008 | The corresponding PlatformUserSuspended, PlatformUserActivated, or PlatformUserReactivated event is published for each matching operation. | RGAP-PH01-003 | CNT-ACC-IDENTITY §2 | FR-006 |
 
 ## 5. Alternate paths, failure, exception and uncertainty handling
 
@@ -79,7 +91,7 @@ Open decisions below are preserved as the source states them; this draft does no
 | Package-local gap | Missing source reference | Where recorded / resolution route |
 |---|---|---|
 | RGAP-PH01-005 | functions/function-catalog.md registers only seven FN-* functions; none covers the PH-01 behavior of this area. | Recorded in registry column use_case_id as TBD; route: function inventory step of the phase lifecycle (execution-phases/README.md §8). |
-| RGAP-PH01-003 | No registered IF-* contract for platform user lifecycle, role grant/revoke or support-session operations; PlatformRoleGranted/SupportAccessGranted are named in FR-006 but absent from the §5.5 event catalogue. | Recorded in this document; CNT-ACC-PLATFORMADMIN §2/§5. Route: API Governance (IC-002). |
+| RGAP-PH01-003 | No registered IF-* contract for platform user lifecycle, institution-membership management, role grant/revoke or support-session operations; PlatformRoleGranted/SupportAccessGranted are named in FR-006 but absent from the §5.5 event catalogue. The retired ADM-001 membership-management phrase has no defined operation, authorization/effect rule, or acceptance criterion. | Blocking: institution-membership behavior remains preserved as an open gap, not a child requirement. Owner is unassigned; route: platform identity/administration requirements and API Governance (IC-002), then add evidence-backed criteria without inventing a function/use-case ID. |
 | RGAP-PH01-002 | No registered IF-* contract for authentication, token validation, session revocation or role lookup; token format and TTL are UNKNOWN. | Recorded in this document; CNT-ACC-IDENTITY §3/§5. Route: API Governance (IC-002) and Security owner. |
 | RGAP-PH01-012 | Boundary of institution-admin scope in the protected console (and the "complaint separation" in traceability topic 14) has no functional source. | Recorded here; actors-and-external-systems.md ACT-INST-ADMIN open question. |
 

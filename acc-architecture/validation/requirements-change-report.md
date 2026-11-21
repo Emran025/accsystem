@@ -133,3 +133,41 @@
 - بعد الدفع وإعادة fetch، تطابق `HEAD` و`origin/main` مع `b2729800f64718cb75fcb7e3145e94f67583638e`، وكان working tree نظيفاً. أظهر فحص النطاق الملفات السبعة أعلاه فقط تحت `acc-architecture/`، ونجح `git -c core.whitespace=cr-at-eol diff HEAD^ HEAD --check`.
 - بعد الدفع، نجح `--check` و`--check --require-rows` على 264 صفاً، وأعادت الاستعلامات 103/30/20؛ نجحت اختبارات المدقق المخصص 9/9 واختبارات architecture-assistant 65/65. خرجت validators العامة المتاحة جميعها برمز 0 مع بقاء حدود المراجعة البشرية/الدلالية المذكورة أعلاه. ظل `--check --strict-ready` فاشلاً على 858 مخالفة متوقعة، والحزمة غير جاهزة للتنفيذ.
 - CSV محفوظ بنهايات CRLF؛ `git diff --check` الخام يشير إلى CR في الصفوف المعدلة على أنه trailing whitespace، بينما يفحصه الأمر المراعي لـCRLF أعلاه دون أخطاء. هذا اختلاف نهاية سطر فقط وليس whitespace زائداً داخل قيم السجل.
+
+
+## Cycle 4: ARH-2026-11-21-C4
+
+**Base commit:** `c6ebc0b028e2ab9933f41715117bc29ac77d6391` (`origin/main` at cycle start).
+**Implementation commit:** pending pre-push validation.
+**Push target:** `origin/main` is authorized; no force push.
+
+### Evidence-based changes
+
+- Six parent requirements (`INST-005`, `ADM-001`, `LIC-004`, `LIC-005`, `MSG-003`, `ING-004`) remain preserved as `RETIRED` with their original statements and AC ownership. Twelve new DRAFT SREQs are added: INST-009/010, ADM-007/008, LIC-009..012, MSG-007/008, ING-007/008. Child AC references are unique; the source AC rows remain unchanged on the retired parents.
+- Nine live findings remain `SPLIT_REQUIRED`: INST-004, LICV-003, MSG-002, CHK-003, PUB-004, REC-004, CNF-005, ORD-001, PAY-002. No proposed atomic reclassification or merge was made.
+- The INST-004 credential-protection criterion remains an unratified source assumption. ADM-001 institution-membership behavior remains a blocking gap in RGAP-PH01-003 with no invented function/use-case ID. LIC-004 lifecycle rules and LIC-005 non-suspension mappings/restoration/propagation timing remain open. ORD-001 was not merged into ORD-002; response-contract, checkout, recipient-scope and payment-policy gaps remain open.
+- No capability, state, flow, alternative, ADR, or application code was removed or narrowed; no owner decision was made.
+
+### Recalculated counts from the registry
+
+- Registry: 276 rows (45 main, 231 SREQ); PH-01: 98 SREQ, PH-02: 47, PH-03: 59, PH-04: 27.
+- Statuses: 217 `DRAFT`, 50 `OWNER_REVIEW`, 9 `RETIRED`, 0 `ACCEPTED`.
+- Atomicity: 55 `ATOMIC`, 18 `SPLIT_REQUIRED` (9 retired decomposed parents and 9 live findings), 1 `MERGE_CANDIDATE`, 0 confirmed `DUPLICATE`; remaining category counts are recalculated in `atomicity-review-report.md`.
+- `TBD` use_case_id rows: 188 (PH-01 106; PH-02 12; PH-03 35; PH-04 35). Nonempty open-decision rows: 207; distinct open decision/gate references: 60.
+- All 231 SREQs retain at least one AC and a planned verification reference; AC identifiers are unique. C4 bindings remain structurally present; inherited container sets are not semantic proof.
+
+
+### Cycle 4 review and scope metrics
+
+- Fifteen live `SPLIT_REQUIRED` findings were reassessed. `ATOMIC` SREQs increased from 43 to 55; the total `SPLIT_REQUIRED` classification remains 18 (3 to 9 retired historical sources, 15 to 9 live findings); the sole `MERGE_CANDIDATE` remains DOP-004. No confirmed duplicate was removed.
+- `TBD` use-case rows increased from 178 to 188; rows with open decisions increased from 197 to 207. SREQ rows increased from 219 to 231, all with an AC and planned verification reference; unique AC IDs increased from 255 to 268. Structurally missing C4 bindings remained 0 (0 to 0).
+- Changed files (10, all within `acc-architecture/`): `REQ-PH01-ADMIN-ACCESS-CONTROL.md`, `REQ-PH01-INSTITUTION-LIFECYCLE.md`, `REQ-PH01-LICENSE-LIFECYCLE.md`, `REQ-PH01-MESSAGE-RELIABILITY.md`, `REQ-PH02-LISTING-INGESTION.md`, `requirements-registry.csv`, `atomicity-review-report.md`, `requirements-change-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`.
+
+### Validation and push record
+
+- Custom requirement validator: `--check` and `--check --require-rows` PASS for 276 registry rows; required queries exit 0 with 113 (`PH-01`), 30 (`PH-02` + `SYS-ACCORE`), and 22 (`CNT-ACC-CATALOG`) matches. Custom regression tests: 9/9 PASS.
+- `--check --strict-ready` FAILS with 902 reported blockers, as expected: statuses remain DRAFT/OWNER_REVIEW, use-case placeholders and open decisions remain, and verification is planned. This is not an implementation-readiness pass.
+- Available `architecture-assistant` validators (`validate_architecture`, artifact depth, consistency artifacts, references, traceability, diagrams, and release status) each exited 0. Diagram validation rendered and checked 55 Mermaid blocks. Its documented unittest suite passed 65/65.
+- Required handoff utilities were unavailable at `/home/ubuntu/work/acc-architecture-handoff/`: `run-remaining-validations.sh` exited 127 (missing path); `audit-remaining-registries-links.py` exited 2 (missing script). These checks are NOT_VERIFIED, not PASS; the available validators above were used as substitutes.
+- `git -c core.whitespace=cr-at-eol diff --check` passed; Markdown diff whitespace check passed. The registry retains CRLF (277 CRLF lines, 0 bare LF). Scope check found only the ten listed `acc-architecture/` files.
+- Push remains pending the required pre-push `git fetch origin main` and unchanged-tip check. No commit or push result is claimed yet.

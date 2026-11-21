@@ -1,25 +1,25 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C3<br>
-**الأساس:** `254d43bb239dcf2849e01818855751133e8154f0` (`origin/main` عند بدء الدورة الثالثة)<br>**الدورة السابقة:** ARH-2026-11-21-C2؛ تفاصيلها محفوظة في تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C4<br>
+**الأساس:** `c6ebc0b028e2ab9933f41715117bc29ac77d6391` (`origin/main` عند بدء الدورة الرابعة)<br>**الدورة السابقة:** ARH-2026-11-21-C3؛ تفاصيلها محفوظة في تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل الحالي تصنيف **219 من 219** صف SREQ بعد تفكيك AUTH-001 وLIC-001 مع حفظ المصدر التاريخي، إضافة إلى تفكيك AUD-001 في الدورة السابقة. من 17 finding تفكيك حية أُعيد تقييمها، عولج AUTH-001 وLIC-001؛ بقيت 15 حالة `SPLIT_REQUIRED` حية (ومنها MSG-002 بعد إعادة التصنيف). لم يُنفذ دمج؛ بقي DOP-004 مرشحاً واحداً دون إثبات تداخل كافٍ لدمجه، ولم تثبت ازدواجية DEN-003 فظل محجوباً بقرار ODEC-010. ظلت قرارات المالك والفجوات الأخرى مفتوحة.
+يعرض السجل الحالي تصنيف **231 من 231** صف SREQ بعد إعادة تقييم findings الـ15 الحية في Cycle 4. نُفذت ستة تفكيكات مدعومة بالأدلة مع حفظ المصادر ومعاييرها الأصلية بحالة `RETIRED` وإضافة 12 صفاً ذرياً؛ بقيت تسعة findings حية `SPLIT_REQUIRED`، بما فيها الحالات التي لا تكفي أدلتها أو قراراتها لتحديد تقسيم آمن. أصبحت التصنيفات `ATOMIC` 55 و`SPLIT_REQUIRED` 18 (تسعة مصادر تاريخية متقاعدة وتسعة findings حية)، وبقي `MERGE_CANDIDATE` واحداً. لم يُنفذ دمج؛ ظل DOP-004 مرشحاً وDEN-003 محجوباً بـODEC-010. لا يوجد اعتماد أو إثبات تنفيذ. حزم المراجعة لم تتضمن حكماً نهائياً مستقلاً لكل finding؛ قرارات Cycle 4 هنا تركيب مبني على الأدلة المصدرية وليست موافقة مالك.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PH-01 — تأسيس المنصة | 88 | 14 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
-| PH-02 — الكتالوج والاكتشاف والحجز | 45 | 14 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
+| PH-01 — تأسيس المنصة | 98 | 24 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
+| PH-02 — الكتالوج والاكتشاف والحجز | 47 | 16 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
 | PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 59 | 8 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
 | PH-04 — التسليم الداخلي عبر ACCMared | 27 | 7 | 0 | 1 | 3 | 3 | 0 | 1 | 0 | 0 | 12 |
-| **الإجمالي** | **219** | **43** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
+| **الإجمالي** | **231** | **55** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه هو حكم تصنيفي واحد على SREQ بعينه بالحالة الراهنة بعد Cycle 3. أرقام الجدول تشمل ثلاثة صفوف تاريخية مصنفة `SPLIT_REQUIRED` رغم حالتها `RETIRED`: AUD-001 وAUTH-001 وLIC-001؛ أُنجز تفكيكها واحتُفظ بها للتتبع، ولا تدخل ضمن الـ15 finding الحي المتبقي.
+كل صف أدناه حكم تصنيفي على SREQ واحد وفق Cycle 4. تحتفظ ستة مصادر مفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ ومع المصادر التاريخية من الدورات السابقة يصبح المجموع تسعة مصادر تاريخية وتسعة findings حية.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|
@@ -29,6 +29,8 @@
 | PH-01 | `SREQ-PH01-INST-004` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Integration configuration and credential issuance | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-INST-005` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Credential rotation without disruption | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-INST-006` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Institution deactivation | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-INST-009` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Credential rotation transition | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-INST-010` | `REQ-PH01-INSTITUTION-LIFECYCLE` | Revoked credential rejection | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-INSTITUTION-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-AUTH-001` | `REQ-PH01-IDENTITY-AND-TRUST` | Authenticate platform users | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
 | PH-01 | `SREQ-PH01-AUTH-007` | `REQ-PH01-IDENTITY-AND-TRUST` | Credential verification | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
 | PH-01 | `SREQ-PH01-AUTH-008` | `REQ-PH01-IDENTITY-AND-TRUST` | Issue tokens with claims | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDENTITY-AND-TRUST.md` |
@@ -47,6 +49,8 @@
 | PH-01 | `SREQ-PH01-ADM-004` | `REQ-PH01-ADMIN-ACCESS-CONTROL` | ACManagement acts only as service client | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-ADMIN-ACCESS-CONTROL.md` |
 | PH-01 | `SREQ-PH01-ADM-005` | `REQ-PH01-ADMIN-ACCESS-CONTROL` | Separate admin identities | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-ADMIN-ACCESS-CONTROL.md` |
 | PH-01 | `SREQ-PH01-ADM-006` | `REQ-PH01-ADMIN-ACCESS-CONTROL` | Institution-admin console scope | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-ADMIN-ACCESS-CONTROL.md` |
+| PH-01 | `SREQ-PH01-ADM-007` | `REQ-PH01-ADMIN-ACCESS-CONTROL` | Platform account state enforcement | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-ADMIN-ACCESS-CONTROL.md` |
+| PH-01 | `SREQ-PH01-ADM-008` | `REQ-PH01-ADMIN-ACCESS-CONTROL` | Platform account lifecycle event publication | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-ADMIN-ACCESS-CONTROL.md` |
 | PH-01 | `SREQ-PH01-SUP-001` | `REQ-PH01-SUPPORT-ACCESS` | Session scope | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-SUPPORT-ACCESS.md` |
 | PH-01 | `SREQ-PH01-SUP-002` | `REQ-PH01-SUPPORT-ACCESS` | Authorization basis | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-SUPPORT-ACCESS.md` |
 | PH-01 | `SREQ-PH01-SUP-003` | `REQ-PH01-SUPPORT-ACCESS` | Time limit and expiry | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-SUPPORT-ACCESS.md` |
@@ -61,6 +65,10 @@
 | PH-01 | `SREQ-PH01-LIC-004` | `REQ-PH01-LICENSE-LIFECYCLE` | Renew, suspend, revoke, expire | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LIC-005` | `REQ-PH01-LICENSE-LIFECYCLE` | Propagation to ACCore | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LIC-006` | `REQ-PH01-LICENSE-LIFECYCLE` | Entitlement is not permission | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-009` | `REQ-PH01-LICENSE-LIFECYCLE` | Audit record for license state changes | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-010` | `REQ-PH01-LICENSE-LIFECYCLE` | Revocation is terminal | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-011` | `REQ-PH01-LICENSE-LIFECYCLE` | License event delivery to ACCore | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
+| PH-01 | `SREQ-PH01-LIC-012` | `REQ-PH01-LICENSE-LIFECYCLE` | Suspension restricts licensed modules | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LICV-001` | `REQ-PH01-LICENSE-VALIDATION` | Online institutional validation | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-002` | `REQ-PH01-LICENSE-VALIDATION` | Authenticated, scoped, no ERP data | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-003` | `REQ-PH01-LICENSE-VALIDATION` | Offline local verification | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
@@ -96,6 +104,8 @@
 | PH-01 | `SREQ-PH01-MSG-004` | `REQ-PH01-MESSAGE-RELIABILITY` | Per-key ordering | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-005` | `REQ-PH01-MESSAGE-RELIABILITY` | Event immutability | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-006` | `REQ-PH01-MESSAGE-RELIABILITY` | Common event envelope | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
+| PH-01 | `SREQ-PH01-MSG-007` | `REQ-PH01-MESSAGE-RELIABILITY` | Retry preserves idempotency key | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
+| PH-01 | `SREQ-PH01-MSG-008` | `REQ-PH01-MESSAGE-RELIABILITY` | Dead-letter classification and safe replay | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-IDEM-001` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Stable scoped keys | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
 | PH-01 | `SREQ-PH01-IDEM-002` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Correlation propagation | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
 | PH-01 | `SREQ-PH01-IDEM-003` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Institution identity mapping | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
@@ -121,6 +131,8 @@
 | PH-02 | `SREQ-PH02-ING-004` | `REQ-PH02-LISTING-INGESTION` | Idempotent listing creation | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-INGESTION.md` |
 | PH-02 | `SREQ-PH02-ING-005` | `REQ-PH02-LISTING-INGESTION` | Listing identifier and receipt | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-INGESTION.md` |
 | PH-02 | `SREQ-PH02-ING-006` | `REQ-PH02-LISTING-INGESTION` | Audit of admission decisions | `ATOMIC` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-INGESTION.md` |
+| PH-02 | `SREQ-PH02-ING-007` | `REQ-PH02-LISTING-INGESTION` | Idempotent listing application | `ATOMIC` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-INGESTION.md` |
+| PH-02 | `SREQ-PH02-ING-008` | `REQ-PH02-LISTING-INGESTION` | Ignore stale listing versions | `ATOMIC` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-INGESTION.md` |
 | PH-02 | `SREQ-PH02-LCY-001` | `REQ-PH02-LISTING-LIFECYCLE` | Versioned update | `ATOMIC` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-LIFECYCLE.md` |
 | PH-02 | `SREQ-PH02-LCY-002` | `REQ-PH02-LISTING-LIFECYCLE` | Withdrawal retains history | `ATOMIC` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-LIFECYCLE.md` |
 | PH-02 | `SREQ-PH02-LCY-003` | `REQ-PH02-LISTING-LIFECYCLE` | Withdrawn listings not shown | `POLICY_RULE` | `acc-architecture/execution-phases/phase-02-catalog-discovery-reservation/REQ-PH02-LISTING-LIFECYCLE.md` |
@@ -247,24 +259,19 @@
 
 ### المتطلبات الفرعية التي تحتاج تفكيكاً
 
+بقيت **تسعة** findings حية. لا تُغلقها إعادة تسمية شكلية؛ يلزم حسم فجوات الأدلة/القبول أو قرارات العقد قبل إنشاء أبناء أو إعادة تصنيفها.
 
-| المرحلة | SREQ | العنوان | ملاحظة المراجعة |
+| المرحلة | SREQ | العنوان | حالة دورة 4 والسبب المتبقي |
 |---|---|---|---|
-| PH-01 | `SREQ-PH01-INST-004` | Integration configuration and credential issuance | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-INST-005` | Credential rotation without disruption | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-ADM-001` | Account lifecycle administration | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-LIC-004` | Renew, suspend, revoke, expire | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-LIC-005` | Propagation to ACCore | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-LICV-003` | Offline local verification | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-MSG-002` | Idempotent inbox | يفصل تسجيل receipt قبل المعالجة عن تطبيق الأثر مرة واحدة؛ لا يوجد دمج موصى به. |
-| PH-01 | `SREQ-PH01-MSG-003` | Retry and dead-letter semantics | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-02 | `SREQ-PH02-PUB-004` | Reliable submission | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
-| PH-02 | `SREQ-PH02-ING-004` | Idempotent listing creation | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
-| PH-02 | `SREQ-PH02-REC-004` | Failed publication visibility | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
-| PH-02 | `SREQ-PH02-CHK-003` | Checkout validation and snapshots | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
-| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | يجمع كتابة split/outbox وإعادة التشغيل، أو fan-out/التسليم والصلاحيات، أو بيانات allocation متعددة القرارات؛ فصلها قبل baseline. |
-| PH-03 | `SREQ-PH03-CNF-005` | Recipient-scoped handoff | يجمع كتابة split/outbox وإعادة التشغيل، أو fan-out/التسليم والصلاحيات، أو بيانات allocation متعددة القرارات؛ فصلها قبل baseline. |
-| PH-03 | `SREQ-PH03-PAY-002` | Per-SellerOrder allocation | يجمع كتابة split/outbox وإعادة التشغيل، أو fan-out/التسليم والصلاحيات، أو بيانات allocation متعددة القرارات؛ فصلها قبل baseline. |
+| PH-01 | `SREQ-PH01-INST-004` | Integration configuration and credential issuance | `OWNER_BLOCKED`: criterion حماية الأسرار موصوف في المصدر كافتراض غير معتمد، وقرار المصادقة/الأمن وواجهة السجل ما زالا مفتوحين (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001`). لم يُنشأ child غير مدعوم. |
+| PH-01 | `SREQ-PH01-LICV-003` | Offline local verification | `OWNER_BLOCKED`: معيار القبول لا يغطي workflow/grant bounds المذكورة في البيان؛ تبقى `UNKN-009`, `ODEC-014`, `LIC-001` مفتوحة. |
+| PH-01 | `SREQ-PH01-MSG-002` | Idempotent inbox | `OWNER_BLOCKED`: معيار القبول لا يثبت جميع جوانب استقبال الرسالة والأثر مرة واحدة وإرجاع outcome المسجل؛ تبقى `ADR-022-GATE` مفتوحة. |
+| PH-02 | `SREQ-PH02-PUB-004` | Reliable submission | `OWNER_BLOCKED`: key/receipt وmeaning لحالات القبول/الرفض لا تزال متشابكة مع contract response غير المكتمل؛ تبقى `PUB-005` مفتوحة. |
+| PH-02 | `SREQ-PH02-REC-004` | Failed publication visibility | `OWNER_BLOCKED`: المعيار الحالي لا يثبت رؤية الرفض والفشل لكل من العمليات وACCore؛ `PUB-005` مفتوح. |
+| PH-02 | `SREQ-PH02-CHK-003` | Checkout validation and snapshots | `OWNER_BLOCKED`: الأهلية/التوفر/اللقطات وإصدارات السياسات لا تملك معايير كاملة؛ تبقى `ODEC-003`, `UNKN-006`, `ODEC-009` مفتوحة، ولم تُختر ضريبة أو عملة أو delivery model. |
+| PH-03 | `SREQ-PH03-CNF-005` | Recipient-scoped handoff | `OWNER_BLOCKED`: routing, recipient/role-authorized projection, and at-least-once delivery lack complete acceptance coverage; `ADR-019-GATE`/`RP-04` remain open. |
+| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | `OWNER_BLOCKED`: overlap with `ORD-002` does not prove equivalence of scope/idempotency key; `ODEC-003` remains open. |
+| PH-03 | `SREQ-PH03-PAY-002` | Per-SellerOrder allocation | `OWNER_BLOCKED`: allocation data and conditional provider aggregation remain distinct; provider support and financial policy are unresolved (`ADR-016-GATE`, `ASSUM-003`). |
 
 ### مرشح الدمج المتبقي
 
@@ -298,6 +305,28 @@
 | `SREQ-PH04-DEN-003` | `BLOCKED_BY_OWNER_DECISION` | `BLOCKED_BY_OWNER_DECISION` | لا حذف أو دمج؛ التعايش/اختيار نطاق التسليم مرتبط بقرار `ODEC-010`، والتشابه لا يثبت التكرار. |
 
 أعيد تقييم الـ17 finding التفكيكية الحية السابقة؛ اكتمل اثنان بحفظ المصدر وإضافة الصفوف أعلاه، وبقي 15 finding حياً دون إعادة تصنيف. لا يوجد دمج أو تكرار مؤكد، ولا تحسم هذه الدورة قرارات أصحاب المصلحة.
+
+## نتيجة إعادة التقييم في Cycle 4
+
+| SREQ | توصية المراجعة | قرار Cycle 4 | الإجراء/الحالة والدليل المتبقي |
+|---|---|---|---|
+| `SREQ-PH01-INST-004` | SPLIT_REQUIRED | بقي مفتوحاً | criterion حماية الأسرار مصدره افتراض غير ratified؛ لا child ولا سياسة مصادقة/تخزين جديدة. |
+| `SREQ-PH01-INST-005` | SPLIT_REQUIRED | فُكك إلى INST-009 وINST-010 | حُفظ المصدر ومعياره؛ الاستمرارية ومدة الانتقال وآلية الإلغاء ليست مثبتة؛ `ADR-015-GATE`/`RP-16` باقيتان. |
+| `SREQ-PH01-ADM-001` | SPLIT_REQUIRED | فُكك إلى ADM-007 وADM-008 | حُفظ المصدر ومعياراه؛ سلوك institution membership باقٍ فجوة blocking في `RGAP-PH01-003` بلا function/use-case ID. |
+| `SREQ-PH01-LIC-004` | SPLIT_REQUIRED | فُكك إلى LIC-009 وLIC-010 | حُفظ المصدر ومعياراه؛ أفعال renewal/suspension/revocation/expiry لم تتحول إلى state graph أو سياسة؛ `UNKN-003`/`LIC-001` مفتوحتان. |
+| `SREQ-PH01-LIC-005` | SPLIT_REQUIRED | فُكك إلى LIC-011 وLIC-012 | حُفظ المصدر ومعياراه؛ evidence يثبت Outbox/Inbox وrestriction على LicenseSuspended فقط، لا باقي event mapping أو restoration/window. |
+| `SREQ-PH01-LICV-003` | SPLIT_REQUIRED | بقي مفتوحاً | معيار workflow/grant bounds غير مكتمل؛ لا reclassification ولا توسيع AC قبل evidence/review. |
+| `SREQ-PH01-MSG-002` | SPLIT_REQUIRED | بقي مفتوحاً | AC غير كافٍ لكل outcomes؛ لا atomic reclassification ولا اعتماد. |
+| `SREQ-PH01-MSG-003` | SPLIT_REQUIRED | فُكك إلى MSG-007 وMSG-008 | حُفظ المصدر ومعياره؛ child retry criterion مخطط ومشتق من المصدر، ولم يُنفذ؛ `IC-004`/`ADR-022-GATE` باقيتان. |
+| `SREQ-PH02-CHK-003` | SPLIT_REQUIRED | بقي مفتوحاً | Acceptance evidence incompleta; policies and owner decisions remain open; no values selected. |
+| `SREQ-PH02-ING-004` | SPLIT_REQUIRED | فُكك إلى ING-007 وING-008 | حُفظ المصدر ومعياره؛ `PUB-005` receipt/duplicate response و`PUB-001` ordering باقيتان. |
+| `SREQ-PH02-PUB-004` | SPLIT_REQUIRED | بقي مفتوحاً | Atomic reclassification proposal rejected; response contract semantics remain under `PUB-005`. |
+| `SREQ-PH02-REC-004` | SPLIT_REQUIRED | بقي مفتوحاً | Acceptance evidence proves FAILED visibility only; rejection visibility/channels unresolved under `PUB-005`. |
+| `SREQ-PH03-CNF-005` | SPLIT_REQUIRED | بقي مفتوحاً | Atomic reclassification unsupported by current AC; `ADR-019-GATE`/`RP-04` remain. |
+| `SREQ-PH03-ORD-001` | SPLIT_REQUIRED | بقي مفتوحاً | No merge or reassignment to `ORD-002`; key/scope equivalence unproven, `ODEC-003` remains. |
+| `SREQ-PH03-PAY-002` | SPLIT_REQUIRED | بقي مفتوحاً | Atomic reclassification proposal unsupported; provider aggregation and financial owner policies unresolved. |
+
+**النتيجة:** من 15 finding، أُنجزت ستة decompositions مدعومة، وبقيت تسعة `SPLIT_REQUIRED` مفتوحة؛ لم يُعد تصنيف أي finding إلى `ATOMIC` ولم يُنفذ merge. لا حزمة مراجعة تحتوي حكماً نهائياً منفصلاً عن تصنيف Cycle 3، وهذه القرارات تركيب أدلة وليست owner approval.
 
 ## حدود المرحلة وملاحظات التدقيق
 
