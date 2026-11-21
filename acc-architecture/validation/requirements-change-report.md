@@ -251,3 +251,37 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 
 - Final scope review found exactly the four validation reports listed above; `git diff --check` and the CRLF-aware check passed. Immediately before commit, a fresh `git fetch origin main` confirmed `HEAD == origin/main == c2ad68e5f0ee27880f2511758a6fdfeff0efbd1b`.
 - Content commit `4b6aaff6226bf82674aa9fee862911dc377b257c` was pushed to `main` without force. After a second fetch, `HEAD == origin/main == 4b6aaff6226bf82674aa9fee862911dc377b257c` and the worktree was clean. This report-only follow-up records the observed results.
+
+## Cycle 7: ARH-2026-11-21-C7
+
+**Base commit:** `60a0f414fc5afaa56b18dffedda35383ec76c631` (`origin/main` at cycle start).<br>
+**Content commit:** to be recorded in the report-only follow-up after the authorized push.<br>
+**Push target:** `origin/main` under the approved iterative workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- All eight live `SPLIT_REQUIRED` findings were independently reassessed. Seven remain live and unchanged: `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005`, and `SREQ-PH03-PAY-002`. The evidence supports splitting `SREQ-PH03-ORD-001` into distinct aggregate-creation and duplicate-safe replay requirements.
+- `SREQ-PH03-ORD-001` and its original statement/`AC-PH03-ORD-001-01` are preserved as historical records; the source is now `RETIRED`. Draft `SREQ-PH03-ORD-007` / `AC-PH03-ORD-007-01` covers atomic local persistence of ParentOrder, SellerOrders and corresponding outbox events. Draft `SREQ-PH03-ORD-008` / `AC-PH03-ORD-008-01` covers repeated or concurrent replay without duplicate orders or outbox events. Both use planned verification only.
+- `ORD-002` remains distinct from `ORD-001`; no key-equivalence claim, merge, function/use-case ID, owner decision or approval was added. `ODEC-003`, `IC-002`, `ADR-021-GATE`, and `RGAP-PH02-004` remain open. `ADM-001` membership and LIC lifecycle/policy gates remain open; `REC-004` and `CHK-003` acceptance evidence remains incomplete. `DOP-004` remains an unproven merge candidate; `DEN-003` is not a confirmed duplicate and remains blocked by `ODEC-010`.
+
+### Changed files
+
+- Requirement source and registry: `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` and `acc-architecture/execution-phases/requirements-registry.csv`.
+- Four validation reports, all under `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this report. No paths outside `acc-architecture/` are included.
+
+### Exact counts (before → after Cycle 7)
+
+- Registry: 276 rows (45 main, 231 SREQ) → 278 (45 main, 233 SREQ); statuses 217→218 `DRAFT`, 50→50 `OWNER_REVIEW`, 9→10 `RETIRED`, 0→0 `ACCEPTED`.
+- Atomicity: `ATOMIC` 56→58; `SPLIT_REQUIRED` 17→17 (9 historical retired sources + 8 live findings → 10 historical retired sources + 7 live findings); `MERGE_CANDIDATE` 1→1; confirmed `DUPLICATE` 0→0. The classification report covers 233/233 SREQ.
+- `TBD` use_case_id rows: 188→188. Rows with open decisions: 207→209 (60 distinct decision/gate references). Unique C2 containers: 29; structurally missing C4 bindings: 0.
+- SREQ rows with acceptance criteria and planned verification references: 231/231→233/233; unique AC IDs: 268→270. These references are not executed test evidence. The registry remains 279 CRLF lines with 0 bare LF.
+- PH-03 coverage: 59→61 SREQ; DRAFT/OWNER_REVIEW rows 53/19→54/19; `TBD` rows 35→35; open-decision rows 58→60; planned-verification SREQ 59→61; unique AC references 59→61.
+
+### Validation outcomes before push
+
+- Custom requirement validator: `--check` and `--check --require-rows` PASS on 278 rows. Required queries exited 0: PH-01 113 rows; PH-02 + `SYS-ACCORE` 30 rows; `CNT-ACC-CATALOG` 22 rows.
+- `--check --strict-ready` FAIL, expected, with 908 errors. Draft/review states, unresolved owner and use-case gates, and planned-only verification block readiness; this is not a pass.
+- Tests: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
+- Available architecture validators exited 0: `validate_architecture.py` (structural checks only), `validate_artifact_depth.py` (88 reviewed; human review still required), `validate_consistency_artifacts.py` (65/65; semantic review still required), `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py` (55 Mermaid blocks rendered/checked; semantic C4 correctness not proven), `generate_coverage_report.py` (C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0; counts do not prove semantic completeness), and `validate_release_status.py` (Gate7/manifest remain `IN_PROGRESS`).
+- Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent; both checks are `NOT_VERIFIED`, not PASS. Available architecture-assistant validators do not certify these missing checks.
+- The CSV has 279 CRLF lines and no bare LF. `git -c core.whitespace=cr-at-eol diff --check` passed. Final scope review and the required pre-push fetch, no-force push, post-push fetch/tip/worktree details will be recorded in the report-only follow-up after the content push.

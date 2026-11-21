@@ -1,25 +1,25 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C6<br>
-**الأساس:** `c2ad68e5f0ee27880f2511758a6fdfeff0efbd1b` (`origin/main` عند بدء الدورة السادسة)<br>**الدورة السابقة:** ARH-2026-11-21-C5؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C7<br>
+**الأساس:** `60a0f414fc5afaa56b18dffedda35383ec76c631` (`origin/main` عند بدء الدورة السابعة)<br>**الدورة السابقة:** ARH-2026-11-21-C6؛ تفاصيلها محفوظة أدناه وفي تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل تصنيف **231 من 231** صف SREQ. أعادت Cycle 6 مراجعة findings الثمانية الحية بصورة مستقلة؛ بقيت كلها `SPLIT_REQUIRED` لأن الأدلة لا تبرر إعادة تصنيف أو إنشاء أبناء آمنين حالياً. تظل نتيجة Cycle 5 الخاصة بـ`SREQ-PH01-LICV-003` (`ATOMIC`) كما هي. الأعداد الحالية: `ATOMIC` 56 و`SPLIT_REQUIRED` 17 (تسعة مصادر تاريخية متقاعدة وثمانية findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لم يتغير أي requirement أو acceptance criterion أو صف في السجل، ولم يصدر اعتماد أو قرار مالك.
+يعرض السجل تصنيف **233 من 233** صف SREQ. أعادت Cycle 7 مراجعة findings الثمانية الحية بصورة مستقلة؛ بقيت سبعة منها `SPLIT_REQUIRED`، بينما تدعم الأدلة تفكيك `SREQ-PH03-ORD-001` إلى مطلبين منفصلين. حُفظ المصدر ومعيار القبول الأصلي كصف تاريخي `RETIRED`، وأُضيف `ORD-007` و`ORD-008` كمسودتين منفصلتين. تظل نتيجة Cycle 5 الخاصة بـ`SREQ-PH01-LICV-003` (`ATOMIC`) كما هي. الأعداد الحالية: `ATOMIC` 58 و`SPLIT_REQUIRED` 17 (عشرة مصادر تاريخية متقاعدة وسبعة findings حية) و`MERGE_CANDIDATE` واحد. لا دمج مثبت؛ DOP-004 مرشح غير محسوم وDEN-003 غير مؤكد التكرار ومحجوب بـODEC-010. لا قرار مالك أو اعتماد جديد؛ التحقق من الطفلين مخطط فقط.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | PH-01 — تأسيس المنصة | 98 | 25 | 10 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
 | PH-02 — الكتالوج والاكتشاف والحجز | 47 | 16 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
-| PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 59 | 8 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
+| PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 61 | 10 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
 | PH-04 — التسليم الداخلي عبر ACCMared | 27 | 7 | 0 | 1 | 3 | 3 | 0 | 1 | 0 | 0 | 12 |
-| **الإجمالي** | **231** | **56** | **17** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
+| **الإجمالي** | **233** | **58** | **17** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه يعرض التصنيف الحالي لـSREQ واحد بعد مراجعة Cycle 6. تحتفظ المصادر المفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ يبلغ عددها تسعة، مع ثمانية findings حية حالياً.
+كل صف أدناه يعرض التصنيف الحالي لـSREQ واحد بعد مراجعة Cycle 7. تحتفظ المصادر المفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ يبلغ عددها عشرة، مع سبعة findings حية حالياً.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|
@@ -173,12 +173,14 @@
 | PH-03 | `SREQ-PH03-INV-003` | `REQ-PH03-INVENTORY-COMMITMENT` | Commit failure is reconciled | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-INVENTORY-COMMITMENT.md` |
 | PH-03 | `SREQ-PH03-INV-004` | `REQ-PH03-INVENTORY-COMMITMENT` | Buyer purchase does not command seller stock | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-INVENTORY-COMMITMENT.md` |
 | PH-03 | `SREQ-PH03-INV-005` | `REQ-PH03-INVENTORY-COMMITMENT` | Warehouse reference handling | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-INVENTORY-COMMITMENT.md` |
-| PH-03 | `SREQ-PH03-ORD-001` | `REQ-PH03-ORDER-AGGREGATE` | Split by seller | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
+| PH-03 | `SREQ-PH03-ORD-001` | `REQ-PH03-ORDER-AGGREGATE` | Split by seller (retired source; decomposed in Cycle 7) | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-ORD-002` | `REQ-PH03-ORDER-AGGREGATE` | Idempotent order creation | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-ORD-003` | `REQ-PH03-ORDER-AGGREGATE` | State machine enforcement | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-ORD-004` | `REQ-PH03-ORDER-AGGREGATE` | Parent state is aggregate | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-ORD-005` | `REQ-PH03-ORDER-AGGREGATE` | Append-only history atomic with outbox | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-ORD-006` | `REQ-PH03-ORDER-AGGREGATE` | Policy and currency snapshot references | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
+| PH-03 | `SREQ-PH03-ORD-007` | `REQ-PH03-ORDER-AGGREGATE` | Atomic aggregate and outbox creation | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
+| PH-03 | `SREQ-PH03-ORD-008` | `REQ-PH03-ORDER-AGGREGATE` | Duplicate-safe split replay | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-AGGREGATE.md` |
 | PH-03 | `SREQ-PH03-CNF-001` | `REQ-PH03-ORDER-CONFIRMATION` | Confirmation guards | `ATOMIC` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-CONFIRMATION.md` |
 | PH-03 | `SREQ-PH03-CNF-002` | `REQ-PH03-ORDER-CONFIRMATION` | Atomic commit | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-CONFIRMATION.md` |
 | PH-03 | `SREQ-PH03-CNF-003` | `REQ-PH03-ORDER-CONFIRMATION` | Immutable commercial snapshot | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-ORDER-CONFIRMATION.md` |
@@ -257,9 +259,9 @@
 
 ## Findings ذات أولوية
 
-### المتطلبات الفرعية التي تحتاج تفكيكاً
+### Findings التفكيك المفتوحة والمصدر المفكك في Cycle 7
 
-أكدت إعادة تقييم Cycle 6 بقاء **ثمانية** findings حية `SPLIT_REQUIRED`. لا تُغلقها إعادة تسمية شكلية؛ يلزم حسم فجوات الأدلة/القبول أو قرارات العقد قبل إنشاء أبناء. أعيد تصنيف `SREQ-PH01-LICV-003` إلى `ATOMIC` في Cycle 5، لكن فجوة معيار القبول والسياسات المرتبطة به لا تزال مانعاً مستقلاً للجاهزية.
+أكدت إعادة تقييم Cycle 7 بقاء **سبعة** findings حية `SPLIT_REQUIRED`. جرى تفكيك `ORD-001` المدعوم بالأدلة وحُفظ كسجل تاريخي؛ لا تُغلق بقية findings بإعادة تسمية شكلية، ويلزم حسم فجوات الأدلة/القبول أو قرارات العقد قبل أي تفكيك إضافي. أعيد تصنيف `SREQ-PH01-LICV-003` إلى `ATOMIC` في Cycle 5، لكن فجوة معيار القبول والسياسات المرتبطة به لا تزال مانعاً مستقلاً للجاهزية.
 
 | المرحلة | SREQ | العنوان | الحالة الحالية والسبب المتبقي |
 |---|---|---|---|
@@ -269,8 +271,15 @@
 | PH-02 | `SREQ-PH02-REC-004` | Failed publication visibility | `OWNER_BLOCKED`: المعيار الحالي لا يثبت رؤية الرفض والفشل لكل من العمليات وACCore؛ `PUB-005` مفتوح. |
 | PH-02 | `SREQ-PH02-CHK-003` | Checkout validation and snapshots | `OWNER_BLOCKED`: الأهلية/التوفر/اللقطات وإصدارات السياسات لا تملك معايير كاملة؛ تبقى `ODEC-003`, `UNKN-006`, `ODEC-009` مفتوحة، ولم تُختر ضريبة أو عملة أو delivery model. |
 | PH-03 | `SREQ-PH03-CNF-005` | Recipient-scoped handoff | `OWNER_BLOCKED`: routing, recipient/role-authorized projection, and at-least-once delivery lack complete acceptance coverage; `ADR-019-GATE`/`RP-04` remain open. |
-| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | `SPLIT_REQUIRED`: evidence separates local ParentOrder/SellerOrder/outbox creation from duplicate-safe replay; a future split is supported as a recommendation, but `ODEC-003` and contract approval remain open. Keep it distinct from `ORD-002`; no IDs or rows changed. |
+| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | `RETIRED` source; original statement and `AC-PH03-ORD-001-01` preserved. Cycle 7 evidence supports separate draft children `ORD-007` (local aggregate/outbox transaction) and `ORD-008` (duplicate-safe repeated/concurrent replay). `ODEC-003` and contract approval remain open; keep it distinct from `ORD-002`. |
 | PH-03 | `SREQ-PH03-PAY-002` | Per-SellerOrder allocation | `OWNER_BLOCKED`: allocation data and conditional provider aggregation remain distinct; provider support and financial policy are unresolved (`ADR-016-GATE`, `ASSUM-003`). |
+
+### تفكيك مدعوم بالأدلة في Cycle 7
+
+| المتطلب الجديد | AC | الحد المستقل والأدلة | القيد المتبقي |
+|---|---|---|---|
+| `SREQ-PH03-ORD-007` — Atomic aggregate and outbox creation | `AC-PH03-ORD-007-01` | ParentOrder واحد وSellerOrder لكل بائع وأحداث SellerOrderCreated تحفظ جميعاً في معاملة محلية واحدة أو لا يُحفظ أي منها؛ `CMP-ORD-MULTISELLER` §§19–20, 25–26 و`FN-ORD-CHECKOUT` §§11–12, 28, 34. | `ODEC-003`, `IC-002`, `ADR-021-GATE` و`RGAP-PH02-004` مفتوحة؛ schema reference غير معتمد والاختبار مخطط. |
+| `SREQ-PH03-ORD-008` — Duplicate-safe split replay | `AC-PH03-ORD-008-01` | إعادة الطلب أو محاولته بالتوازي تعيد ParentOrder وSellerOrders القائمة دون سجلات طلب أو outbox مكررة؛ `CMP-ORD-MULTISELLER` §§25–26, 30–36 و`FN-ORD-CHECKOUT` §48 و`ADR-013` §§3–4. | عقد الاستجابة/schema غير معتمد والاختبار مخطط؛ تبقى `ODEC-003`, `IC-002`, `ADR-021-GATE` و`RGAP-PH02-004` مفتوحة. |
 
 ### مرشح الدمج المتبقي
 

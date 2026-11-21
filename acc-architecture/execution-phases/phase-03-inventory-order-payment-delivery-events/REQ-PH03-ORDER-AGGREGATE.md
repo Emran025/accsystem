@@ -30,7 +30,9 @@
 
 | Sub-requirement ID | Parent requirement ID | Statement | Trigger/precondition | Expected outcome | Locations | C4 containers | Acceptance criteria | Verification | Status | Open decisions |
 |---|---|---|---|---|---|---|---|---|---|---|
-| SREQ-PH03-ORD-001 | REQ-PH03-ORDER-AGGREGATE | ParentOrder, all SellerOrders and their outbox records are written in one local transaction, and a repeated split returns the existing orders. | A validated checkout is turned into an order. | N SellerOrders under one ParentOrder. | SYS-ACCSYSTEM | CNT-ACC-ORDERS, CNT-ACC-CART | AC-PH03-ORD-001-01 | TEST (planned): split test | DRAFT | ODEC-003 |
+| SREQ-PH03-ORD-001 | REQ-PH03-ORDER-AGGREGATE | ParentOrder, all SellerOrders and their outbox records are written in one local transaction, and a repeated split returns the existing orders. | A validated checkout is turned into an order. | N SellerOrders under one ParentOrder. | SYS-ACCSYSTEM | CNT-ACC-ORDERS, CNT-ACC-CART | AC-PH03-ORD-001-01 | TEST (planned): split test | RETIRED | ODEC-003 |
+| SREQ-PH03-ORD-007 | REQ-PH03-ORDER-AGGREGATE | For a validated checkout with one or more sellers, ACCSystem persists one ParentOrder, one SellerOrder per seller, and their corresponding SellerOrderCreated outbox events in one local transaction. | A validated checkout is split into an order. | The ParentOrder, all SellerOrders and their outbox records commit together, or none are committed. | SYS-ACCSYSTEM | CNT-ACC-ORDERS, CNT-ACC-CART | AC-PH03-ORD-007-01 | TEST (planned): aggregate/outbox transaction atomicity test | DRAFT | ODEC-003, IC-002, ADR-021-GATE, RGAP-PH02-004 |
+| SREQ-PH03-ORD-008 | REQ-PH03-ORDER-AGGREGATE | When a split for the same validated checkout is repeated or concurrently retried, ACCSystem returns the existing ParentOrder and SellerOrders without creating duplicate order or SellerOrderCreated outbox records. | A previously persisted split request is repeated or retried concurrently. | The existing ParentOrder and SellerOrders are returned without duplicate order or outbox records. | SYS-ACCSYSTEM | CNT-ACC-ORDERS, CNT-ACC-CART | AC-PH03-ORD-008-01 | TEST (planned): repeated/concurrent split replay test | DRAFT | ODEC-003, IC-002, ADR-021-GATE, RGAP-PH02-004 |
 | SREQ-PH03-ORD-002 | REQ-PH03-ORDER-AGGREGATE | Creating an order with the same idempotency key returns the existing order. | Order create is retried. | One order. | SYS-ACCSYSTEM | CNT-ACC-ORDERS, CNT-ACC-APIGATEWAY | AC-PH03-ORD-002-01 | TEST (planned): duplicate order test | DRAFT | IC-002, ADR-021-GATE |
 | SREQ-PH03-ORD-003 | REQ-PH03-ORDER-AGGREGATE | Order state changes follow the permitted transition graph for each SellerOrder and invalid transitions are rejected. | A state change is requested. | Allowed or InvalidStateTransition. | SYS-ACCSYSTEM | CNT-ACC-ORDERS | AC-PH03-ORD-003-01 | TEST (planned): transition test | DRAFT | ADR-018-GATE |
 | SREQ-PH03-ORD-004 | REQ-PH03-ORDER-AGGREGATE | ParentOrder state is computed from SellerOrder states and never advances independently. | A SellerOrder changes state. | Parent reflects the aggregate. | SYS-ACCSYSTEM | CNT-ACC-ORDERS | AC-PH03-ORD-004-01 | TEST (planned): aggregation test | DRAFT | none recorded |
@@ -47,6 +49,12 @@ Related function/use case, actors and evidence per sub-requirement:
 | SREQ-PH03-ORD-004 | Parent state is aggregate | ACT-INDIVIDUAL, ACT-INST-EMPLOYEE | FN-ORD-CHECKOUT | CMP-ORD-STATEMACHINE §3.4 |
 | SREQ-PH03-ORD-005 | Append-only history atomic with outbox | ACT-INDIVIDUAL, ACT-INST-EMPLOYEE | FN-ORD-CHECKOUT | CMP-ORD-STATEMACHINE §4 |
 | SREQ-PH03-ORD-006 | Policy and currency snapshot references | ACT-INDIVIDUAL, ACT-INST-EMPLOYEE | FN-ORD-CHECKOUT | ADR-017; topics 6 |
+| SREQ-PH03-ORD-007 | Atomic aggregate and outbox creation | ACT-INDIVIDUAL, ACT-INST-EMPLOYEE | FN-ORD-CHECKOUT | CMP-ORD-MULTISELLER §§19-20, 25-26; FN-ORD-CHECKOUT §§11-12 |
+| SREQ-PH03-ORD-008 | Duplicate-safe split replay | ACT-INDIVIDUAL, ACT-INST-EMPLOYEE | FN-ORD-CHECKOUT | CMP-ORD-MULTISELLER §§25-26, 30-36; FN-ORD-CHECKOUT §48; ADR-013 §§3-4 |
+
+### Cycle 7 preservation and decomposition record
+
+`SREQ-PH03-ORD-001` and its original criterion `AC-PH03-ORD-001-01` remain unchanged as historical source records; the source row is now `RETIRED`. The evidence-supported decomposition is `SREQ-PH03-ORD-007` for atomic local persistence of the ParentOrder, SellerOrders and their outbox records, and `SREQ-PH03-ORD-008` for duplicate-safe repeated/concurrent split replay. The children conservatively reuse the existing actors, system/container bindings and `FN-ORD-CHECKOUT`; no new function or use-case ID is assigned. `ORD-001` remains distinct from `ORD-002`; no key-equivalence claim or merge is made. `ODEC-003`, `IC-002`, `ADR-021-GATE` and the PH-02/PH-03 placement gap `RGAP-PH02-004` remain open. Child verification is planned only; this decomposition does not assert implementation, test execution, owner approval or readiness.
 
 ## 4. Acceptance criteria
 
@@ -58,6 +66,8 @@ Related function/use case, actors and evidence per sub-requirement:
 | AC-PH03-ORD-004-01 | SREQ-PH03-ORD-004 | Parent state is derivable from SellerOrder states. | IF-ACC-ORDER-CREATE §2.4 | CMP-ORD-STATEMACHINE §3.4 | CMP-ORD-STATEMACHINE §3.4 |
 | AC-PH03-ORD-005-01 | SREQ-PH03-ORD-005 | Concurrent transition attempts do not both succeed. | IF-ACC-EVENT-ENVELOPE §5.4 | CMP-ORD-STATEMACHINE §4 | CMP-ORD-STATEMACHINE §4 |
 | AC-PH03-ORD-006-01 | SREQ-PH03-ORD-006 | Changing a policy after confirmation leaves the order unchanged. | RGAP-PH03-006 | acceptance-test-plan.md item 9; ADR-017 | ADR-017; topics 6 |
+| AC-PH03-ORD-007-01 | SREQ-PH03-ORD-007 | Given a validated checkout, one ParentOrder and one SellerOrder per seller are persisted with their corresponding SellerOrderCreated outbox records in one local transaction; a failure before commit leaves none of those records committed. | IF-ACC-ORDER-CREATE §2.4 (reference only; formal schema approval remains open) | CMP-ORD-MULTISELLER §§19-20, 25-26; FN-ORD-CHECKOUT §§11-12, 28, 34 | CMP-ORD-MULTISELLER; FN-ORD-CHECKOUT |
+| AC-PH03-ORD-008-01 | SREQ-PH03-ORD-008 | Given a previously persisted split for the same validated checkout, when the request is repeated or concurrently retried, the existing ParentOrder and SellerOrders are returned and no duplicate order or SellerOrderCreated outbox record is created. | IF-ACC-ORDER-CREATE §§2.5-2.6 (reference only; response/schema approval remains open) | CMP-ORD-MULTISELLER §§25-26, 30-36; FN-ORD-CHECKOUT §48 | CMP-ORD-MULTISELLER; FN-ORD-CHECKOUT; ADR-013 §§3-4 |
 
 ## 5. Alternate paths, failure, exception and uncertainty handling
 
@@ -70,14 +80,15 @@ Open decisions below are preserved as the source states them; this draft does no
 
 | Decision / gate ID | Source meaning | Affected sub-requirements |
 |---|---|---|
-| ODEC-003 | Multi-seller cart model (ParentOrder + SellerOrders); MVP direction recorded in ADR-016. | SREQ-PH03-ORD-001 |
-| IC-002 | Exact field names/types require formal OpenAPI/AsyncAPI specification. | SREQ-PH03-ORD-002 |
-| ADR-021-GATE | ADR-021 interface versioning is interim, approval-required. | SREQ-PH03-ORD-002 |
+| ODEC-003 | Multi-seller cart model (ParentOrder + SellerOrders); MVP direction recorded in ADR-016. | SREQ-PH03-ORD-001 (RETIRED), SREQ-PH03-ORD-007, SREQ-PH03-ORD-008 |
+| IC-002 | Exact field names/types require formal OpenAPI/AsyncAPI specification. | SREQ-PH03-ORD-002, SREQ-PH03-ORD-007, SREQ-PH03-ORD-008 |
+| ADR-021-GATE | ADR-021 interface versioning is interim, approval-required. | SREQ-PH03-ORD-002, SREQ-PH03-ORD-007, SREQ-PH03-ORD-008 |
 | ADR-018-GATE | ADR-018 reservation TTL values and async-callback mode require per-institution approval. | SREQ-PH03-ORD-003 |
 | IC-004 | Message-broker technology, topics, partitioning, retention and ACL design unspecified. | SREQ-PH03-ORD-005 |
 | UNKN-006 | Multi-currency and tax/VAT model not defined. | SREQ-PH03-ORD-006 |
 | ODEC-009 | Multi-currency and tax model/jurisdiction rules. | SREQ-PH03-ORD-006 |
 | ADR-017-GATE | ADR-017 policy values (capture timing, tax, accounting trigger, retention, SLA, support access, license plans) need owner ratification. | SREQ-PH03-ORD-006 |
+| RGAP-PH02-004 | Placement of the pre-reservation order shell between PH-02 checkout preparation and PH-03 order aggregate remains unresolved; see REQ-PH02-CHECKOUT-PREPARATION §6 and this document §2. | SREQ-PH03-ORD-001 (RETIRED), SREQ-PH03-ORD-007, SREQ-PH03-ORD-008 |
 
 | Package-local gap | Missing source reference | Where recorded / resolution route |
 |---|---|---|
