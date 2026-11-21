@@ -171,3 +171,43 @@
 - Required handoff utilities were unavailable at `/home/ubuntu/work/acc-architecture-handoff/`: `run-remaining-validations.sh` exited 127 (missing path); `audit-remaining-registries-links.py` exited 2 (missing script). These checks are NOT_VERIFIED, not PASS; the available validators above were used as substitutes.
 - `git -c core.whitespace=cr-at-eol diff --check` passed; Markdown diff whitespace check passed. The registry retains CRLF (277 CRLF lines, 0 bare LF). Scope check found only the ten listed `acc-architecture/` files.
 - Before push, a fresh `git fetch origin main` confirmed that `origin/main` remained at base `c6ebc0b028e2ab9933f41715117bc29ac77d6391`. Content commit `2038af6945bf11e63a4e44b21c37272f494c4b8a` was pushed to `main` without force. After push and fetch, `HEAD` and `origin/main` both equaled that commit and the worktree was clean; this report-only follow-up records those observed results.
+
+
+## Cycle 5: ARH-2026-11-21-C5
+
+**Base commit:** `9162eb22d946f25980c6d67143c870bb42214f71` (`origin/main` at cycle start).<br>
+**Implementation commit:** pending verified fetch/commit/push; actual commit will be recorded in the post-push report follow-up.<br>
+**Push target:** `origin/main` under the previously approved workflow; no force push.
+
+### Reassessment and evidence-supported outcome
+
+- Nine live `SPLIT_REQUIRED` findings were independently reassessed, one per review agent, followed by synthesis. `SREQ-PH01-LICV-003` is reclassified `ATOMIC`: offline signature, identity, grant and no-network predicates jointly yield one local validation outcome, with one existing acceptance criterion and no independent state/contract per predicate. This classification does **not** close acceptance coverage: `AC-PH01-LICV-003-01` does not test workflow/grant bounds or absence of a network call, and `UNKN-009`, `ODEC-014` and `LIC-001` (offline strategy, TTL/grace) remain open.
+- Eight findings remain live `SPLIT_REQUIRED`: `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-ORD-001`, `SREQ-PH03-CNF-005` and `SREQ-PH03-PAY-002`. Evidence supports a future decomposition of ORD-001 between local aggregate/outbox creation and duplicate-safe replay, but not new IDs or edits now; ORD-001 remains distinct from ORD-002 and `ODEC-003` remains open.
+- No requirement statements, acceptance criteria, registry rows, source architecture documents, capabilities, states, flows, alternatives, or ADRs were changed. No owner decision was made. ADM membership behavior and LIC lifecycle/policy gates remain open; REC-004 and CHK-003 retain incomplete acceptance/contract evidence. `SREQ-PH04-DOP-004` remains an unproven merge candidate; `SREQ-PH04-DEN-003` is not confirmed duplicate and remains blocked by `ODEC-010`.
+
+### Changed files
+
+Four reports only, all within `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, and this `requirements-change-report.md`.
+
+### Exact counts (before → after Cycle 5)
+
+- Registry rows: 276 (45 main, 231 SREQ) → 276 (45 main, 231 SREQ); row statuses remain 217 `DRAFT`, 50 `OWNER_REVIEW`, 9 `RETIRED`, 0 `ACCEPTED`.
+- Atomicity: `ATOMIC` 55 → 56; `SPLIT_REQUIRED` 18 → 17 (9 historical retired sources + 9 → 8 live findings); `MERGE_CANDIDATE` 1 → 1; confirmed `DUPLICATE` 0 → 0.
+- `TBD` use_case_id rows / documented Use Case-reference gaps: 188 → 188. Nonempty open-decision rows: 207 → 207. Structurally missing C4 bindings: 0 → 0.
+- SREQ rows with acceptance criteria and planned verification references: 231/231 → 231/231; unique AC identifiers: 268 → 268. These planned references are not executed test evidence.
+
+### Validation outcomes
+
+- Custom requirement validator: `--check` PASS (276 rows); `--check --require-rows` PASS (276 rows). Required queries exited 0: PH-01 113 rows; PH-02 + `SYS-ACCORE` 30 rows; `CNT-ACC-CATALOG` 22 rows.
+- Custom requirement tests: 9/9 PASS. `architecture-assistant/tests`: 65/65 PASS.
+- `validate_architecture.py`: exit 0 for structural/registry checks at four levels. `validate_artifact_depth.py`: exit 0, 88 reviewed, 0 incomplete/findings; status still requires human review. `validate_consistency_artifacts.py`: exit 0, 65/65 IDs, 0 findings; semantic review remains required.
+- `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py`, `generate_coverage_report.py`, and `validate_release_status.py`: exit 0. Diagram validator rendered/checked 55 Mermaid blocks. Coverage report recorded C1 15/7/8, C2 40/17/23, C3 35/35/0, and DECISION 22/22/0 (in-scope / decomposition-complete / exceptions-not-complete). Release audit: Gate7 and manifest `IN_PROGRESS`, no findings in its limited consistency scope.
+- `--check --strict-ready` FAIL, expected, with 902 errors; the package remains not implementation-ready. This is an honest blocker, not a passing validation.
+- Required handoff scripts `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` remain unavailable (directory missing); those exact checks are `NOT_VERIFIED`, not PASS. Available architecture-assistant checks above are substitutes only.
+- Whitespace/scope: CRLF-aware `git diff --check` passed. Registry was not edited and remains 277 CRLF lines with 0 bare LF. Tracked changes are limited to the four listed validation reports.
+
+### Push and next cycle
+
+**Push commit:** pending; will be filled after a fresh pre-push fetch confirms `origin/main` has not advanced, a non-force push, and post-push fetch verification. A report-only follow-up will record the observed full commit hash, matching remote tip and worktree state.
+
+**Next cycle:** continue evidence-based review of the eight live `SPLIT_REQUIRED` findings and related acceptance/Use Case gaps. Keep owner decisions, ADM membership behavior, LIC lifecycle/policy gates, PUB/REC contracts, checkout model, recipient projection and provider/payment policies open until their owners supply evidence; retain DOP-004 and DEN-003/ODEC-010 carry-forwards. Do not claim implementation readiness while strict-ready, owner, acceptance and execution-evidence blockers remain.

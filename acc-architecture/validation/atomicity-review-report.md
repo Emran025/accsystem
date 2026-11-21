@@ -1,25 +1,25 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C4<br>
-**الأساس:** `c6ebc0b028e2ab9933f41715117bc29ac77d6391` (`origin/main` عند بدء الدورة الرابعة)<br>**الدورة السابقة:** ARH-2026-11-21-C3؛ تفاصيلها محفوظة في تاريخ Git.<br>
+**الدورة:** ARH-2026-11-21-C5<br>
+**الأساس:** `9162eb22d946f25980c6d67143c870bb42214f71` (`origin/main` عند بدء الدورة الخامسة)<br>**الدورة السابقة:** ARH-2026-11-21-C4؛ تفاصيلها محفوظة في تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-يعرض السجل الحالي تصنيف **231 من 231** صف SREQ بعد إعادة تقييم findings الـ15 الحية في Cycle 4. نُفذت ستة تفكيكات مدعومة بالأدلة مع حفظ المصادر ومعاييرها الأصلية بحالة `RETIRED` وإضافة 12 صفاً ذرياً؛ بقيت تسعة findings حية `SPLIT_REQUIRED`، بما فيها الحالات التي لا تكفي أدلتها أو قراراتها لتحديد تقسيم آمن. أصبحت التصنيفات `ATOMIC` 55 و`SPLIT_REQUIRED` 18 (تسعة مصادر تاريخية متقاعدة وتسعة findings حية)، وبقي `MERGE_CANDIDATE` واحداً. لم يُنفذ دمج؛ ظل DOP-004 مرشحاً وDEN-003 محجوباً بـODEC-010. لا يوجد اعتماد أو إثبات تنفيذ. حزم المراجعة لم تتضمن حكماً نهائياً مستقلاً لكل finding؛ قرارات Cycle 4 هنا تركيب مبني على الأدلة المصدرية وليست موافقة مالك.
+يعرض السجل الحالي تصنيف **231 من 231** صف SREQ بعد إعادة تقييم findings التسعة الحية في Cycle 5. أُعيد تصنيف `SREQ-PH01-LICV-003` من `SPLIT_REQUIRED` إلى `ATOMIC` لأن الأدلة تصفه كفحص محلي واحد بنتيجة تحقق واحدة؛ لم تتغير صياغة المتطلب أو معاييره. بقيت ثمانية findings حية `SPLIT_REQUIRED`، منها حالات لا تسمح فجوات العقد/القبول/القرار بإنشاء أبناء آمنين الآن. أصبحت التصنيفات `ATOMIC` 56 و`SPLIT_REQUIRED` 17 (تسعة مصادر تاريخية متقاعدة وثمانية findings حية)، وبقي `MERGE_CANDIDATE` واحداً. لم يُنفذ دمج؛ ظل DOP-004 مرشحاً وDEN-003 غير مثبت التكرار ومحجوباً بـODEC-010. لا يوجد اعتماد أو إثبات تنفيذ أو تغيير في صفوف المتطلبات/السجل.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PH-01 — تأسيس المنصة | 98 | 24 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
+| PH-01 — تأسيس المنصة | 98 | 25 | 10 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
 | PH-02 — الكتالوج والاكتشاف والحجز | 47 | 16 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
 | PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 59 | 8 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
 | PH-04 — التسليم الداخلي عبر ACCMared | 27 | 7 | 0 | 1 | 3 | 3 | 0 | 1 | 0 | 0 | 12 |
-| **الإجمالي** | **231** | **55** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
+| **الإجمالي** | **231** | **56** | **17** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه حكم تصنيفي على SREQ واحد وفق Cycle 4. تحتفظ ستة مصادر مفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ ومع المصادر التاريخية من الدورات السابقة يصبح المجموع تسعة مصادر تاريخية وتسعة findings حية.
+كل صف أدناه يعرض التصنيف الحالي لـSREQ واحد بعد مراجعة Cycle 5. تحتفظ المصادر المفككة بحالتها التاريخية `RETIRED` وتصنيف `SPLIT_REQUIRED`؛ يبلغ عددها تسعة، مع ثمانية findings حية حالياً.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|
@@ -71,7 +71,7 @@
 | PH-01 | `SREQ-PH01-LIC-012` | `REQ-PH01-LICENSE-LIFECYCLE` | Suspension restricts licensed modules | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-LIFECYCLE.md` |
 | PH-01 | `SREQ-PH01-LICV-001` | `REQ-PH01-LICENSE-VALIDATION` | Online institutional validation | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-002` | `REQ-PH01-LICENSE-VALIDATION` | Authenticated, scoped, no ERP data | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
-| PH-01 | `SREQ-PH01-LICV-003` | `REQ-PH01-LICENSE-VALIDATION` | Offline local verification | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
+| PH-01 | `SREQ-PH01-LICV-003` | `REQ-PH01-LICENSE-VALIDATION` | Offline local verification | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-004` | `REQ-PH01-LICENSE-VALIDATION` | Expiry restricts licensed functions | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-005` | `REQ-PH01-LICENSE-VALIDATION` | Separate token issuance and refresh | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
 | PH-01 | `SREQ-PH01-LICV-006` | `REQ-PH01-LICENSE-VALIDATION` | Signing key custody and rotation | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-LICENSE-VALIDATION.md` |
@@ -259,18 +259,17 @@
 
 ### المتطلبات الفرعية التي تحتاج تفكيكاً
 
-بقيت **تسعة** findings حية. لا تُغلقها إعادة تسمية شكلية؛ يلزم حسم فجوات الأدلة/القبول أو قرارات العقد قبل إنشاء أبناء أو إعادة تصنيفها.
+بقيت **ثمانية** findings حية `SPLIT_REQUIRED`. لا تُغلقها إعادة تسمية شكلية؛ يلزم حسم فجوات الأدلة/القبول أو قرارات العقد قبل إنشاء أبناء. أعيد تصنيف `SREQ-PH01-LICV-003` إلى `ATOMIC` في Cycle 5، لكن فجوة معيار القبول والسياسات المرتبطة به لا تزال مانعاً مستقلاً للجاهزية.
 
-| المرحلة | SREQ | العنوان | حالة دورة 4 والسبب المتبقي |
+| المرحلة | SREQ | العنوان | الحالة الحالية والسبب المتبقي |
 |---|---|---|---|
 | PH-01 | `SREQ-PH01-INST-004` | Integration configuration and credential issuance | `OWNER_BLOCKED`: criterion حماية الأسرار موصوف في المصدر كافتراض غير معتمد، وقرار المصادقة/الأمن وواجهة السجل ما زالا مفتوحين (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001`). لم يُنشأ child غير مدعوم. |
-| PH-01 | `SREQ-PH01-LICV-003` | Offline local verification | `OWNER_BLOCKED`: معيار القبول لا يغطي workflow/grant bounds المذكورة في البيان؛ تبقى `UNKN-009`, `ODEC-014`, `LIC-001` مفتوحة. |
 | PH-01 | `SREQ-PH01-MSG-002` | Idempotent inbox | `OWNER_BLOCKED`: معيار القبول لا يثبت جميع جوانب استقبال الرسالة والأثر مرة واحدة وإرجاع outcome المسجل؛ تبقى `ADR-022-GATE` مفتوحة. |
 | PH-02 | `SREQ-PH02-PUB-004` | Reliable submission | `OWNER_BLOCKED`: key/receipt وmeaning لحالات القبول/الرفض لا تزال متشابكة مع contract response غير المكتمل؛ تبقى `PUB-005` مفتوحة. |
 | PH-02 | `SREQ-PH02-REC-004` | Failed publication visibility | `OWNER_BLOCKED`: المعيار الحالي لا يثبت رؤية الرفض والفشل لكل من العمليات وACCore؛ `PUB-005` مفتوح. |
 | PH-02 | `SREQ-PH02-CHK-003` | Checkout validation and snapshots | `OWNER_BLOCKED`: الأهلية/التوفر/اللقطات وإصدارات السياسات لا تملك معايير كاملة؛ تبقى `ODEC-003`, `UNKN-006`, `ODEC-009` مفتوحة، ولم تُختر ضريبة أو عملة أو delivery model. |
 | PH-03 | `SREQ-PH03-CNF-005` | Recipient-scoped handoff | `OWNER_BLOCKED`: routing, recipient/role-authorized projection, and at-least-once delivery lack complete acceptance coverage; `ADR-019-GATE`/`RP-04` remain open. |
-| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | `OWNER_BLOCKED`: overlap with `ORD-002` does not prove equivalence of scope/idempotency key; `ODEC-003` remains open. |
+| PH-03 | `SREQ-PH03-ORD-001` | Split by seller | `SPLIT_REQUIRED`: evidence separates local ParentOrder/SellerOrder/outbox creation from duplicate-safe replay; a future split is supported as a recommendation, but `ODEC-003` and contract approval remain open. Keep it distinct from `ORD-002`; no IDs or rows changed. |
 | PH-03 | `SREQ-PH03-PAY-002` | Per-SellerOrder allocation | `OWNER_BLOCKED`: allocation data and conditional provider aggregation remain distinct; provider support and financial policy are unresolved (`ADR-016-GATE`, `ASSUM-003`). |
 
 ### مرشح الدمج المتبقي
@@ -327,6 +326,26 @@
 | `SREQ-PH03-PAY-002` | SPLIT_REQUIRED | بقي مفتوحاً | Atomic reclassification proposal unsupported; provider aggregation and financial owner policies unresolved. |
 
 **النتيجة:** من 15 finding، أُنجزت ستة decompositions مدعومة، وبقيت تسعة `SPLIT_REQUIRED` مفتوحة؛ لم يُعد تصنيف أي finding إلى `ATOMIC` ولم يُنفذ merge. لا حزمة مراجعة تحتوي حكماً نهائياً منفصلاً عن تصنيف Cycle 3، وهذه القرارات تركيب أدلة وليست owner approval.
+
+## نتيجة إعادة التقييم في Cycle 5
+
+أُعيد تقييم findings التسعة الحية المتبقية بأدلة مستقلة. لم تتغير متطلبات المصدر أو صفوف CSV، ولم تُنشأ children أو معرفات جديدة، ولم يُتخذ قرار مالك أو دمج.
+
+| SREQ | التصنيف بعد المراجعة | نتيجة Cycle 5 والإجراء المدعوم |
+|---|---|---|
+| `SREQ-PH01-INST-004` | `SPLIT_REQUIRED` | تكوين موصل المؤسسة وإصدار/تخزين مرجع الاعتماد لهما outcome onboarding واحد، لكن معايير التخزين/الإتاحة منفصلة ولا يكفي دليل الحماية لأنه افتراض غير ratified. تبقى `ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006` مفتوحة؛ لا اختيار OAuth/mTLS ولا schema/function ID. |
+| `SREQ-PH01-LICV-003` | `ATOMIC` | predicates التوقيع والهوية والمنح والتحقق بلا شبكة تحدد نتيجة تحقق offline واحدة؛ لا حالات أو عقود مستقلة لكل predicate. لا split. مع ذلك `AC-PH01-LICV-003-01` لا يثبت workflow/grant bounds أو عدم إجراء network call، وتظل `UNKN-009`, `ODEC-014`, `LIC-001` حول strategy/TTL/grace مفتوحة؛ reclassification ليست اكتمالاً للقبول أو اعتماداً. |
+| `SREQ-PH01-MSG-002` | `SPLIT_REQUIRED` | receipt/claim، منع تكرار الأثر، واستجابة duplicate المكتمل/قيد المعالجة لها حالات واختبارات مستقلة؛ لا split IDs حتى اعتماد state/ACK/key/recovery/retention contract تحت `ADR-022-GATE` و`RGAP-PH01-005`. |
+| `SREQ-PH02-PUB-004` | `SPLIT_REQUIRED` | ثبات idempotency key منفصل عن lifecycle/تصنيف النتيجة، لكن معنى receipt والـin-progress duplicate والرفض النهائي غير محسوم تحت `PUB-005`؛ أبقِ العبارة وACs دون تغيير حتى اعتماد contract. |
+| `SREQ-PH02-REC-004` | `SPLIT_REQUIRED` | الرفض قبل القبول وفشل التوصيل/recovery نتيجتان ومسارا اختبار مستقلان؛ تبقى visibility/representation وreceipt مقابل final result وretry/reconciliation والسياسات تحت `PUB-005/006` غير محسومة. |
+| `SREQ-PH02-CHK-003` | `SPLIT_REQUIRED` | رفض checkout بعد validation ونجاح snapshots/policy versions لهما outcomes واختبارات مختلفة؛ tax/currency/delivery model وsnapshot/API/order boundary وsession TTL غير مقرة (`UNKN-006`, `ODEC-009`, `ODEC-003`, `RGAP-PH02-*`). لا children/fields جديدة. |
+| `SREQ-PH03-ORD-001` | `SPLIT_REQUIRED` | دليل component والـAC يميز الإنشاء المحلي atomic لـParentOrder/SellerOrders/outbox عن duplicate-safe replay؛ يمكن اقتراح split مستقبلي مع حفظ AC/history. لا merge أو reassignment إلى `ORD-002`، ولا children IDs؛ يبقى `ODEC-003` وAPI contract gate مفتوحين. |
+| `SREQ-PH03-CNF-005` | `SPLIT_REQUIRED` | recipient/role-scoped disclosure نتيجة أمن/بيانات مستقلة عن at-least-once dispatch/retry/idempotent receiver effect؛ لا child IDs قبل حسم projection/cardinality/roles/ACK/key semantics تحت `ADR-019-GATE` و`RP-04`. |
+| `SREQ-PH03-PAY-002` | `SPLIT_REQUIRED` | اكتمال allocation لكل SellerOrder منفصل عن aggregate-vs-separate provider attempt eligibility، والأخيرة تتداخل مع `PAY-003`. لا split نهائي قبل provider capability وFinance/Legal/institution policy gates؛ تبقى `ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003` مفتوحة. |
+
+**الأعداد بعد Cycle 5:** أُعيد تقييم 9 findings (قبل: ATOMIC 55، SPLIT_REQUIRED 18 = 9 تاريخية + 9 حية؛ بعد: ATOMIC 56، SPLIT_REQUIRED 17 = 9 تاريخية + 8 حية؛ `MERGE_CANDIDATE` 1). بقي السجل 276 صفاً (45 main و231 SREQ)، وTBD use_case_id 188، والصفوف ذات القرارات المفتوحة 207، والـC4 bindings المفقودة بنيوياً 0. لا يتغير حكم عدم الجاهزية. لا يُثبت هذا التصنيف موافقة مالك أو تنفيذ/نجاح اختبار.
+
+لم يتغير `SREQ-PH04-DOP-004`: يظل merge candidate دون إثبات equivalence؛ ولم يتغير `SREQ-PH04-DEN-003`: ليس duplicate مؤكداً ويظل محجوباً بـ`ODEC-010`.
 
 ## حدود المرحلة وملاحظات التدقيق
 

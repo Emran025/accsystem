@@ -1,6 +1,6 @@
 # مصفوفة تغطية متطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C4<br>**الأساس:** `c6ebc0b028e2ab9933f41715117bc29ac77d6391`<br>
+**الدورة:** ARH-2026-11-21-C5<br>**الأساس:** `9162eb22d946f25980c6d67143c870bb42214f71`<br>
 **مصادر الربط:** `requirements-registry.csv`، `registry/functions.json`، `registry/interfaces.json`، `registry/elements.json`، ومراجعات الذرية المرحلية.<br>
 **ملاحظة:** هذه مصفوفة تغطية مرجعية/اسمية؛ ليست إثباتاً بأن وظيفة أو قناة أو حاوية مطبقة فعلياً.
 
@@ -34,6 +34,12 @@
 - الحالات: 217 `DRAFT`، 50 `OWNER_REVIEW`، 9 `RETIRED`، 0 `ACCEPTED`. أصبح `TBD` في `use_case_id` 188؛ والقرارات المفتوحة موجودة في 207 صفاً من السجل، مع بقاء معرفات القرار كما هي.
 - كل SREQ له AC ومرجع تحقق مخطط (231/231); معرّفات AC الفريدة 268. لا يثبت ذلك صلاحية المعايير أو تنفيذ الاختبارات. C4 bindings المفقودة بنيوياً: 0؛ مجموعة الحاويات الجديدة موروثة ولا تثبت تخصيصاً دلالياً.
 - بقيت حماية أسرار INST-004، عضوية المؤسسات في ADM-001، lifecycle/propagation semantics للترخيص، response contract لـPUB-004/REC-004، قبول checkout، recipient projection، ORD-001/ORD-002 equivalence وسياسات PAY-002 مفتوحة. لا function/use-case ID أو owner decision جديد اختُرع.
+
+## Cycle 5 update
+
+- أُعيد تقييم تسعة findings حية بصورة مستقلة. أعيد تصنيف `SREQ-PH01-LICV-003` إلى `ATOMIC` لأن signature/identity/grant/offline predicates تحقق نتيجة تحقق محلية واحدة؛ بقيت فجوة AC لتغطية workflow/grant bounds وعدم إجراء network call، وبقيت `UNKN-009` و`ODEC-014` و`LIC-001` مفتوحة. ظلت findings الثمانية الأخرى `SPLIT_REQUIRED`؛ لا child IDs أو function/use-case IDs جديدة ولا تغييرات في requirements/registry rows.
+- بقي السجل 276 صفاً (45 رئيسياً و231 SREQ)، دون تغيير في حالات الصفوف. تغير تصنيف الذرية فقط: `ATOMIC` من 55 إلى 56 و`SPLIT_REQUIRED` من 18 إلى 17 (9 مصادر تاريخية `RETIRED` و8 findings حية)؛ بقي `MERGE_CANDIDATE` واحداً. ظل `TBD` في use_case_id 188، وصفوف القرارات المفتوحة 207، وSREQ ذات AC/مرجع تحقق مخطط 231/231، ومعرفات AC الفريدة 268، وC4 bindings المفقودة بنيوياً 0.
+- `SREQ-PH03-ORD-001` يبقى منفصلاً عن `ORD-002`: تدعم الأدلة توصية بتقسيم مستقبلي بين إنشاء الطلبات محلياً وإعادة المحاولة idempotently، دون إنشاء IDs أو تغيير الصف؛ بقي `ODEC-003` مفتوحاً. ظلت membership في ADM-001 وبوابات lifecycle/propagation للترخيص وفجوات REC-004 وCHK-003 كما هي. بقي DOP-004 مرشح دمج غير مثبت، وDEN-003 غير مؤكد التكرار ومحجوباً بـ`ODEC-010`.
 
 ## Capability / requirement areas
 
