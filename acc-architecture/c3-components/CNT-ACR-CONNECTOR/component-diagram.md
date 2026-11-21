@@ -2,7 +2,7 @@
 
 **Container:** CNT-ACR-CONNECTOR  
 **System:** SYS-ACCORE (per-institution instance)  
-**Status:** DRAFT | Evidence: idea.md §4.3, ADR-005, ADR-006, ADR-014
+**Status:** DRAFT | Evidence: component records, interface contracts, ADR-005/006/014/015
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```mermaid
 flowchart TD
-    subgraph ACCSystem["ACCSystem (External to this ACCore instance)"]
+    subgraph ACCSystem["ACCSystem (external to this ACCore instance)"]
         INTEGRATION["CNT-ACC-INTEGRATION\n(Integration Layer)"]
         LICENSE["CNT-ACC-LICENSE\n(License Service)"]
     end
@@ -22,47 +22,50 @@ flowchart TD
         LICENSECHECK["CMP-CON-LICENSECHECK\nLicense Validator"]
     end
 
-    subgraph ACCoreInternals["ACCore Internal Services"]
+    subgraph ACCoreInternals["ACCore internal services and data sources"]
         OUTBOX["CNT-ACR-OUTBOX\n(Outbox / Inbox)"]
         PRODUCTMASTER["CNT-ACR-PRODUCTMASTER\n(Product Master)"]
         INVENTORY["CNT-ACR-INVENTORY\n(Inventory)"]
         SALES["CNT-ACR-SALES\n(Sales)"]
-        KEYSTORE["Platform Public Key\n(Local Config)"]
+        KEYSTORE["Platform Public Key\n(Local configuration)"]
+        APPLAYER["ACCore application layer\n(internal caller; not a registered component)"]
     end
 
-    %% Publication flow (ACCore → ACCSystem)
-    PRODUCTMASTER -->|"Product publication request\n→ Outbox"| OUTBOX
-    OUTBOX -->|"PENDING messages (poll)"| PUBLISHER
-    PUBLISHER -->|"IF-ACR-PUBLISH-EVENT\n{seller_product_id, institution_id, version, payload}"| INTEGRATION
+    %% Product Master publishes indirectly through the Outbox
+    PRODUCTMASTER -->|Product publication request| OUTBOX
+    OUTBOX -->|Pending messages by polling| PUBLISHER
+    PUBLISHER -->|IF-ACR-PUBLISH-EVENT\nFields: seller_product_id, institution_id, version, payload| INTEGRATION
 
-    %% Reservation flow (ACCSystem → ACCore → ACCSystem)
-    INTEGRATION -->|"IF-ACC-RESERVE-SAGA\n{order_id, seller_id, product_id, quantity}"| RESERVATION
-    RESERVATION -->|"Check + hold stock"| INVENTORY
-    RESERVATION -->|"IF-ACR-RESERVATION-RESP\n{ACCEPTED / REJECTED / UNKNOWN / EXPIRED status}"| INTEGRATION
+    %% Reservation flow (ACCSystem to ACCore and response)
+    INTEGRATION -->|IF-ACC-RESERVE-SAGA\nFields: order_id, seller_id, product_id, quantity| RESERVATION
+    RESERVATION -->|Check and hold stock| INVENTORY
+    RESERVATION -->|IF-ACR-RESERVATION-RESP\nACCEPTED / REJECTED / UNKNOWN / authoritative EXPIRED| INTEGRATION
 
-    %% Order confirmation flow (ACCSystem → ACCore)
-    INTEGRATION -->|"IF-ACC-ORDER-CONFIRM\nrecipient-scoped handoff"| ORDERRECEIVER
-    ORDERRECEIVER -->|"Write to Inbox"| OUTBOX
-    ORDERRECEIVER -->|"Seller sale or B2B buyer purchase"| SALES
-    ORDERRECEIVER -->|"Confirm reservation"| INVENTORY
+    %% Order confirmation (logical direction; channel remains open)
+    INTEGRATION -->|IF-ACC-ORDER-CONFIRM — PROPOSED / OPEN\nlogical ACCSystem to ACCore direction; channel, ACK and schema open| ORDERRECEIVER
+    ORDERRECEIVER -->|Write to Inbox| OUTBOX
+    ORDERRECEIVER -->|Seller sale or authorized B2B buyer purchase| SALES
+    ORDERRECEIVER -->|Confirm reservation| INVENTORY
 
-    %% License validation flow (ACCore app → local check → optional online)
-    SALES -->|"License check: institutional institution/product-code\nor marketplace buyer/product, plus token"| LICENSECHECK
-    LICENSECHECK -->|"Verify signature"| KEYSTORE
-    LICENSECHECK -->|"IF-ACC-LICENSE-VALIDATE\n(online fallback if token expired)"| LICENSE
+    %% License validation is requested by the ACCore application layer
+    APPLAYER -->|Institutional or marketplace workflow-specific request| LICENSECHECK
+    LICENSECHECK -->|Verify signature locally| KEYSTORE
+    LICENSECHECK -->|IF-ACC-LICENSE-VALIDATE\nInstitutional online fallback; marketplace route PROPOSED| LICENSE
 ```
+
+The Product Master is the product source of truth, but the connector receives publication work through the transactional Outbox; the diagram does not show a direct Product Master-to-ACCSystem call. The license-check requester is the ACCore application layer, not CNT-ACR-SALES. That layer label is a documented caller, not a new registered component.
 
 ---
 
 ## Interface Summary
 
-| Interface ID | Direction | Protocol | Used By |
+| Interface ID | Direction | Protocol / status | Used by |
 |---|---|---|---|
-| IF-ACR-PUBLISH-EVENT | ACCore → ACCSystem | HTTPS POST | CMP-CON-PUBLISHER |
-| IF-ACC-RESERVE-SAGA | ACCSystem → ACCore | HTTPS POST | CMP-CON-RESERVATION |
-| IF-ACR-RESERVATION-RESP | ACCore → ACCSystem | Response/query; optional approved callback | CMP-CON-RESERVATION |
-| IF-ACC-ORDER-CONFIRM | ACCSystem → ACCore logically | Outbound-initiated channel or optional protected inbound | CMP-CON-ORDERRECEIVER |
-| IF-ACC-LICENSE-VALIDATE | ACCore → ACCSystem | Institutional HTTPS POST; proposed marketplace GET/by-ID | CMP-CON-LICENSECHECK (fallback) |
+| IF-ACR-PUBLISH-EVENT | ACCore → ACCSystem | HTTPS POST (documented baseline) | CMP-CON-PUBLISHER |
+| IF-ACC-RESERVE-SAGA | ACCSystem → ACCore | Request interface; institution channel details remain governed by ADR-015 | CMP-CON-RESERVATION |
+| IF-ACR-RESERVATION-RESP | ACCore → ACCSystem | Response/query; optional approved callback remains OPEN | CMP-CON-RESERVATION |
+| IF-ACC-ORDER-CONFIRM | ACCSystem → ACCore logically | PROPOSED / OPEN; channel, ACK meaning and schema not finalized | CMP-CON-ORDERRECEIVER |
+| IF-ACC-LICENSE-VALIDATE | ACCore → ACCSystem | Institutional fallback documented; marketplace GET/by-ID path PROPOSED | CMP-CON-LICENSECHECK |
 
 ---
 
@@ -70,33 +73,33 @@ flowchart TD
 
 | Component | ID | Responsibility |
 |---|---|---|
-| Product Publication Client | CMP-CON-PUBLISHER | Reads Outbox, sends product publications to ACCSystem with retry + idempotency |
-| Reservation Handler | CMP-CON-RESERVATION | Handles reservation requests and synchronous response or trusted query, plus optional approved callback; compensation-aware |
-| Order Event Receiver | CMP-CON-ORDERRECEIVER | Seller sale/inventory or authorized B2B buyer purchase path; scoped, recoverable effects |
-| License Validator | CMP-CON-LICENSECHECK | Offline token validation; public-key signature check; online fallback |
+| Product Publication Client | CMP-CON-PUBLISHER | Reads Outbox and sends product publications with retry and idempotency |
+| Reservation Handler | CMP-CON-RESERVATION | Handles reservation requests and response/query recovery; optional callback remains open |
+| Order Event Receiver | CMP-CON-ORDERRECEIVER | Applies scoped seller-sale/inventory or authorized B2B buyer-purchase effects |
+| License Validator | CMP-CON-LICENSECHECK | Validates offline entitlement tokens locally and uses online fallback when applicable |
 
 ---
 
 ## Key Cross-Cutting Concerns
 
-| Concern | Pattern | ADR |
+| Concern | Pattern | Status / ADR |
 |---|---|---|
-| Reliable messaging | Outbox/Inbox | ADR-005 |
-| Idempotency | Idempotency keys on all operations | ADR-005, ADR-006 |
-| Inventory reservation in saga | Synchronous response or trusted query; optional approved callback; UNKNOWN/EXPIRED retained | ADR-006, ADR-013 |
-| Offline license validation | Signed entitlement token + public key | ADR-014 |
+| Reliable messaging | Outbox / Inbox | Documented pattern; ADR-005 remains PROPOSED |
+| Idempotency | Idempotency keys on operations | Documented baseline; ADR-005/006 remain PROPOSED |
+| Inventory reservation in saga | Response or trusted query; optional approved callback; preserve UNKNOWN/EXPIRED | ADR-006/013 remain PROPOSED |
+| Offline license validation | Signed entitlement token + public key | ADR-014 remains PROPOSED |
+| Order confirmation | Logical ACCSystem → ACCore handoff | PROPOSED / OPEN; channel, ACK and schema require governance |
 
 ---
 
-## Traceability
+## Traceability and Open Items
 
-| Claim | Evidence |
-|---|---|
-| ACCore connector as integration boundary | CONFIRMED (idea.md §4.3) |
-| Outbox/Inbox pattern | CONFIRMED (idea.md §4.3, ADR-005) |
-| Reservation before order confirmation | CONFIRMED (idea.md §8, ADR-006) |
-| Offline license validation at ACCore | CONFIRMED (idea.md §7, ADR-014) |
+- ACCore's Product Master is the source of truth; Product Master publication reaches the connector via Outbox.
+- The exact reservation response mode (synchronous response, trusted query, or optional approved callback) remains open; elapsed time alone does not turn UNKNOWN into rejection or expiry.
+- `IF-ACC-ORDER-CONFIRM` remains PROPOSED/OPEN; no transport, ACK meaning or payload schema is asserted as final.
+- The institutional license fallback is distinct from the proposed marketplace by-ID route.
+- Token TTL, grace period, signing/key-management details and institution connectivity policy remain UNKNOWN/OPEN.
 
 ---
 
-*Generated: 2026-11-15 | Not stakeholder-approved | Not production-ready*
+*Generated: 2026-11-21 | Not stakeholder-approved | Not production-ready*

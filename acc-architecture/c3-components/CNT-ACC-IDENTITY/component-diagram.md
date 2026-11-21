@@ -2,7 +2,7 @@
 
 **Container:** CNT-ACC-IDENTITY  
 **System:** SYS-ACCSYSTEM  
-**Status:** DRAFT | Evidence: idea.md §3.1, §5, §6
+**Status:** DRAFT | Evidence: component records, CNT-ACC-IDENTITY container record, ADR-010/011/012
 
 ---
 
@@ -10,56 +10,53 @@
 
 ```mermaid
 flowchart TD
-    subgraph Callers["External Callers"]
+    subgraph Callers["Callers and Collaborators"]
         APIGW["CNT-ACC-APIGATEWAY\n(API Gateway)"]
-        PLATFORMADMIN["CNT-ACC-PLATFORMADMIN\n(Platform Admin)"]
+        PLATFORMADMIN["CNT-ACC-PLATFORMADMIN\n(Platform Administration)"]
+        INSTREG["CNT-ACC-INSTREG\n(Institution Registry)"]
         AUDIT["CNT-ACC-AUDIT\n(Audit Log)"]
     end
 
     subgraph CNT-ACC-IDENTITY["CNT-ACC-IDENTITY — Identity & Access Service"]
         AUTH["CMP-IDN-AUTH\nAuthentication Engine"]
-        RBAC["CMP-IDN-RBAC\nRBAC Policy Engine"]
+        RBAC["CMP-IDN-RBAC\nRole & Permission Manager"]
         SESSION["CMP-IDN-SESSION\nSession Manager"]
         TENANCY["CMP-IDN-TENANCY\nTenancy Resolver"]
     end
 
-    subgraph Stores["Data Stores"]
-        IDENTDB[("Identity DB\nPostgres — users,\ncredentials, roles")]
-        SESSSTORE[("Session Store\nRedis — active tokens")]
+    subgraph Stores["Identity-owned stores (technology undecided)"]
+        IDENTDB[("Identity data store\nTechnology UNKNOWN / OPEN")]
+        SESSSTORE[("Session / revocation store\nTechnology UNKNOWN / OPEN")]
     end
 
-    subgraph External["External"]
-        EVENTBUS["CNT-ACC-EVENTBUS\n(Event Bus)"]
-    end
+    %% Authentication and session lifecycle
+    APIGW -->|Authentication request| AUTH
+    AUTH -->|Fetch institution membership claims| TENANCY
+    TENANCY -->|Verify institution exists and is active| INSTREG
+    AUTH -->|Create session after successful login| SESSION
+    APIGW -->|Validate token on each authenticated request| SESSION
+    SESSION <-->|Read / write session and revocation state| SESSSTORE
 
-    %% Login flow
-    APIGW -->|"AuthN request\n(credentials / token)"| AUTH
-    AUTH -->|"Resolve tenant context"| TENANCY
-    AUTH -->|"Issue / validate session"| SESSION
-    AUTH -->|"Load roles + permissions"| RBAC
+    %% Role and permission data resolution; enforcement remains with each service
+    AUTH -->|Fetch role claims during token issuance| RBAC
+    APIGW -->|Request role / permission data| RBAC
+    RBAC -->|Resolved role / permission data; no enforcement decision| APIGW
+    RBAC -->|Read role definitions and assignments| IDENTDB
 
-    %% Session management
-    SESSION <-->|"Read/write token"| SESSSTORE
-    SESSION -->|"Token-expired event"| EVENTBUS
+    %% Administrative operations
+    PLATFORMADMIN -->|Manage role assignments| RBAC
+    PLATFORMADMIN -->|Manage user-institution membership| TENANCY
+    PLATFORMADMIN -->|Force session revocation| SESSION
 
-    %% Permission check (every protected API)
-    APIGW -->|"AuthZ check\n(resource + action)"| RBAC
-    RBAC -->|"Read role bindings"| IDENTDB
-
-    %% Tenancy
-    TENANCY -->|"Read institution context"| IDENTDB
-
-    %% Admin operations
-    PLATFORMADMIN -->|"Manage roles / users"| RBAC
-    PLATFORMADMIN -->|"Manage tenant config"| TENANCY
-
-    %% Audit
-    AUTH -->|"AuthN event"| AUDIT
-    RBAC -->|"AuthZ decision event"| AUDIT
-
-    %% Data access
-    AUTH <-->|"Credential read/write"| IDENTDB
+    %% Persistence and audit
+    AUTH <-->|Credential read / write| IDENTDB
+    AUTH -->|Authentication audit event| AUDIT
+    RBAC -->|Role assignment change audit| AUDIT
+    SESSION -->|Session create / refresh / revoke audit| AUDIT
+    TENANCY -->|Membership change audit| AUDIT
 ```
+
+`CMP-IDN-RBAC` resolves role assignments and permission data; it does **not** enforce permissions. Each target service enforces its own authorization. Token format (JWT or opaque) and the identity/session store technologies remain UNKNOWN/OPEN. No session subscription to CNT-ACC-EVENTBUS is asserted.
 
 ---
 
@@ -67,42 +64,46 @@ flowchart TD
 
 | Component | ID | Role |
 |---|---|---|
-| Authentication Engine | CMP-IDN-AUTH | Validates credentials, issues JWTs, MFA |
-| RBAC Policy Engine | CMP-IDN-RBAC | Evaluates role-permission bindings per request |
-| Session Manager | CMP-IDN-SESSION | Token lifecycle: issue, refresh, revoke, expire |
-| Tenancy Resolver | CMP-IDN-TENANCY | Maps requests to institution context; isolates data scope |
+| Authentication Engine | CMP-IDN-AUTH | Validates credentials and coordinates authentication/session creation; token format remains UNKNOWN |
+| Role & Permission Manager | CMP-IDN-RBAC | Manages assignments and resolves permission data; does not enforce access |
+| Session Manager | CMP-IDN-SESSION | Manages token/session lifecycle, refresh, revocation and expiry |
+| Tenancy Resolver | CMP-IDN-TENANCY | Resolves user-institution membership and verifies institution context via the registry |
 
 ---
 
 ## Key Flows
 
 ### Flow 1 — Login
-1. API Gateway forwards credential/token → **CMP-IDN-AUTH**
-2. AUTH resolves tenant via **CMP-IDN-TENANCY**
-3. AUTH verifies credential → creates session via **CMP-IDN-SESSION** (writes to Redis)
-4. AUTH returns signed JWT; logs AuthN event to **CNT-ACC-AUDIT**
+1. API Gateway forwards the authentication request to **CMP-IDN-AUTH**.
+2. AUTH requests institution membership claims from **CMP-IDN-TENANCY**; TENANCY verifies the institution with **CNT-ACC-INSTREG**.
+3. AUTH fetches role claims from **CMP-IDN-RBAC** and creates a session through **CMP-IDN-SESSION**.
+4. AUTH records the authentication event in **CNT-ACC-AUDIT**. Credential/token format is UNKNOWN; no JWT or specific store technology is asserted.
 
 ### Flow 2 — Authenticated API Request
-1. API Gateway intercepts request → **CMP-IDN-RBAC** evaluates `{actor_role, resource, action}`
-2. RBAC reads role bindings from Identity DB → returns ALLOW/DENY
-3. DENY → 403; ALLOW → request forwarded to target container
+1. API Gateway requests token/session validation from **CMP-IDN-SESSION** for each authenticated request.
+2. The relevant gateway or target service may retrieve role/permission data from **CMP-IDN-RBAC**.
+3. The target service enforces its own authorization. RBAC does not return a central ALLOW/DENY enforcement result.
 
-### Flow 3 — Session Revocation (Admin)
-1. **CNT-ACC-PLATFORMADMIN** calls revoke
-2. **CMP-IDN-SESSION** removes token from Redis (immediate invalidation)
-3. Session-revoked event published to event bus → downstream containers may cache-bust
+### Flow 3 — Administrative Session Revocation
+1. **CNT-ACC-PLATFORMADMIN** requests session revocation through **CMP-IDN-SESSION**.
+2. SESSION updates the session/revocation store and records the action in **CNT-ACC-AUDIT**.
+3. Event Bus publication or session-event subscription is not established by the current component sources and is not depicted.
 
 ---
 
-## Traceability
+## Traceability and Open Items
 
-| Concern | Evidence |
+| Concern | Evidence / status |
 |---|---|
-| Multi-tenant isolation | CONFIRMED (idea.md §5.1 — per-institution ACCore, shared ACCSystem identity) |
-| Least-privilege for admin/support | CONFIRMED (idea.md §6, §14 → ADR-011) |
-| Session store (Redis) | ASSUMPTION — fast revocation requires in-memory store |
-| MFA requirement | ASSUMPTION — not explicitly stated in idea.md §5; noted as UNKNOWN |
+| Multi-tenant isolation | CONFIRMED; institution context and memberships are resolved separately from local ERP roles |
+| Least-privilege for admin/support | CONFIRMED as a policy baseline; detailed approval remains subject to ADR review |
+| Access-token format | UNKNOWN (JWT or opaque); JWT signing remains PROPOSED |
+| Identity data store technology | UNKNOWN / OPEN |
+| Session and revocation store technology | UNKNOWN / OPEN; no Redis claim |
+| Session TTL, token TTL and lockout threshold | UNKNOWN |
+| Event Bus session subscription/events | UNKNOWN / PROPOSED; not shown as a confirmed relation |
+| Audit storage and tamper-evidence details | ASSUMPTION / PROPOSED; implementation not established |
 
 ---
 
-*Generated: 2026-11-15 | Not stakeholder-approved | Not production-ready*
+*Generated: 2026-11-21 | Not stakeholder-approved | Not production-ready*

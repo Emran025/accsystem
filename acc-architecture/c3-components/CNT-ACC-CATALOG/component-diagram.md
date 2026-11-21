@@ -2,7 +2,7 @@
 
 **Container:** CNT-ACC-CATALOG  
 **System:** SYS-ACCSYSTEM  
-**Status:** DRAFT | Evidence: idea.md §3.1, §4, ADR-004
+**Status:** DRAFT | Evidence: CNT-ACC-CATALOG.md, component records, IF-ACC-CATALOG-QUERY, ADR-004
 
 ---
 
@@ -10,47 +10,57 @@
 
 ```mermaid
 flowchart TD
-    subgraph Upstream["Upstream Sources"]
-        INTEGRATION["CMP-INT-PUBLICATION\n(Integration Layer)"]
-        ADMIN["CNT-ACC-PLATFORMADMIN\n(Admin — force remove)"]
+    subgraph Clients["Catalog Query Clients"]
+        MOBILE["CNT-ACE-MOBILEAPP\n(ACCommerce client)"]
+        COMMERCE["CNT-ACR-COMMERCE\n(ACCore commerce client)"]
+        APIGW["CNT-ACC-APIGATEWAY\n(API Gateway)"]
     end
 
+    INTEGRATION["CMP-INT-PUBLICATION\n(Integration publication worker)"]
+    ADMIN["CNT-ACC-PLATFORMADMIN\n(Platform Administration)"]
+
     subgraph CNT-ACC-CATALOG["CNT-ACC-CATALOG — Catalog Service"]
+        QUERY["IF-ACC-CATALOG-QUERY\nContainer-level browse interface\nInternal component route UNKNOWN"]
         LISTING["CMP-CAT-LISTING\nProduct Listing Manager"]
         VALIDATION["CMP-CAT-VALIDATION\nPublication Validator"]
         SEARCHSYNC["CMP-CAT-SEARCHSYNC\nSearch Index Synchronizer"]
+        CATDB[("Catalog listing store\nTechnology UNKNOWN / OPEN")]
+        SYNCSTATE[("Search sync state\nStore technology UNKNOWN / OPEN")]
     end
 
-    subgraph Downstream["Downstream Consumers"]
+    subgraph SharedServices["Other ACCSystem Services"]
         SEARCH["CNT-ACC-SEARCH\n(Search Service)"]
         EVENTBUS["CNT-ACC-EVENTBUS\n(Event Bus)"]
         AUDIT["CNT-ACC-AUDIT\n(Audit Log)"]
+        SOFTCAT["CNT-ACC-SOFTCAT\n(Software Catalog service; not a data store)"]
     end
 
-    subgraph Stores["Data Stores"]
-        CATDB[("Catalog DB\nPostgres — listings")]
-        SYNCSTATE[("Sync State\n(embedded or Redis)")]
-        SOFTCAT["CNT-ACC-SOFTCAT\n(Software Catalog)"]
-    end
+    %% Catalog query interface and documented client path
+    MOBILE -->|Catalog browsing via gateway| APIGW
+    COMMERCE -->|Catalog browsing via gateway| APIGW
+    APIGW -->|IF-ACC-CATALOG-QUERY| QUERY
 
-    %% Publication flow
-    INTEGRATION -->|"ListingPublicationRequest\n{seller_product_id, institution_id, version, payload}"| LISTING
-    LISTING -->|"Validate payload (sync)"| VALIDATION
-    VALIDATION -->|"Category check"| SOFTCAT
-    VALIDATION -->|"PASS / FAIL + violations"| LISTING
-    LISTING -->|"Write Listing only after admission/moderation rule\n(pre-admission rejection records attempt only)"| CATDB
-    LISTING -->|"ListingApproved or ListingRejected"| EVENTBUS
-    LISTING -->|"Audit: listing created/rejected"| AUDIT
+    %% Publication and validation
+    INTEGRATION -->|ListingPublicationRequest| LISTING
+    INTEGRATION -->|ProductListingWithdrawn; mapping to local removal OPEN| LISTING
+    LISTING -->|Synchronous validation request| VALIDATION
+    VALIDATION -->|Category membership check for software products| SOFTCAT
+    VALIDATION -->|PASS / FAIL + violations| LISTING
+    VALIDATION -->|Validation outcome + rule IDs| AUDIT
+    LISTING -->|Write listing after admission / moderation rule| CATDB
+    LISTING -->|ListingApproved / ListingUpdated / ListingRemoved\nListingRejected only after admission; source-removal mapping OPEN| EVENTBUS
+    LISTING -->|Create / update / remove audit entry| AUDIT
 
-    %% Search sync
-    EVENTBUS -->|"ListingApproved / Updated / Removed"| SEARCHSYNC
-    SEARCHSYNC <-->|"Track sync version"| SYNCSTATE
-    SEARCHSYNC -->|"Upsert / Delete document"| SEARCH
+    %% Search synchronization
+    EVENTBUS -->|ListingApproved / ListingUpdated / ListingRemoved\nRemoval mapping from source event OPEN| SEARCHSYNC
+    SEARCHSYNC <-->|Track sync version| SYNCSTATE
+    SEARCHSYNC -->|Upsert / delete document| SEARCH
 
-    %% Admin retraction
-    ADMIN -->|"Force remove listing"| LISTING
-    LISTING -->|"ListingRemoved"| EVENTBUS
+    %% Authorized administrative retraction
+    ADMIN -->|Force-remove request| LISTING
 ```
+
+`IF-ACC-CATALOG-QUERY` is shown as a registered container-level interface. The source documents identify its consumers, but do not assign the request to a particular C3 component; the internal route is therefore left UNKNOWN rather than inferred. Anonymous access is also UNKNOWN. `CNT-ACC-SOFTCAT` is a separate service and does not store package binaries; package storage/distribution is associated with `EXT-PACKAGE-CDN`.
 
 ---
 
@@ -58,43 +68,47 @@ flowchart TD
 
 | Component | ID | Role |
 |---|---|---|
-| Product Listing Manager | CMP-CAT-LISTING | Owns Listing entity; handles create/update/remove; enforces version idempotency |
-| Publication Validator | CMP-CAT-VALIDATION | Stateless policy validator; returns PASS/FAIL verdict before write |
-| Search Index Synchronizer | CMP-CAT-SEARCHSYNC | Subscribes to listing events; keeps CNT-ACC-SEARCH in sync with retry/backoff |
+| Product Listing Manager | CMP-CAT-LISTING | Owns the Listing entity; handles create/update/remove and version idempotency |
+| Publication Validator | CMP-CAT-VALIDATION | Stateless policy validator; returns PASS/FAIL before a write |
+| Search Index Synchronizer | CMP-CAT-SEARCHSYNC | Consumes listing events and keeps CNT-ACC-SEARCH in sync with retry/backoff |
 
 ---
 
 ## Key Flows
 
 ### Flow 1 — New Product Publication
-1. **CMP-INT-PUBLICATION** delivers `ListingPublicationRequest`
-2. **CMP-CAT-LISTING** calls **CMP-CAT-VALIDATION** synchronously
-3. VALIDATION checks format, completeness, category → returns verdict
-4. If PASS: LISTING writes `Listing{status=ACTIVE}` → publishes `ListingApproved`
-5. If validation fails before admission: record the rejected attempt and audit reason; do not persist a Listing as `REJECTED`. A persisted moderation `REJECTED` state and `ListingRejected` event apply only after admission.
-6. **CMP-CAT-SEARCHSYNC** consumes `ListingApproved` → upserts search document
+1. **CMP-INT-PUBLICATION** delivers a `ListingPublicationRequest`.
+2. **CMP-CAT-LISTING** calls **CMP-CAT-VALIDATION** synchronously.
+3. Validation checks format, completeness and category, then returns a verdict and reasons.
+4. If admitted, LISTING writes the listing and emits the applicable lifecycle event; the event-driven search update remains a documented proposal.
+5. A rejection before admission records the attempt and audit reason; it does not persist a `REJECTED` Listing. A moderation `REJECTED` state/event applies only after admission.
+6. **CMP-CAT-SEARCHSYNC** consumes the applicable listing event and updates search.
 
-### Flow 2 — Listing Update (new version from ACCore)
-1. Same as Flow 1 but with higher `version` number
-2. LISTING checks `version > last_version` → replaces snapshot fields
-3. If ACTIVE → publishes `ListingUpdated` → SEARCHSYNC updates search document
+### Flow 2 — Listing Update
+1. Integration delivers a higher listing version.
+2. LISTING checks `version > last_version` and replaces the documented projection fields.
+3. An admitted active listing emits `ListingUpdated`; SEARCHSYNC updates the search document.
 
-### Flow 3 — Listing Removal
-1. `ProductRetracted` from integration layer OR admin force-remove
-2. LISTING sets `status=REMOVED` → publishes `ListingRemoved`
-3. SEARCHSYNC deletes search document
+### Flow 3 — Listing Withdrawal / Removal (Mapping OPEN)
+1. Integration may deliver `ProductListingWithdrawn`; an authorized administrator may also request force removal.
+2. The mapping from `ProductListingWithdrawn` to the catalog's removal state/event remains UNKNOWN/OPEN. The source event must not be treated as a wire synonym for `ProductRetracted`, `WITHDRAWN`, or `ListingRemoved` without approval.
+3. Search deletion follows a confirmed catalog removal event; exact source-to-catalog event mapping remains open.
 
 ---
 
-## Traceability
+## Traceability and Open Items
 
-| Concern | Evidence |
+| Concern | Evidence / status |
 |---|---|
-| Projection pattern (not source of truth) | CONFIRMED (ADR-004, idea.md §4.1) |
-| Price/stock snapshot staleness | CONFIRMED as open decision (idea.md §12) |
+| Projection pattern (not source of truth) | CONFIRMED (ADR-004 and component record) |
+| Catalog query interface | IF-ACC-CATALOG-QUERY is registered; internal route and anonymous access UNKNOWN |
+| Catalog listing store technology | UNKNOWN / OWNER_UNASSIGNED; no PostgreSQL claim |
+| Search sync state technology | UNKNOWN / OPEN; embedded store vs Redis is not decided |
+| Product price/stock snapshot freshness | CONFIRMED as an open decision |
+| Source withdrawal to catalog removal mapping | UNKNOWN / OPEN; event names are not interchangeable |
 | Validation pre-write | PROPOSAL — separation of concerns |
-| Event-driven search sync | PROPOSAL — consistent with ADR-005 |
+| Event-driven search sync | PROPOSAL — consistent with ADR-005, not stakeholder-approved |
 
 ---
 
-*Generated: 2026-11-15 | Not stakeholder-approved | Not production-ready*
+*Generated: 2026-11-21 | Not stakeholder-approved | Not production-ready*
