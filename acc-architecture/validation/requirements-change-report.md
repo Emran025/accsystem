@@ -255,7 +255,7 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 ## Cycle 7: ARH-2026-11-21-C7
 
 **Base commit:** `60a0f414fc5afaa56b18dffedda35383ec76c631` (`origin/main` at cycle start).<br>
-**Content commit:** to be recorded in the report-only follow-up after the authorized push.<br>
+**Content commit:** `735d27725d7679a88f2537751980724a6c37e43e` (pushed to `origin/main` without force).<br>
 **Push target:** `origin/main` under the approved iterative workflow; no force push.
 
 ### Reassessment and evidence-supported outcome
@@ -284,4 +284,10 @@ Four validation reports only, all under `acc-architecture/validation/`: `atomici
 - Tests: `acc-architecture/execution-phases/tests` 9/9 PASS; `architecture-assistant/tests` 65/65 PASS.
 - Available architecture validators exited 0: `validate_architecture.py` (structural checks only), `validate_artifact_depth.py` (88 reviewed; human review still required), `validate_consistency_artifacts.py` (65/65; semantic review still required), `validate_traceability.py`, `validate_references.py`, `validate_diagrams.py` (55 Mermaid blocks rendered/checked; semantic C4 correctness not proven), `generate_coverage_report.py` (C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0; counts do not prove semantic completeness), and `validate_release_status.py` (Gate7/manifest remain `IN_PROGRESS`).
 - Required handoff utilities `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` are absent; both checks are `NOT_VERIFIED`, not PASS. Available architecture-assistant validators do not certify these missing checks.
-- The CSV has 279 CRLF lines and no bare LF. `git -c core.whitespace=cr-at-eol diff --check` passed. Final scope review and the required pre-push fetch, no-force push, post-push fetch/tip/worktree details will be recorded in the report-only follow-up after the content push.
+- The CSV has 279 CRLF lines and no bare LF. `git -c core.whitespace=cr-at-eol diff --check` passed. Final scope review found exactly six modified files, all under `acc-architecture/`; the report-only follow-up is limited to this report.
+
+### Content push and post-push confirmation
+
+- A fresh fetch before committing confirmed `HEAD == origin/main == 60a0f414fc5afaa56b18dffedda35383ec76c631`. Content commit `735d27725d7679a88f2537751980724a6c37e43e` has that base as its parent.
+- Immediately before pushing, a fresh fetch confirmed `origin/main` remained at `60a0f414fc5afaa56b18dffedda35383ec76c631`; the worktree was clean. The content commit was pushed to `main` without force.
+- After push and another fetch, `HEAD == origin/main == 735d27725d7679a88f2537751980724a6c37e43e`; the worktree was clean. The push output showed a fast-forward from `60a0f41` to `735d277`.
