@@ -53,3 +53,40 @@
 - بعد الدفع، نجح `--check` و`--check --require-rows` على 253 صفاً، وأعادت الاستعلامات 92/30/20 صفاً. نجحت اختبارات المدقق المخصص 9/9 واختبارات architecture-assistant 65/65.
 - بعد الدفع، خرجت validators المعمارية البديلة جميعها برمز 0: architecture، artifact depth، consistency، traceability، references، diagrams، release status، وتقرير التغطية. تبقى نتائج artifact depth/consistency مشروطة بالمراجعة البشرية/الدلالية، وrenderer لا يثبت صحة C4 الدلالية أو موافقة المالك.
 - بعد الدفع، بقي `--check --strict-ready` فاشلاً على 814 مخالفة متوقعة لبوابات الجاهزية؛ الحزمة ما تزال مسودة وغير جاهزة للتنفيذ. نجح `git diff --check`.
+
+
+## Cycle 2: ARH-2026-11-21-C2
+
+**Base commit:** `ea00eb2816722e20a976d6a842c7aaa9c669638c` (`origin/main` بعد fetch عند بدء الدورة الثانية).
+**Implementation commit:** يُسجَّل في تحديث توثيقي بعد إنشاء commit المحتوى وقبل الدفع النهائي.
+**Push target:** `origin/main` وفق التفويض؛ دون force push.
+
+### التغييرات
+
+- `acc-architecture/execution-phases/requirements-registry.csv`: أُبقي `SREQ-PH01-AUD-001` بمعياره الأصلي بحالة `RETIRED`، وأضيفت سبعة SREQ ذرية DRAFT بمعايير قبول فريدة AUD-007..013؛ لكل منها `UNKN-002` و`TBD (RGAP-PH01-005)` كما بقيت الفجوات مفتوحة.
+- `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md`: تحديث سجل الصفوف والـAC والتتبع، مع سجل حفظ صريح. خريطة الممثلين وحاويات C2 للصفوف الجديدة موروثة من الصف المجمّع ولا تدعي ربطاً خاصاً بكل عملية.
+- `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`: تحديث تصنيفات 23 finding ومجاميع الدورة والتغطية والجاهزية. لم يثبت دمج آمن؛ DOP-004 وحده بقي مرشحاً؛ DEN-003 غير مثبت التكرار وبقي محجوباً بـODEC-010.
+
+### counts القابلة لإعادة الحساب
+
+- المتطلبات الرئيسية: 45 (بدون تغيير). SREQ: 208 → 215؛ إجمالي صفوف السجل: 253 → 260.
+- حالة AUD-001: صف تاريخي واحد RETIRED + سبعة DRAFT ذرية؛ لم تُحذف capability أو فئة عملية.
+- التدقيق الذري: ATOMIC 30 → 39؛ تصنيف SPLIT_REQUIRED في السجل 17 → 18 (واحد تاريخي متقاعد تفكيكه مكتمل؛ 17 finding حي متبقٍ). المرشحون للدمج 5 → 1، والتكرار غير المثبت 1 → 0، مع DEN-003 محجوب بقرار مالك.
+- `TBD` في use_case_id: 167 → 174؛ فجوات Use Case لم تُغلق. الصفوف ذات القرارات المفتوحة: 186 → 193 (60 معرف قرار/بوابة فريداً).
+- C4 binding المفقود: 0 → 0 حسب المدقق البنيوي؛ جميع الصفوف الجديدة ورثت مجموعة الحاويات المعلنة في الصف المصدر، والتخصيص الدلالي لكل عملية لا يزال غير مثبت.
+- AC فريد: 244 → 251؛ SREQ ذات مراجع AC والتحقق المخطط: 208/208 → 215/215. لا معيار أو اختبار وظيفي تم تنفيذه في هذه الدورة.
+
+### نتائج التحقق
+
+- المدقق المخصص: نجح `--check --require-rows` على 260 صفاً؛ استعلام `--phase PH-01` أعاد 99 صفاً، و`--phase PH-02 --location SYS-ACCORE` أعاد 30، و`--container CNT-ACC-CATALOG` أعاد 20.
+- `--check --strict-ready`: فشل على 842 مخالفة متوقعة لبوابات الجاهزية المفتوحة؛ لا توجد صفوف `ACCEPTED` ولا يُعد ذلك نجاحاً أو فشلاً في التحقق البنيوي.
+- الاختبارات: 9/9 في `acc-architecture/execution-phases/tests` و65/65 في `architecture-assistant/tests` نجحت.
+- Validators المعمارية البديلة: `validate_architecture.py` exit 0 (4 مستويات بنيوية فقط، دون اعتماد دلالي/أمني/schema/renderer)؛ `validate_artifact_depth.py` exit 0 (88 reviewed، 0 incomplete، 0 findings، والحالة تتطلب مراجعة بشرية)؛ `validate_consistency_artifacts.py` exit 0 (65/65، 0 findings، مع بقاء المراجعة الدلالية مطلوبة).
+- `validate_traceability.py` و`validate_references.py`: exit 0. `validate_diagrams.py`: PASS لـ55 كتلة Mermaid؛ صحة C4 الدلالية وموافقة المالك غير متحققتين. `validate_release_status.py`: متسق، Gate7 وmanifest كلاهما `IN_PROGRESS` و0 findings ضمن نطاق التدقيق المحدود.
+- `generate_coverage_report.py`: exit 0؛ C1 15/7/8، C2 40/17/23، C3 35/35/0، DECISION 22/22/0 (in-scope / decomposition-complete / exceptions-not-complete). التقرير يصف حالات registry/decomposition فقط وليس الاكتمال الدلالي.
+- `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` و`/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` غير موجودين؛ لم يُدّع تشغيلهما، واستُخدمت بدائل `architecture-assistant/scripts/` المتاحة.
+- `git -c core.whitespace=cr-at-eol diff --check`: نجح؛ عوملت CRLF الأصلي في CSV كجزء من نهاية السطر دون إعادة تنسيق الملف.
+
+### البوابات التي بقيت مفتوحة والخطوة التالية
+
+تظل `RGAP-PH01-005` و`RGAP-PH01-004` و`UNKN-002` و`ODEC-010` وغيرها مفتوحة. لا توجد صفوف `ACCEPTED`، ولا تُعد الحزمة جاهزة للتنفيذ. الدورة التالية تعالج findings الحية وفق الأدلة والقرارات المتاحة فقط.

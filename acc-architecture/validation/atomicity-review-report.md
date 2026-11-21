@@ -1,25 +1,25 @@
 # مراجعة ذرّية ودلالية لمتطلبات PH-01 إلى PH-04
 
-**الدورة:** ARH-2026-11-21-C1<br>
-**الأساس:** `a8f38d19188588eadaa68fc6142a20b9983d5b58` (`origin/main` وقت البدء)<br>
+**الدورة:** ARH-2026-11-21-C2<br>
+**الأساس:** `ea00eb2816722e20a976d6a842c7aaa9c669638c` (`origin/main` عند بدء الدورة الثانية)<br>**الدورة السابقة:** ARH-2026-11-21-C1؛ تفاصيلها محفوظة في تاريخ Git.<br>
 **حدود العدّ:** التصنيف أدناه يخص صفوف `SREQ` فقط؛ المتطلبات الرئيسية ليست داخلة في مجاميع الذرية الفرعية.<br>
 **تنبيه:** هذا سجل مراجعة للمسودات، وليس اعتماداً أو دليلاً على التنفيذ أو نجاح الاختبارات.
 
 ## النتيجة الإجمالية
 
-تم تصنيف **208 من 208** متطلباً فرعياً، مع مطابقة كل معرف في التفصيل المؤقت إلى صف في CSV. بقيت 17 متطلبات فرعية موسومة للتفكيك، و5 مرشحة للدمج، ومتطلب واحد مكرر دلالياً. لم تُعدّل بيانات المتطلبات أو تحذف أو تنقل بين المراحل في هذه الدورة.
+يعرض السجل الحالي تصنيف **215 من 215** صف SREQ بعد إضافة سبعة صفوف تدقيق ذرية. أعيدت مراجعة 23 finding من الدورة السابقة: لم يُنفذ أي دمج؛ بقيت 17 حالة تفكيك حية (منها MSG-002 بعد إعادة التصنيف)، ومرشح دمج واحد هو DOP-004، ولم تثبت ازدواجية DEN-003 فأُبقي محجوباً بقرار ODEC-010. اكتمل تفكيك AUD-001: حُفظ السجل الواسع ومعياره الأصليان بحالة RETIRED، وأضيفت سبعة متطلبات DRAFT ذرية بمعايير قبول فريدة. بقيت حالات المالك والفجوات الأخرى مفتوحة.
 
 | المرحلة | SREQ | ATOMIC | SPLIT_REQUIRED | MERGE_CANDIDATE | ARCHITECTURAL_CONSTRAINT | POLICY_RULE | ACCEPTANCE_CRITERION_ONLY | NEEDS_USE_CASE | DUPLICATE | OUT_OF_PHASE | BLOCKED_BY_OWNER_DECISION |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PH-01 — تأسيس المنصة | 77 | 2 | 10 | 3 | 13 | 14 | 3 | 21 | 0 | 0 | 11 |
+| PH-01 — تأسيس المنصة | 84 | 10 | 11 | 0 | 13 | 14 | 3 | 22 | 0 | 0 | 11 |
 | PH-02 — الكتالوج والاكتشاف والحجز | 45 | 14 | 4 | 0 | 8 | 10 | 0 | 1 | 0 | 0 | 8 |
 | PH-03 — المخزون والطلبات والدفع وأحداث التسليم الخارجية | 59 | 8 | 3 | 0 | 8 | 6 | 0 | 18 | 0 | 0 | 16 |
-| PH-04 — التسليم الداخلي عبر ACCMared | 27 | 6 | 0 | 2 | 3 | 3 | 0 | 1 | 1 | 0 | 11 |
-| **الإجمالي** | **208** | **30** | **17** | **5** | **32** | **33** | **3** | **41** | **1** | **0** | **46** |
+| PH-04 — التسليم الداخلي عبر ACCMared | 27 | 7 | 0 | 1 | 3 | 3 | 0 | 1 | 0 | 0 | 12 |
+| **الإجمالي** | **215** | **39** | **18** | **1** | **32** | **33** | **3** | **42** | **0** | **0** | **47** |
 
 ## سجل التصنيف الكامل
 
-كل صف أدناه هو حكم تصنيفي واحد على SREQ بعينه. العنوان ومعرف الأب ومسار الوثيقة مأخوذة من السجل؛ التصنيف مستخرج من المراجعة الدلالية المفصلة للمرحلة. التصنيفات لا تغيّر حالات السجل.
+كل صف أدناه هو حكم تصنيفي واحد على SREQ بعينه في مراجعة Cycle 2. أرقام الجدول تشمل SREQ-PH01-AUD-001 التاريخي المصنف SPLIT_REQUIRED رغم حالته RETIRED؛ اكتمال تقسيمه موثق منفصلاً ولا يدخل ضمن الـ17 finding الحي المتبقي.
 
 | المرحلة | SREQ | المتطلب الرئيسي | العنوان | التصنيف | وثيقة المصدر |
 |---|---|---|---|---|---|
@@ -69,6 +69,13 @@
 | PH-01 | `SREQ-PH01-AUD-004` | `REQ-PH01-AUDIT-TRAIL` | Audit unavailability policy | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
 | PH-01 | `SREQ-PH01-AUD-005` | `REQ-PH01-AUDIT-TRAIL` | Privacy-minimal payloads | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
 | PH-01 | `SREQ-PH01-AUD-006` | `REQ-PH01-AUDIT-TRAIL` | Restricted audit access | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-007` | `REQ-PH01-AUDIT-TRAIL` | Authentication audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-008` | `REQ-PH01-AUDIT-TRAIL` | Role-change audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-009` | `REQ-PH01-AUDIT-TRAIL` | Support-session audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-010` | `REQ-PH01-AUDIT-TRAIL` | Administrative-action audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-011` | `REQ-PH01-AUDIT-TRAIL` | Institution-change audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-012` | `REQ-PH01-AUDIT-TRAIL` | License-action audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
+| PH-01 | `SREQ-PH01-AUD-013` | `REQ-PH01-AUDIT-TRAIL` | Credential-change audit coverage | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-AUDIT-TRAIL.md` |
 | PH-01 | `SREQ-PH01-GW-001` | `REQ-PH01-GATEWAY-BOUNDARY` | TLS only | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-GATEWAY-BOUNDARY.md` |
 | PH-01 | `SREQ-PH01-GW-002` | `REQ-PH01-GATEWAY-BOUNDARY` | Token verification without business logic | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-GATEWAY-BOUNDARY.md` |
 | PH-01 | `SREQ-PH01-GW-003` | `REQ-PH01-GATEWAY-BOUNDARY` | Public/admin route separation | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-GATEWAY-BOUNDARY.md` |
@@ -80,13 +87,13 @@
 | PH-01 | `SREQ-PH01-CONN-005` | `REQ-PH01-CORE-CONNECTIVITY` | Schema and signature validation | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-CORE-CONNECTIVITY.md` |
 | PH-01 | `SREQ-PH01-CONN-006` | `REQ-PH01-CORE-CONNECTIVITY` | Institution connectivity state | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-CORE-CONNECTIVITY.md` |
 | PH-01 | `SREQ-PH01-MSG-001` | `REQ-PH01-MESSAGE-RELIABILITY` | Atomic outbox | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
-| PH-01 | `SREQ-PH01-MSG-002` | `REQ-PH01-MESSAGE-RELIABILITY` | Idempotent inbox | `MERGE_CANDIDATE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
+| PH-01 | `SREQ-PH01-MSG-002` | `REQ-PH01-MESSAGE-RELIABILITY` | Idempotent inbox | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-003` | `REQ-PH01-MESSAGE-RELIABILITY` | Retry and dead-letter semantics | `SPLIT_REQUIRED` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-004` | `REQ-PH01-MESSAGE-RELIABILITY` | Per-key ordering | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-005` | `REQ-PH01-MESSAGE-RELIABILITY` | Event immutability | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
 | PH-01 | `SREQ-PH01-MSG-006` | `REQ-PH01-MESSAGE-RELIABILITY` | Common event envelope | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-MESSAGE-RELIABILITY.md` |
-| PH-01 | `SREQ-PH01-IDEM-001` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Stable scoped keys | `MERGE_CANDIDATE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
-| PH-01 | `SREQ-PH01-IDEM-002` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Correlation propagation | `MERGE_CANDIDATE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
+| PH-01 | `SREQ-PH01-IDEM-001` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Stable scoped keys | `ATOMIC` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
+| PH-01 | `SREQ-PH01-IDEM-002` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Correlation propagation | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
 | PH-01 | `SREQ-PH01-IDEM-003` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Institution identity mapping | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
 | PH-01 | `SREQ-PH01-IDEM-004` | `REQ-PH01-IDEMPOTENCY-AND-CORRELATION` | Retention covers reconciliation | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-IDEMPOTENCY-AND-CORRELATION.md` |
 | PH-01 | `SREQ-PH01-POL-001` | `REQ-PH01-POLICY-AND-OWNER-GATES` | Externalized thresholds | `POLICY_RULE` | `acc-architecture/execution-phases/phase-01-platform-foundation/REQ-PH01-POLICY-AND-OWNER-GATES.md` |
@@ -206,7 +213,7 @@
 | PH-03 | `SREQ-PH03-MLS-004` | `REQ-PH03-SOFTWARE-LICENSE-ISSUANCE` | Buyer validation path | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-03-inventory-order-payment-delivery-events/REQ-PH03-SOFTWARE-LICENSE-ISSUANCE.md` |
 | PH-04 | `SREQ-PH04-DEN-001` | `REQ-PH04-DELIVERY-ENABLEMENT` | Policy-gated enablement | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-ENABLEMENT.md` |
 | PH-04 | `SREQ-PH04-DEN-002` | `REQ-PH04-DELIVERY-ENABLEMENT` | Provider-agnostic boundary | `ARCHITECTURAL_CONSTRAINT` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-ENABLEMENT.md` |
-| PH-04 | `SREQ-PH04-DEN-003` | `REQ-PH04-DELIVERY-ENABLEMENT` | No duplicate fulfilment per SellerOrder | `DUPLICATE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-ENABLEMENT.md` |
+| PH-04 | `SREQ-PH04-DEN-003` | `REQ-PH04-DELIVERY-ENABLEMENT` | No duplicate fulfilment per SellerOrder | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-ENABLEMENT.md` |
 | PH-04 | `SREQ-PH04-SHP-001` | `REQ-PH04-SHIPMENT-CREATION` | Create from OrderConfirmed | `ATOMIC` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-SHIPMENT-CREATION.md` |
 | PH-04 | `SREQ-PH04-SHP-002` | `REQ-PH04-SHIPMENT-CREATION` | Idempotent creation | `ATOMIC` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-SHIPMENT-CREATION.md` |
 | PH-04 | `SREQ-PH04-SHP-003` | `REQ-PH04-SHIPMENT-CREATION` | Software-only orders | `POLICY_RULE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-SHIPMENT-CREATION.md` |
@@ -229,14 +236,13 @@
 | PH-04 | `SREQ-PH04-DEX-003` | `REQ-PH04-DELIVERY-EXCEPTIONS` | Failure not inferred | `POLICY_RULE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-EXCEPTIONS.md` |
 | PH-04 | `SREQ-PH04-DOP-001` | `REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS` | Delivery events | `BLOCKED_BY_OWNER_DECISION` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS.md` |
 | PH-04 | `SREQ-PH04-DOP-002` | `REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS` | Notifications to parties | `NEEDS_USE_CASE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS.md` |
-| PH-04 | `SREQ-PH04-DOP-003` | `REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS` | Audit of delivery operations | `MERGE_CANDIDATE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS.md` |
+| PH-04 | `SREQ-PH04-DOP-003` | `REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS` | Audit of delivery operations | `ATOMIC` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS.md` |
 | PH-04 | `SREQ-PH04-DOP-004` | `REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS` | Operational indicators | `MERGE_CANDIDATE` | `acc-architecture/execution-phases/phase-04-accmared-internal-delivery/REQ-PH04-DELIVERY-STATUS-AND-OPERATIONS.md` |
 
 ## Findings ذات أولوية
 
 ### المتطلبات الفرعية التي تحتاج تفكيكاً
 
-هذه قائمة SREQ فقط. لكل متطلب، يُرجى فصل السلوكيات ذات trigger أو outcome أو سياسة أو اختبار مستقل في دورة لاحقة، مع الحفاظ على parent والـAC وسجل التغيير. لا تُنشأ معرفات بديلة قبل إتمام التفكيك ومراجعة صاحب القرار.
 
 | المرحلة | SREQ | العنوان | ملاحظة المراجعة |
 |---|---|---|---|
@@ -248,7 +254,7 @@
 | PH-01 | `SREQ-PH01-LIC-004` | Renew, suspend, revoke, expire | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-LIC-005` | Propagation to ACCore | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-01 | `SREQ-PH01-LICV-003` | Offline local verification | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
-| PH-01 | `SREQ-PH01-AUD-001` | Coverage of foundation operations | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
+| PH-01 | `SREQ-PH01-MSG-002` | Idempotent inbox | يفصل تسجيل receipt قبل المعالجة عن تطبيق الأثر مرة واحدة؛ لا يوجد دمج موصى به. |
 | PH-01 | `SREQ-PH01-MSG-003` | Retry and dead-letter semantics | يلزم فصل نتائج/عمليات lifecycle أو آثار المصادقة/الإصدار/النشر/الاستعادة التي يمكن اختبارها أو تشغيلها مستقلاً. |
 | PH-02 | `SREQ-PH02-PUB-004` | Reliable submission | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
 | PH-02 | `SREQ-PH02-ING-004` | Idempotent listing creation | تجميع الإرسال والإقرار/التكرار؛ إنشاء/تحديث وتجاهل الإصدارات؛ رؤية الفشل وإعادة الإرسال؛ أو فحوص checkout المتعددة مع سياسات غير محسومة. |
@@ -258,16 +264,27 @@
 | PH-03 | `SREQ-PH03-CNF-005` | Recipient-scoped handoff | يجمع كتابة split/outbox وإعادة التشغيل، أو fan-out/التسليم والصلاحيات، أو بيانات allocation متعددة القرارات؛ فصلها قبل baseline. |
 | PH-03 | `SREQ-PH03-PAY-002` | Per-SellerOrder allocation | يجمع كتابة split/outbox وإعادة التشغيل، أو fan-out/التسليم والصلاحيات، أو بيانات allocation متعددة القرارات؛ فصلها قبل baseline. |
 
-### التداخل والتكرار
+### مرشح الدمج المتبقي
 
-| المرحلة | SREQ | التصنيف | ملاحظة |
+لم يُنفذ دمج؛ لا يوجد دمج آمن مثبت في هذه الدورة. بقي `SREQ-PH04-DOP-004` فقط مرشحاً دون تغيير.
+
+| المرحلة | SREQ | التصنيف الحالي | ملاحظة |
 |---|---|---|---|
-| PH-01 | `SREQ-PH01-MSG-002` | `MERGE_CANDIDATE` | مراجعة الربط والتداخل الوظيفي قبل الدمج؛ لا دمج أو حذف في هذه الدورة. |
-| PH-01 | `SREQ-PH01-IDEM-001` | `MERGE_CANDIDATE` | مراجعة الربط والتداخل الوظيفي قبل الدمج؛ لا دمج أو حذف في هذه الدورة. |
-| PH-01 | `SREQ-PH01-IDEM-002` | `MERGE_CANDIDATE` | مراجعة الربط والتداخل الوظيفي قبل الدمج؛ لا دمج أو حذف في هذه الدورة. |
-| PH-04 | `SREQ-PH04-DEN-003` | `DUPLICATE` | تداخل موصوف في التقرير التفصيلي مع سجلات التدقيق/الرؤية التشغيلية أو استثناءات التسليم؛ يلزم قرار دمج مع إبقاء التتبع. |
-| PH-04 | `SREQ-PH04-DOP-003` | `MERGE_CANDIDATE` | تداخل موصوف في التقرير التفصيلي مع سجلات التدقيق/الرؤية التشغيلية أو استثناءات التسليم؛ يلزم قرار دمج مع إبقاء التتبع. |
-| PH-04 | `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | تداخل موصوف في التقرير التفصيلي مع سجلات التدقيق/الرؤية التشغيلية أو استثناءات التسليم؛ يلزم قرار دمج مع إبقاء التتبع. |
+| PH-04 | `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | بقي دون قرار دمج؛ يتطلب مراجعة مستقلة للتداخل مع متطلبات التدقيق/المؤشرات. |
+
+### نتيجة إعادة تقييم findings الدورة الثانية
+
+| SREQ | التصنيف السابق | نتيجة Cycle 2 | الإجراء/الحالة |
+|---|---|---|---|
+| `SREQ-PH01-AUD-001` | `SPLIT_REQUIRED` | `SPLIT_REQUIRED` — أُنجز التفكيك | السجل الأصلي ومعياره محفوظان بحالة `RETIRED`؛ أضيفت سبعة صفوف ذرية DRAFT بمعايير فريدة. |
+| `SREQ-PH01-MSG-002` | `MERGE_CANDIDATE` | `SPLIT_REQUIRED` | لا دمج؛ بقي تفكيك فصل تسجيل الاستلام عن تطبيق الأثر مفتوحاً. |
+| `SREQ-PH01-IDEM-001` | `MERGE_CANDIDATE` | `ATOMIC` | لم يعد مرشح دمج؛ لا تغيير على صف المتطلب. |
+| `SREQ-PH01-IDEM-002` | `MERGE_CANDIDATE` | `NEEDS_USE_CASE` | لا دمج؛ فجوة Use Case قائمة. |
+| `SREQ-PH04-DEN-003` | `DUPLICATE` | `BLOCKED_BY_OWNER_DECISION` | التشابه غير كافٍ لإثبات التكرار؛ `ODEC-010` يبقى مفتوحاً، بلا حذف أو دمج. |
+| `SREQ-PH04-DOP-003` | `MERGE_CANDIDATE` | `ATOMIC` | لا دمج؛ سلوك تدقيق العمليات يبقى مستقلاً في هذه المراجعة. |
+| `SREQ-PH04-DOP-004` | `MERGE_CANDIDATE` | `MERGE_CANDIDATE` | بقي مرشحاً، دون دمج. |
+
+من أصل 17 finding تفكيك في الدورة الأولى، أُغلق واحد فقط (AUD-001) وأعيد تصنيف MSG-002 من المرشحين؛ بقي 17 finding تفكيك حياً. لا تحسم هذه النتائج قراراً أو اعتماداً من المالك.
 
 ## حدود المرحلة وملاحظات التدقيق
 
