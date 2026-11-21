@@ -2,8 +2,8 @@
 
 **الحكم الحالي: غير جاهزة كـRequirements Baseline للتنفيذ.** لا توجد صفوف `ACCEPTED`، وتوجد فجوات Use Case وقرارات مالك وتصنيفات ذرية معلقة. نجاح المدقق الهيكلي واختباراته لا يغير هذا الحكم.
 
-**الدورة:** ARH-2026-11-21-C25<br>
-**الأساس:** `bbf3079b31d46203b627748e5737f1fcd4b0c251`
+**الدورة:** ARH-2026-11-21-C26<br>
+**الأساس:** `ebbd9be4d50fd02d62dc12883852d29cf1350f3a`
 
 ## الأرقام التي تمنع إعلان الجاهزية
 
@@ -13,6 +13,21 @@
 - قرارات المالك: 209 صفوف تحمل قرارات/بوابات مفتوحة. ومن الفئات الفرعية: 47 `BLOCKED_BY_OWNER_DECISION` و42 `NEEDS_USE_CASE` بحسب المراجعة الدلالية.
 - التحقق: 233/233 SREQ لها مرجع تحقق مخطط. لا توجد نتائج اختبار SREQ منفذة في السجل؛ لذلك لا تُسجل أي منها كـPASS.
 - التغطية البنيوية: كل SREQ يحمل AC ومراجع تحقق، وجميع علاقات C1/C2 ومسارات الوثائق وصفوف Markdown مطابقة في المدقق؛ العدد الحالي 233/233. هذا يثبت سلامة شكلية/مرجعية فقط، لا صلاحية المعيار أو التنفيذ.
+
+## إعادة التقييم في Cycle 26
+
+أكملت سبع مراجعات مستقلة، واحدة لكل finding حي، ثم توليفاً دون إخفاق. بقيت `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005` و`SREQ-PH03-PAY-002` جميعها `SPLIT_REQUIRED`؛ `PAY-002` وحده أيضاً `OWNER_BLOCKED`، و`REC-004` ليس `OWNER_BLOCKED`. لم يظهر بعد محتوى Cycle 25 عقد معتمد أو قرار مالك محلول أو اختبار قبول SREQ منفذ جديد يبرر تغيير requirement أو AC أو registry أو IDs أو التصنيف. بقي الحكم غير جاهز؛ لا `ACCEPTED` ولا `IMPLEMENTATION_READY`، ولا child IDs أو PH-05 أو استنتاج سياسة/بديل.
+
+### بوابات القبول التي بقيت مفتوحة
+
+- `INST-004`: نمط المصادقة وschema ودورة حماية الاعتماد ومراجعة الأمن وربط Use Case (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006`).
+- `MSG-002`: receipt/claim وACK ونطاق idempotency والاحتفاظ وduplicate/recovery (`ADR-022-GATE`, `UNKN-002`).
+- `PUB-004` و`REC-004`: receipt و`listing_id` وduplicate/rejection/retry والنتيجة والرؤية التشغيلية/ACCore (`PUB-005/006`); `REC-004` ليس `OWNER_BLOCKED`.
+- `CHK-003`: عقد checkout/session وmulti-seller وTTL ولقطات tax/currency/delivery (`UNKN-006`, `ODEC-003/009`, `RGAP-PH02-003/009`).
+- `CNF-005`: إسقاط المستلم/الدور والـschema/cardinality/disclosure وACK/recovery (`ADR-019-GATE`, `RP-04`).
+- `PAY-002`: قدرات المزود وعدد المحاولات وسياسة Finance/Legal/المؤسسة وملكية settlement (`ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003`); وحده يبقى `OWNER_BLOCKED` إضافة إلى `SPLIT_REQUIRED`.
+
+لا تُعامل العقود المقترحة أو الاختبارات المخططة أو نتائج المدقق البنيوي/اختبارات الوحدة كاعتماد أو اختبار قبول وظيفي. لا يتغير أي capability أو state أو flow أو path أو alternative، ولا تُملأ فجوات Use Case بالتخمين.
 
 ## إعادة التقييم في Cycle 25
 

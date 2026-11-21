@@ -1019,3 +1019,45 @@ Exactly four files, all under `acc-architecture/validation/`: `atomicity-review-
 ### Cycle 25 content push and post-push verification
 
 The content commit `d348ab60939326484cfa06eb4346279f63e585bb` has Cycle 25 base `bbf3079b31d46203b627748e5737f1fcd4b0c251` as its parent and changes exactly the four validation reports listed above. Immediately before pushing, a fresh fetch confirmed `origin/main` still equaled the Cycle 25 base and the content commit's parent; staged scope and whitespace checks passed. `git push origin HEAD:main` succeeded as a fast-forward from `bbf3079` to `d348ab6`, without force. Immediately after the push, `git ls-remote` and, after fetch, `origin/main` both agreed on `d348ab60939326484cfa06eb4346279f63e585bb`; the worktree was clean. This verification record is a separate report-only follow-up; the final follow-up SHA and worktree state are reported at task completion.
+
+
+## Cycle 26: ARH-2026-11-21-C26
+**Base commit:** `ebbd9be4d50fd02d62dc12883852d29cf1350f3a` (`origin/main` عند بدء Cycle 26).<br>
+**Cycle type:** report-only reassessment; لا requirement أو AC أو registry row أو ID أو child ID أو classification أو decision أو ADR أو contract أو architecture source أو application code أو capability changed.<br>
+**Push target:** `origin/main` وفق التفويض المستمر؛ fast-forward فقط ودون force push.
+
+### Reassessment and evidence-supported outcome
+
+- أُنجزت سبع مراجعات مستقلة read-only، واحدة لكل finding حي، ثم توليف دون إخفاق. بقيت `SREQ-PH01-INST-004`, `SREQ-PH01-MSG-002`, `SREQ-PH02-PUB-004`, `SREQ-PH02-REC-004`, `SREQ-PH02-CHK-003`, `SREQ-PH03-CNF-005` و`SREQ-PH03-PAY-002` جميعها `SPLIT_REQUIRED`; `SREQ-PH03-PAY-002` وحده أيضاً `OWNER_BLOCKED`. `SREQ-PH02-REC-004` ليس `OWNER_BLOCKED`.
+- راجع كل مراجع المصدر متطلبه الأصلي والصف الدقيق في `requirements-registry.csv` ومعايير القبول والقرارات/العقود/الفجوات المرتبطة وتاريخ Git. مقارنة محتوى Cycle 25 `d348ab60939326484cfa06eb4346279f63e585bb` بالأساس الحالي أظهرت commit تحقق دفع واحداً يغيّر `requirements-change-report.md` فقط. لم يتغير أي مصدر متطلبات أو AC أو CSV أو ADR أو عقد أو قرار مالك أو نتيجة قبول.
+- لا يظهر عقد معتمد جديد أو قرار مالك محلول أو نتيجة قبول SREQ منفذة تبرر تغيير نص requirement أو AC أو صف/حالة registry أو classification أو ID أو إنشاء child IDs. المسودات والافتراضات والمقترحات والاختبارات المخططة والفحوص الهيكلية وتقارير المراجعة واختبارات الوحدة العامة ليست موافقة أو قبولاً وظيفياً منفذاً.
+- الحدود المفتوحة باقية: `INST-004` مصادقة الموصل والـschema وحماية الاعتماد ومراجعة الأمن وربط Use Case (`ADR-015-GATE`, `RP-16`, `RGAP-PH01-001/005/006`); `MSG-002` receipt/claim وACK ونطاق المفتاح/الاحتفاظ ونتيجة duplicate والتعافي (`ADR-022-GATE`, `UNKN-002`); `PUB-004` receipt و`listing_id` وduplicate/rejection/retry/result contract (`PUB-005/006`); `REC-004` تسجيل الرفض ورؤيته لـoperations وACCore بما يتجاوز `FAILED`/resubmission (`PUB-005`); `CHK-003` عقد checkout/session والـsnapshots وحد multi-seller والـTTL وحقول tax/currency/delivery (`UNKN-006`, `ODEC-003/009`, `RGAP-PH02-003/009`); `CNF-005` إسقاط recipient/role والـschema/cardinality/disclosure وACK/recovery (`ADR-019-GATE`, `RP-04`); `PAY-002` قدرة المزود وعدد المحاولات وسياسة Finance/Legal/المؤسسة وملكية settlement (`ADR-016-GATE`, `ASSUM-003`, `RGAP-PH03-003`). لم تُحسم أي نقطة بالاستنتاج.
+- لم تُحذف أو تُضيّق capabilities أو states أو flows أو paths أو alternatives. ظلت فجوات Use Case وقرارات المالك صريحة؛ لم تُضف PH-05 أو child IDs، ولم تُرقّ أي حالة إلى `ACCEPTED` أو `IMPLEMENTATION_READY`.
+
+### Changed files
+
+أربعة تقارير فقط، كلها داخل `acc-architecture/validation/`: `atomicity-review-report.md`, `requirements-coverage-matrix.md`, `requirements-readiness-report.md`, وهذا التقرير. لم يتغير أي requirement source أو AC أو registry row أو ID أو ADR أو decision أو contract أو architecture source أو application code أو ملف خارج `acc-architecture/`.
+
+### Exact counts (unchanged)
+
+- Registry: 278 rows (45 main requirements, 233 SREQ); 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, and 0 `ACCEPTED`.
+- Atomicity: 58 `ATOMIC`; 17 `SPLIT_REQUIRED` (10 historical retired sources + 7 live findings); 1 `MERGE_CANDIDATE`; 0 confirmed `DUPLICATE`.
+- `use_case_id` `TBD`: 188 rows. Nonempty open-decision rows: 209 (60 distinct decision/gate references). Unique AC IDs: 270; unique C2 containers: 29; structurally missing C4 bindings: 0.
+- All 233 SREQ rows retain AC and planned-verification references (233/233); those are not executed SREQ acceptance evidence. Registry is 279 CRLF lines with zero bare LF.
+
+
+### Validation outcomes before content push
+
+- On an isolated temporary copy, `validate_requirements.py --check` and `--check --require-rows` both **PASS** on 278 rows. The required queries exited 0 and returned 113 rows for PH-01, 30 for PH-02 with `SYS-ACCORE`, and 22 for `CNT-ACC-CATALOG`.
+- `--check --strict-ready` **FAILS** (exit 1, 908 errors), as expected: 278 status gates, 188 unresolved function/Use Case placeholders, 209 open-decision rows, and 233 planned-only verification references. This does not establish readiness; no statuses were promoted and no functional SREQ acceptance result was established.
+- Python test suites on the isolated copy: `acc-architecture/execution-phases/tests` **9/9 PASS** and `architecture-assistant/tests` **65/65 PASS**. Neither suite is SREQ acceptance evidence.
+- All eight available architecture checks exited 0 on the isolated copy: `validate_architecture.py` (four-level structural/registry checks only); `validate_artifact_depth.py` (88 reviewed, 0 incomplete/findings, human review still required); `validate_consistency_artifacts.py` (65/65 IDs, 0 findings, semantic review still required); `validate_traceability.py`; `validate_references.py`; `validate_diagrams.py` (55 Mermaid blocks rendered with preinstalled `/usr/bin/chromium` via `PUPPETEER_EXECUTABLE_PATH`, without installation); `validate_release_status.py` (`Gate7=IN_PROGRESS`, `manifest=IN_PROGRESS`); and `generate_coverage_report.py` (C1 15/7/8, C2 40/17/23, C3 35/35/0, DECISION 22/22/0 for in-scope/decomposition-complete/exceptions-not-complete). These checks do not establish semantic completeness, implementation, owner approval, or acceptance.
+- The two required handoff checks remain **NOT_VERIFIED**, not PASS: `/home/ubuntu/work/acc-architecture-handoff/run-remaining-validations.sh` was absent (exit 127), and `/home/ubuntu/work/acc-architecture-handoff/audit-remaining-registries-links.py` was absent (exit 2). Available validators are not substitutes.
+- Registry metrics were recalculated: 278 rows (45 main, 233 SREQ), 218 `DRAFT`, 50 `OWNER_REVIEW`, 10 `RETIRED`, 0 `ACCEPTED`; 188 `use_case_id` TBD rows; 209 nonempty open-decision rows; 270 unique AC IDs; 29 C2 containers; 0 structurally missing C4 bindings; 233/233 SREQ retain planned verification references. The registry remains 279 CRLF lines with zero bare LF. No executed functional SREQ acceptance result is established.
+
+
+### Cycle 26 assistant-suite rerun and discrepancy (pre-push)
+
+- The first fresh final-state rerun recorded 64/65 tests passing; only `test_declared_schema_rejects_wrong_dialect` failed its assertion that the validator report a Draft 2020-12 dialect error.
+- Inspection found that this test edits `architecture-assistant/schemas/architecture-manifest.schema.json` via a path relative to the process working directory, while the validator resolves its schema directory relative to `__file__`. A disposable diagnostic run with a deliberately mismatched working directory reproduced the same assertion failure without modifying repository files.
+- The original failed run did not record its effective working directory, so the diagnostic confirms test-harness path sensitivity but cannot prove that this caused that particular failure. The test subsequently passed alone from each isolated copy's root, and a full rerun from the final isolated copy root passed 65/65. Thus the final isolated-root suite result is **PASS (65/65)**, with one earlier non-reproduced failure documented; no validator, test, application, or requirement source code was changed.
