@@ -158,7 +158,7 @@ Safe GET operation — idempotent by HTTP semantics. No idempotency key required
 | ADR | ADR-004 | ACCSystem stores marketplace projection, not source |
 | ADR | ADR-012 | Bounded-context services |
 | Function | FN-INT-PUBLISH | Product publication populates catalog that this interface queries |
-| Container | CNT-ACC-SEARCH | Search & Discovery also exposes query interface (relationship documented in separate query interface spec (OPEN)) |
+| Container | CNT-ACC-SEARCH | A separate query interface is a candidate (OPEN); no source maps IF-ACC-CATALOG-QUERY to CNT-ACC-SEARCH or a C3 component. The registered provider remains CNT-ACC-CATALOG; its internal destination is UNKNOWN pending Catalog/API owner decision. Do not infer CMP-CAT-LISTING or CMP-CAT-SEARCHSYNC as the target. |
 
 ---
 
@@ -320,6 +320,9 @@ Logical provider/consumer roles are as registered above; an ACCore-hosted HTTPS 
 | Provider | CNT-ACC-INTEGRATION | Institution Integration Gateway |
 | Consumer | CNT-ACC-ORDERS | Order Management |
 | Consumer | CMP-ORD-SAGA | Order Saga Orchestrator |
+
+> [!NOTE]
+> `IF-ACC-RESERVE-SAGA` ends at the registered CNT-ACC-INTEGRATION boundary. The Integration-to-ACCore relay through CMP-INT-RESERVATION and CMP-CON-RESERVATION has no registered `IF-*` ID; do not reuse this Orders-to-Integration ID for the connector leg. The registered response interface is `IF-ACR-RESERVATION-RESP`; its query/callback and transport mapping remain OPEN.
 
 ### 3.3 Purpose
 
@@ -592,9 +595,12 @@ Defines the standard envelope format for all events published to and consumed fr
 }
 ```
 
-### 5.5 Catalogue of Business Events by Consumer
+### 5.5 Catalogue of Event Types and Event-Like Integration Messages
 
 CONFIRMED from idea.md §6.3:
+
+> [!IMPORTANT]
+> This catalogue includes both Event Bus business events and event-like integration messages; inclusion here does not by itself assert Event Bus publication. ACCore publication messages arrive through `IF-ACR-PUBLISH-EVENT`. The Catalog→Event Bus→Search Sync path is recorded in C3; exact Catalog event names/schemas and their mapping from ACCore source messages remain OPEN. Integration processing/audit records must not be treated as aliases for Catalog state events.
 
 | Event Type | Publisher | Key Consumers | `data` Shape Summary |
 |---|---|---|---|
@@ -605,15 +611,19 @@ CONFIRMED from idea.md §6.3:
 | `PaymentFailed` | CNT-ACC-PAYMENT | CNT-ACC-ORDERS | Same scoped identity plus failure evidence; an unmapped or ambiguous provider result remains `UNKNOWN` and is reconciled — ASSUMPTION |
 | `ShipmentCreated` | CNT-ACC-DELIVERY | CNT-ACC-ORDERS, CNT-ACC-NOTIFICATIONS | `shipment_id`, `order_id` — ASSUMPTION |
 | `ShipmentDelivered` | CNT-ACC-DELIVERY | CNT-ACC-ORDERS, CNT-ACC-NOTIFICATIONS | `shipment_id`, `order_id`, `proof_of_delivery_ref` — ASSUMPTION |
-| `ProductListingPublished` | CNT-ACC-INTEGRATION | CNT-ACC-CATALOG | `listing_id`, `seller_product_id`, `platform_institution_id`, `version` — ASSUMPTION |
-| `ProductListingWithdrawn` | CNT-ACC-INTEGRATION | CNT-ACC-CATALOG | `listing_id` — ASSUMPTION |
+| `ProductListingPublished` | ACCore Product Master / Outbox (source message; bus publication not established) | CNT-ACC-INTEGRATION via `IF-ACR-PUBLISH-EVENT`; Catalog processing follows under an open mapping | Source payload; exact wire fields and later Catalog state event mapping OPEN |
+| `ProductListingUpdated` | ACCore Product Master / Outbox (source message; bus publication not established) | CNT-ACC-INTEGRATION via `IF-ACR-PUBLISH-EVENT`; Catalog processing follows under an open mapping | Source payload; exact wire fields and later Catalog state event mapping OPEN |
+| `ProductListingWithdrawn` | ACCore Product Master / Outbox (source message; bus publication not established) | CNT-ACC-INTEGRATION via `IF-ACR-PUBLISH-EVENT`; Catalog processing follows under an open mapping | Source payload; exact wire fields and later Catalog state event mapping OPEN |
 | `LicenseIssued` | CNT-ACC-LICENSE | CNT-ACC-INTEGRATION, CNT-ACC-AUDIT | `license_id`, `institution_id`, `product`, `modules` — ASSUMPTION |
 | `LicenseActivated` | CNT-ACC-LICENSE | CNT-ACC-NOTIFICATIONS and applicable institutional integration/audit paths | Workflow-specific fields and readiness timing remain proposed; see FN-LIC-ACTIVATE and dynamic-license-flow §7 |
 | `LicenseRevoked` | CNT-ACC-LICENSE | CNT-ACC-INTEGRATION, CNT-ACC-NOTIFICATIONS | `license_id`, `reason` — ASSUMPTION |
-| `StockAvailabilityChanged` | CNT-ACC-INTEGRATION | CNT-ACC-CATALOG | `listing_id`, `availability_indicator` — ASSUMPTION |
+| `StockAvailabilityChanged` | ACCore inventory source described in `data-architecture.md` (internal bus publication not established) | CNT-ACC-INTEGRATION; Catalog/Offer route depends on approved mapping | Availability projection; schema and route OPEN |
 
 > [!NOTE]
 > `data` field shapes above are ASSUMPTION. Exact field names, types, required/optional status, and event-specific schemas must be formally specified per event in an AsyncAPI specification before implementation. The table shows what is inferable from idea.md §6.3 context.
+
+> [!NOTE]
+> `ProductPublicationReceived`, `ProductPublicationRejected`, and `ProductPublicationProcessed` are Integration processing/audit records in the component documentation. Catalog records use candidate names such as `ListingApproved`, `ListingUpdated`, and `ListingRemoved`; mapping among these and the ACCore `ProductListing*` source messages is OPEN. Do not treat these names as wire aliases or assign an exact source-message-to-state-event mapping; the separate Catalog-to-Event-Bus-to-Search-Sync path is recorded in C3.
 
 ### 5.6 Delivery Guarantees
 

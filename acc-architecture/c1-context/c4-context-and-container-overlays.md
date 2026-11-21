@@ -13,7 +13,7 @@
 - A relationship shown as `logical integration` is not a synchronous or deployment guarantee.
 
 > [!NOTE]
-> **Arrow convention:** Arrows show the **control/data-flow initiator direction**. An arrow from A to B means A initiates the call, message, or connection to B. Response data, callbacks, and events may flow in either direction and are not separately depicted unless explicitly labelled. This is the reversible technical baseline in ADR-020, not stakeholder approval; owner review remains open.
+> **Arrow convention:** Arrows show the **logical interaction initiator**. An arrow from A to B means A initiates the request or message to B; it does not specify physical network-connection initiation. Response data, callbacks, and events may flow in either direction and are not separately depicted unless explicitly labelled. Transport mode is governed separately by ADR-015 and institution policy. This is the reversible technical baseline in ADR-020, not stakeholder approval; owner review remains open.
 
 ## C1 — System Landscape
 

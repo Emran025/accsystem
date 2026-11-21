@@ -2,7 +2,7 @@
 
 # Current validation status — 2026-11-21
 
-> This checkpoint covers the C1/C2 separation and the source-based semantic correction cycle for seven selected C3 diagrams. The dated material below is historical. Structural coverage and renderer acceptance do not certify relationship semantics, stakeholder approval, implementation behavior, security, or production readiness.
+> This checkpoint records the post-`d63a60d` architecture-contract review: catalog and reservation interface boundaries, event ownership, logical schema ownership versus physical storage, licensing delivery baseline, payment/reconciliation authority, and interaction-arrow meaning. Earlier cycle notes below are historical. Structural coverage and renderer acceptance do not certify semantic truth, stakeholder approval, implementation behavior, security, or production readiness.
 
 ## Current checks
 
@@ -15,11 +15,24 @@
 | `validate_artifact_depth.py` | STRUCTURE PRESENT — 88 documents; 0 heuristic incomplete outlines/findings | Outline depth only; human review remains required. |
 | `validate_diagrams.py` / Mermaid CLI 12.0.0 | PASS — rendered and checked 55 Mermaid blocks | Parser/render acceptance plus registered-ID checks; not C4 semantic correctness. |
 | `validate_release_status.py` | CONSISTENT — Gate 7 and manifest remain `IN_PROGRESS`; 0 open findings | Status records are coherent; this is not release approval. |
+| `validate_requirements.py --check` | PASS — schema/references valid; 0 rows | Empty scaffold only; does not establish requirements completeness or semantic correctness. |
 | `git diff --check` | PASS | No whitespace errors in the reviewed change set. |
 
-The existing C1 scope check found one `SYS-ACCSYSTEM` black-box, 8 registered actor nodes, and 7 client/external system or service nodes, with no `CNT-*` or `CMP-*` internals. The C2 landscape contains all 17 registered ACCSystem containers. No C1 or C2 diagram changed in this correction cycle; the only C2 edit clarifies Gateway authentication/routing scope and leaves authorization to downstream services. The current Mermaid run rendered all 55 blocks.
+The C1 scope check found one `SYS-ACCSYSTEM` black-box, 8 registered actor nodes, and 7 client/external system or service nodes, with no `CNT-*` or `CMP-*` internals. The C2 landscape retains all 17 registered ACCSystem containers. This cycle changed explanatory arrow notes and connector/interface documentation, not C1/C2 diagram topology or node inventory. The current Mermaid run rendered all 55 blocks.
 
-## C3 semantic correction cycle
+## Architecture-contract review after `d63a60d`
+
+- **Catalog query:** `IF-ACC-CATALOG-QUERY` remains registered at `CNT-ACC-CATALOG`; its internal C3 destination is `UNKNOWN`. `CNT-ACC-SEARCH` remains only a candidate, not an asserted mapping.
+- **Reservation relay:** `IF-ACC-RESERVE-SAGA` ends at the registered `CNT-ACC-INTEGRATION` boundary. Its relay through Integration to ACCore has no registered connector-leg `IF-*` ID; transport, schema, and query/callback mapping remain open. ADR-018 records the UNKNOWN-safe technical baseline but remains owner-review-required and not stakeholder-approved.
+- **Publication events:** ACCore `ProductListing*` messages are source-side Outbox messages delivered through `IF-ACR-PUBLISH-EVENT`; they are not asserted as ACCSystem Event Bus events. The separate Catalog-to-Event-Bus-to-Search-Sync path is recorded in C3; exact Catalog state-event names/schemas and mapping from ACCore source messages remain open.
+- **Storage:** per-bounded-context logical schema and migration ownership, with no cross-context reads/writes even when co-hosted, is recorded as a `PROPOSED` baseline under ADR-012, which itself remains `PROPOSED`. Physical isolation is explicitly `OPEN`: dedicated schemas in a shared database versus separate databases or instances requires owner/operations selection. The ACCSystem engine remains unselected between PostgreSQL and MySQL; no vendor-specific DDL is asserted. ACCore's MySQL direction does not decide ACCSystem's engine.
+- **License delivery:** outbound-initiated ACCore connectivity is the ADR-015 baseline for firewalled institutions; polling, long-polling, or a persistent channel remain candidate mechanisms and protected inbound remains optional. This does not define a token-delivery interface, receiver, wire schema, acknowledgement, retry owner, or activation contract; those remain `OPEN`/`PROPOSED`.
+- **Payment/reconciliation:** reconciliation may record settlement evidence and discrepancies and raise alerts. The payment orchestrator is not assigned `SellerCredit*` or settlement-event publication; corrective-command authority and route remain open.
+- **Arrow convention:** ADR-020 describes the logical interaction initiator, not physical network-connection initiation. It remains owner-review-required and not stakeholder-approved.
+
+These are documented constraints and proposed baselines, not claims of owner acceptance. No interface, event, schema, transport, or approval has been inferred merely to close a documentation gap.
+
+## Previous C3 semantic correction cycle (historical)
 
 The seven selected C3 diagrams were reviewed against their component/container records, interfaces, events and documented flows. The corrections preserve all 28 registry-listed components across the seven decompositions; no registry entries or new component IDs were added.
 
@@ -31,11 +44,11 @@ The seven selected C3 diagrams were reviewed against their component/container r
 - **Payment:** represented provider settlement evidence flowing into reconciliation, both scheduled and manual triggers, and alerts; left report transfer, corrective-command authority/route and event mapping OPEN, with no direct reconciliation-to-EventBus edge.
 - **ACCore connector:** traced publication through Outbox and delivery-state updates; aligned all five displayed interfaces' provider/consumer roles to `registry/interfaces.json`; made clear that `IF-ACC-RESERVE-SAGA` is not the connector leg and kept its channel/schema OPEN.
 
-The corrections do not establish owner acceptance, stakeholder approval, implementation behavior, or production readiness. Remaining UNKNOWN/OPEN/PROPOSED matters include the catalog query's internal target, storage engines/DDL, final event and wire schemas, validation invocation order, token delivery/receipt contract, reservation channel/query modality, settlement evidence and correction path, and ADR-020 arrow-direction review.
+At that previous checkpoint, the listed corrections did not establish owner acceptance, stakeholder approval, implementation behavior, or production readiness. Its UNKNOWN/OPEN/PROPOSED inventory is historical; the current dispositions and outstanding gates are recorded above and below.
 
-## Still open
+## Current open gates
 
-Arrow direction in ADR-020 remains a reversible technical baseline requiring owner review and is not stakeholder-approved. Automated structure, traceability and renderer PASS do not resolve the listed semantic/contract gaps. No implementation completion, owner acceptance, stakeholder approval, security certification, or production readiness is asserted.
+The catalog query's internal target, ACCSystem physical storage engine/deployment/DDL, formal approval of ADR-012's proposed logical ownership rule and owner/operations selection of its physical isolation form, reservation connector-leg contract and query/callback modality, license token delivery/receipt details, exact Catalog event names/schemas and mapping from ACCore `ProductListing*` messages to Catalog state events (the Catalog-to-Event-Bus-to-Search-Sync path is recorded in C3), validation invocation order, and settlement/correction authority and event mapping remain unresolved. ADR-020's logical-arrow convention still requires owner review and is not stakeholder-approved. Automated structure, traceability, and renderer PASS do not resolve these semantic/contract gaps. No implementation completion, owner acceptance, stakeholder approval, security certification, or production readiness is asserted.
 
 ---
 

@@ -21,9 +21,11 @@ This view documents the product publication flow from ACCore's Product Master to
 - Product Listing exists in Catalog with assigned `listing_id`
 - Publication event is durable; search synchronization is asynchronous and may lag
 - ACCore holds `listing_id` as marketplace reference
-- `ProductListingPublished` event is on the Event Bus
+- Catalog publishes listing-state events through the Event Bus to Search and Discovery; exact event names/schemas and mapping from ACCore `ProductListing*` messages remain OPEN
 
 **Acknowledgment semantics and open contract gate:** the existing interface requires an acceptance receipt with an assigned or retained `listing_id`, not proof that search or other observers finished. The worker queues Catalog processing, but the documents do not establish how the Catalog-owned ID is available at receipt time. API Governance, Integration and Catalog must resolve the allocation/receipt or later-result mechanism with compatibility for the existing ID requirement before implementation. Do not treat a queued request or an in-progress duplicate as a completed catalog effect. Final processing is evidenced separately by catalog state and the event trail.
+
+> **Event boundary:** `ProductListingPublished`, `ProductListingUpdated`, and `ProductListingWithdrawn` are source-side ACCore Outbox messages delivered through `IF-ACR-PUBLISH-EVENT`; they are not asserted as internal Event Bus events. Integration processing/audit events and Catalog state events are separate event families. The Catalog→Event Bus→Search Sync path is recorded in C3; exact Catalog event names/schemas and mapping from ACCore source messages remain OPEN until Catalog/API Governance approval.
 
 ---
 
@@ -86,8 +88,8 @@ sequenceDiagram
         PUB->>CAT: Deliver queued validated publication
         CAT->>CAT: Apply business-version guard and create or update listing
         Note over CAT: Catalog assigns or retains listing_id, exact receipt timing remains open
-        CAT->>BUS: Publish catalog listing state event with causation
-        BUS->>SRC: Deliver catalog state event asynchronously
+        CAT->>BUS: Publish listing-state event / (path recorded, exact name and source-message mapping OPEN)
+        BUS->>SRC: Deliver subscribed Catalog state event asynchronously / (exact event name OPEN)
         SRC->>SRC: Apply current permitted catalog state to search
         Note over CAT,SRC: Search lag or retry does not invalidate acceptance
     end

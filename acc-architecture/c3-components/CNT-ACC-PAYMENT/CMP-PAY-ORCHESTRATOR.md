@@ -25,7 +25,7 @@ Seller configuration is constrained by platform, risk, legal, and provider polic
 The adapter exposes authorize, capture, void, refund, payment-code lookup, seller-credit/transfer status, and webhook/reconciliation normalization where supported. Unsupported capabilities are explicit errors or deferred states; no provider feature is assumed. Raw card data is never stored.
 
 ## Idempotency and audit
-Every operation is keyed by payment allocation/SellerOrder and operation-specific idempotency key. Ledger and reconciliation link provider reference, order, seller, currency, amount, commission, and reversal/duplicate relationships. Outbox/Inbox delivers `PaymentAuthorized`, `PaymentCaptured`, `PaymentUnknown`, `SellerCreditPending/Credited/Unknown`, and reconciliation events at least once.
+Every operation is keyed by payment allocation/SellerOrder and operation-specific idempotency key. Ledger and reconciliation link provider reference, order, seller, currency, amount, commission, and reversal/duplicate relationships. Outbox/Inbox supports at-least-once delivery, but the exact payment-event set and wire mapping remain OPEN. Do not assign `SellerCredit*` or settlement-event publication to this orchestrator: those belong to the future Settlement/Ledger boundary only if approved. Reconciliation records evidence/discrepancies and raises alerts; it is not asserted as an Event Bus publisher or corrective-command owner.
 
 **References:** ADR-016, ADR-017, financial-ledger-and-settlement.md, FN-PAY-AUTHORIZE.
 

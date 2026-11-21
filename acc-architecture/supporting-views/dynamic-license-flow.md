@@ -25,7 +25,7 @@ This view documents the license activation flow for ACCore institutions. It cove
 
 **Postconditions (success):**
 - Institutional license advances ISSUED → ACTIVATED → ACTIVE when the applicable delivery, acknowledgment and operation conditions are met
-- Signed entitlement token delivered to ACCore
+- Signed entitlement token reaches ACCore through a separate license-owned issuance/delivery operation; its approved interface, channel, receiver and acknowledgement remain OPEN
 - ACCore validates entitlement and enables licensed modules/features
 - LicenseIssued + LicenseActivated events on Event Bus (audit trail)
 
@@ -86,7 +86,9 @@ sequenceDiagram
         Note over LE,ACC: No token readiness or activation is inferred from a missing result
     end
 
-    Note over LE,ACC: This remains a PROPOSED logical sequence. Receiver component, interface, transport, ACK/receipt meaning, retry ownership and activation correlation are OPEN. No final delivery contract is asserted.
+    Note over LE,ACC: PROPOSED logical delivery. Receiver, interface, ACK, retry ownership, activation correlation and wire schema remain OPEN.
+    Note over IGW,ACC: ADR-015 transport-initiation baseline: ACCore outbound for firewalled institutions, with polling, long-polling or a persistent channel as candidate mechanisms. Protected inbound remains optional.
+    Note over LE,ACC: Arrows show the logical token path, not network initiation. This does not reuse read-only IF-ACC-LICENSE-VALIDATE or register a new delivery IF.
 
     Note over ADM,AUD: PHASE 4A - ONLINE PERIODIC VALIDATION
 

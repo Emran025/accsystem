@@ -24,7 +24,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 | CNT-ACR-INVENTORY | Bidirectional | Checks and commits inventory reservations |
 | CNT-ACR-SALES | Outbound | Delivers confirmed order data for sales record creation |
 | CNT-ACR-OUTBOX | Bidirectional | Reads outbound events from Outbox; writes incoming events to Inbox |
-| CNT-ACC-INTEGRATION | Bidirectional | IF-ACR-PUBLISH-EVENT (outbound), IF-ACR-RESERVATION-RESP (outbound), IF-ACC-RESERVE-SAGA (inbound) |
+| CNT-ACC-INTEGRATION | Bidirectional | IF-ACR-PUBLISH-EVENT and IF-ACR-RESERVATION-RESP are registered connector interfaces; reservation requests are relayed through CMP-INT-RESERVATION to CMP-CON-RESERVATION, but that connector leg has no registered IF-* ID and its transport/schema remain OPEN |
 | CNT-ACC-LICENSE | Outbound (via IF-ACC-LICENSE-VALIDATE) | Connector requests online license validation from the license provider |
 
 ---
@@ -51,7 +51,7 @@ CONFIRMED (idea.md §4.1): "Platform Connector — موصل التكامل، م�
 
 - **IF-ACR-PUBLISH-EVENT** (provider): Product publication events → CNT-ACC-INTEGRATION
 - **IF-ACR-RESERVATION-RESP** (provider): Reservation responses → CNT-ACC-INTEGRATION
-- **IF-ACC-RESERVE-SAGA** (consumer): Receives reservation requests from CNT-ACC-INTEGRATION
+- **Reservation request relay:** `IF-ACC-RESERVE-SAGA` terminates at CNT-ACC-INTEGRATION and is consumed by CNT-ACC-ORDERS / CMP-ORD-SAGA. Integration relays to CMP-CON-RESERVATION; no connector-leg IF-* ID is registered.
 - **IF-ACC-ORDER-CONFIRM** (consumer): Receives authorized recipient-scoped confirmation via the selected ADR-015 channel
 - **IF-ACC-LICENSE-VALIDATE** (consumer): Online license validation
 

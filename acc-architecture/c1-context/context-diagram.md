@@ -44,6 +44,6 @@ flowchart LR
     ACC -->|signed package distribution| CDN
 ```
 
-> **Arrow convention and approval:** This drawing follows the reversible technical convention recorded in ADR-020 (arrows indicate the interaction initiator, not exclusive data flow). ADR-020 remains `OWNER-REVIEW-REQUIRED` and `NOT STAKEHOLDER-APPROVED`; this diagram does not imply approval. ACCore connectivity mode remains policy-gated under ADR-015.
+> **Arrow convention and approval:** This drawing follows the reversible technical baseline recorded in ADR-020: arrows indicate the **logical interaction initiator**, not exclusive data flow or physical network-connection initiation. Responses/callbacks may flow back; ACCore transport remains separately policy-gated under ADR-015 (outbound-initiated default for firewalled institutions, protected inbound optional). ADR-020 remains `OWNER-REVIEW-REQUIRED` and `NOT STAKEHOLDER-APPROVED`; this diagram does not imply approval.
 
 **Coverage at this level:** one ACCSystem black-box system, eight people/actor nodes, and seven external system/service nodes. There are no `CNT-*` containers or `CMP-*` components in this C1 diagram.

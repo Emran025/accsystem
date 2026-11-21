@@ -75,6 +75,8 @@ This view documents the data entities, ownership boundaries, consistency models,
 - Reservation outcome (request/response relayed; decision at ACCore)
 - Order status references (integration reference IDs for seller commit)
 
+**Schema-ownership baseline (PROPOSED under ADR-012):** each bounded context owns its logical schema and migrations; no service may read or write another context's tables, even when contexts share a deployment unit. This records logical ownership, not the engine, DDL, or physical partitioning. ADR-012 leaves physical isolation `OPEN`: a dedicated schema in a shared database versus separate databases or instances needs owner/operations selection; see `deployment-view.md`.
+
 ---
 
 ## 4. Cross-Domain Data Flows
