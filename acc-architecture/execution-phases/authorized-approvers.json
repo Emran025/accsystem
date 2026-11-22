@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "purpose": "Allowlist of human or organizational identities authorized to approve requirement claims; an empty list is intentional until authority is formally recorded.",
+  "approvers": []
+}

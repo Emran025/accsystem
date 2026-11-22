@@ -7,13 +7,78 @@ GATES={'NOT_STARTED','IN_PROGRESS','BLOCKED','PASSED','WAIVED'}
 SCOPES={'IN_SCOPE','OUT_OF_SCOPE','EXTERNAL','UNRESOLVED'}
 DECOMP={'NOT_STARTED','IN_PROGRESS','COMPLETE','EXCEPTION','BLOCKED'}
 KINDS={'CONTEXT_TO_CONTAINER','CONTAINER_TO_COMPONENT','COMPONENT_TO_CODE','OPERATION_TO_FUNCTION','DECISION_TO_ELEMENT','EXCEPTION'}
+SCHEMA_DIR=Path(__file__).resolve().parents[1]/'schemas'
+
+def schema_errors(value, schema, path='$'):
+    """Small dependency-free JSON Schema subset used by the declared project schemas."""
+    errors=[]
+    typ=schema.get('type')
+    type_ok={'object': isinstance(value,dict), 'array': isinstance(value,list), 'string': isinstance(value,str), 'boolean': isinstance(value,bool), 'null': value is None}
+    if isinstance(typ,list):
+        if not any(type_ok.get(t,False) for t in typ): errors.append(f'{path}: expected one of {typ}')
+    elif typ and not type_ok.get(typ,False):
+        errors.append(f'{path}: expected {typ}')
+    if 'enum' in schema and value not in schema['enum']: errors.append(f'{path}: value {value!r} is not in enum')
+    if isinstance(value,str):
+        if 'minLength' in schema and len(value)<schema['minLength']: errors.append(f'{path}: shorter than minLength')
+        if 'pattern' in schema and not re.search(schema['pattern'],value): errors.append(f'{path}: does not match pattern {schema["pattern"]!r}')
+    if isinstance(value,dict):
+        for required in schema.get('required',[]):
+            if required not in value: errors.append(f'{path}.{required}: missing required property')
+        for key,child in schema.get('properties',{}).items():
+            if key in value: errors.extend(schema_errors(value[key],child,f'{path}.{key}'))
+        if schema.get('additionalProperties') is False:
+            allowed=set(schema.get('properties',{}))
+            for key in value:
+                if key not in allowed: errors.append(f'{path}: unexpected property {key!r}')
+        elif isinstance(schema.get('additionalProperties'),dict):
+            for key,val in value.items():
+                if key not in schema.get('properties',{}): errors.extend(schema_errors(val,schema['additionalProperties'],f'{path}.{key}'))
+    if isinstance(value,list) and isinstance(schema.get('items'),dict):
+        for index,item in enumerate(value): errors.extend(schema_errors(item,schema['items'],f'{path}[{index}]'))
+    return errors
+
+def validate_declared_schemas(root, regs, errors):
+    """Validate registry payloads against the schemas that explicitly describe them."""
+    # These three schemas describe the registry payloads themselves. The
+    # decision/function/interface schemas describe individual artifact
+    # documents, while their registry files are intentionally indexes with a
+    # smaller shape; applying those schemas to indexes would create a false
+    # PASS/FAIL signal. They are reported as not bound until an artifact JSON
+    # instance declares the corresponding schema.
+    declared={
+        'architecture-manifest.json': ('architecture-manifest.schema.json', lambda x:[x]),
+        'elements.json': ('architectural-element.schema.json', lambda x:x.get('elements',[])),
+        'decomposition-map.json': ('decomposition-map.schema.json', lambda x:[x]),
+    }
+    for registry,(schema_name,select) in declared.items():
+        schema_path=SCHEMA_DIR/schema_name
+        if not schema_path.is_file():
+            errors.append(f'{schema_path}: declared JSON Schema is missing')
+            continue
+        try: schema=json.loads(schema_path.read_text(encoding='utf-8'))
+        except (OSError,UnicodeError,json.JSONDecodeError) as exc:
+            errors.append(f'{schema_path}: invalid JSON Schema: {exc}'); continue
+        if not isinstance(schema,dict) or schema.get('type') not in {'object','array'}:
+            errors.append(f'{schema_path}: unsupported or malformed declared schema'); continue
+        if schema.get('$schema') != 'https://json-schema.org/draft/2020-12/schema':
+            errors.append(f'{schema_path}: schema dialect must be JSON Schema Draft 2020-12')
+        if schema.get('$id') != schema_name:
+            errors.append(f'{schema_path}: $id must match declared schema filename {schema_name!r}')
+        try: records=select(regs[registry])
+        except Exception as exc:
+            errors.append(f'{registry}: cannot select schema records: {exc}'); continue
+        if not isinstance(records,list): records=[records]
+        for index,record in enumerate(records):
+            for issue in schema_errors(record,schema,f'{registry}[{index}]'):
+                errors.append(f'{issue} (schema {schema_name})')
 
 def load(p, errors, required=False):
     if not p.is_file():
         if required: errors.append(f'{p}: required registry missing')
         return {}
     try:
-        value=json.loads(p.read_text(encoding='utf-8'))
+        value=json.loads(p.read_text(encoding='utf-8-sig'))
         if not isinstance(value,dict): errors.append(f'{p}: registry root must be an object'); return {}
         return value
     except (OSError,UnicodeError,json.JSONDecodeError) as e:
@@ -44,16 +109,24 @@ def check_exception(root, ex, errors, owner):
 
 def check_markdown_links(root, md, errors):
     text=md.read_text(encoding='utf-8',errors='replace')
-    for ref in re.findall(r'\[[^\]]*\]\(([^)]+)\)',text):
+    for ref in re.findall(r'\[[^\]]*\]\(([^)]+)\)', text):
+        ref = ref.strip().strip('<>')
         if ref.startswith(('http://','https://','#','mailto:')): continue
-        rel=(md.parent/ref.split('#')[0]).relative_to(root).as_posix()
-        target=safe_target(root,rel)
-        if target is None or not target.exists(): errors.append(f'{md.relative_to(root)}: broken/unsafe Markdown reference {ref}')
+        path_ref = ref.split('?', 1)[0].split('#', 1)[0]
+        if not path_ref: continue
+        try:
+            rel = (md.parent / path_ref).resolve().relative_to(root).as_posix()
+        except (ValueError, OSError):
+            errors.append(f'{md.relative_to(root)}: broken/unsafe Markdown reference {ref}')
+            continue
+        target = safe_target(root, rel)
+        if target is None or not target.exists() or target.is_symlink(): errors.append(f'{md.relative_to(root)}: broken/unsafe Markdown reference {ref}')
 
 def validate(root):
     root=Path(root).resolve(); errors=[]; rp=root/'registry'
     names=['architecture-manifest.json','elements.json','decomposition-map.json','interfaces.json','functions.json','decisions.json']
     regs={n:load(rp/n,errors,True) for n in names}
+    validate_declared_schemas(root, regs, errors)
     man,data,mp=regs[names[0]],regs[names[1]],regs[names[2]]
     for k in ['system_id','slug','name','language','stages']:
         if not man.get(k): errors.append(f'registry/architecture-manifest.json: required field {k!r} is missing')
@@ -187,8 +260,19 @@ def validate(root):
     if out.is_symlink(): errors.append('validation report directory must not be a symbolic link')
     else:
         out.mkdir(exist_ok=True)
-        (out/'coverage-report.md').write_text('\n'.join(coverage)+'\n',encoding='utf-8')
-        (out/'traceability-report.md').write_text('\n'.join(trace)+'\n',encoding='utf-8')
+        import tempfile, os
+        for name, payload in (("coverage-report.md", coverage), ("traceability-report.md", trace)):
+            target = out / name
+            if target.is_symlink() or (target.exists() and target.stat().st_nlink > 1):
+                errors.append(f'validation report target must not be a symlink or hard link: {target}')
+                continue
+            fd, tmp_name = tempfile.mkstemp(prefix=f'.{name}.', dir=out)
+            try:
+                with os.fdopen(fd, 'w', encoding='utf-8', newline='\n') as fh:
+                    fh.write('\n'.join(payload)+'\n'); fh.flush(); os.fsync(fh.fileno())
+                os.replace(tmp_name, target)
+            finally:
+                if os.path.exists(tmp_name): os.unlink(tmp_name)
     return errors,counts
 
 def main():

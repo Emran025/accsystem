@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "purpose": "Evidence-bearing lifecycle approval records keyed to exact requirement content hashes; no approval is currently recorded.",
+  "records": []
+}

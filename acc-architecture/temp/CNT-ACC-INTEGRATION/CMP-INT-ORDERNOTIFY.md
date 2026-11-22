@@ -1,0 +1,103 @@
+# CMP-INT-ORDERNOTIFY — Order Event Dispatcher
+
+## 1. Identity
+
+| Field | Value |
+|---|---|
+| **Component ID** | CMP-INT-ORDERNOTIFY |
+| **Parent Container** | CNT-ACC-INTEGRATION (Institution Integration Gateway — ACCSystem) |
+| **Purpose** | Consumes OrderConfirmed and OrderCancelled events from the Event Bus and dispatches them to the relevant institution ACCore instances via CNT-ACR-CONNECTOR, ensuring the seller (and buyer for B2B) are notified of order outcomes. |
+| **Scope Boundary** | Event routing and reliable dispatch only. Does NOT own order state or modify the order. |
+
+---
+
+## 2. Collaborators and Dependencies
+
+| Collaborator | Direction | Role |
+|---|---|---|
+| CNT-ACC-EVENTBUS | Inbound | Subscribes to OrderConfirmed, OrderCancelled, ReturnRequested events |
+| CNT-ACR-CONNECTOR | Outbound | Sends order event to relevant institution ACCore via IF-ACC-ORDER-CONFIRM channel |
+| CNT-ACC-INSTREG | Outbound | Looks up institution connector endpoint and auth credentials |
+| CNT-ACC-AUDIT | Outbound | Logs dispatch attempts and results |
+
+---
+
+## Component Relationship Diagram
+> Derived only from the collaborator/interface references in this document; no relationship is added here beyond the source text.
+```mermaid
+flowchart LR
+    CMP_INT_ORDERNOTIFY["CMP-INT-ORDERNOTIFY"]
+    CNT_ACC_EVENTBUS["CNT-ACC-EVENTBUS"]
+    CNT_ACC_EVENTBUS -->|documented collaborator| CMP_INT_ORDERNOTIFY
+    CNT_ACR_CONNECTOR["CNT-ACR-CONNECTOR"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACR_CONNECTOR
+    IF_ACC_ORDER_CONFIRM["IF-ACC-ORDER-CONFIRM"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| IF_ACC_ORDER_CONFIRM
+    CNT_ACC_INSTREG["CNT-ACC-INSTREG"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACC_INSTREG
+    CNT_ACC_AUDIT["CNT-ACC-AUDIT"]
+    CMP_INT_ORDERNOTIFY -->|documented collaborator| CNT_ACC_AUDIT
+```
+## 3. Behavior, Rules, and State
+
+The existing `event_id + institution_id` logical dispatch work scope must preserve every authorized buyer and seller effect. Whether a single projection carries both roles or multiple role-specific operations are needed, and any corresponding key change, are API/institution decisions; do not let the coarse key suppress a distinct legitimate role.
+
+- For each OrderConfirmed event, identifies each relevant seller institution from the seller-order context and sends an authorized seller-scoped notification
+- For B2B orders, also notifies the buyer institution if present
+- Delivery uses Outbox/Inbox and durable dispatch records with policy-controlled retry and recovery.
+- `event_id + institution_id` deduplicates dispatch work records, not physical transmissions: a lost ACK may require redelivery. Role/operation mapping for a multi-role recipient remains open; see IF-ACC-ORDER-CONFIRM §2A.
+
+**Business rules:**
+- An institution is only notified of orders where it is seller or buyer — never shown cross-institution data
+- Dispatch is non-blocking: failure does not roll back the order
+
+---
+
+## 4. Data and Side Effects
+
+| Data Item | Owned By |
+|---|---|
+| Dispatch log record | CMP-INT-ORDERNOTIFY |
+| Outbox entries for dispatch | Shared Outbox |
+
+Does NOT own: Order records, institution records.
+
+---
+
+## 5. Failure Modes and Resilience
+
+| Failure | Response |
+|---|---|
+| ACCore connector unavailable | Retry with configured backoff and the same idempotency key; when the configured recovery policy is exhausted, preserve the message in DLQ and alert Operations. |
+| Duplicate OrderConfirmed event | Deduplicate logical recipient work while permitting safe retransmission; receiver effects remain idempotent |
+| Institution not found in registry | Log error; skip dispatch; alert ops |
+
+---
+
+## 6. Security
+
+- CONFIRMED (idea.md §9): Institution isolation — only relevant institution receives its own order data
+- Event payload must not expose other institution's data
+- TLS + service-to-service auth for dispatch — CONFIRMED (idea.md §4.3)
+
+---
+
+## 7. Operational Concerns
+
+| Concern | Note |
+|---|---|
+| SLI | CONFIRMED (idea.md §11): "Integration Health — الرسائل الفاشلة" monitored |
+| Risk | ACCore unavailability delays seller notification; order remains Confirmed regardless |
+
+
+---
+
+## 8. Verification and Tests
+
+### 8.1 Acceptance Test Scenarios
+
+| Scenario | Input / Precondition | Expected Verification Outcome |
+|---|---|---|
+| Order delivery notification | `OrderConfirmed` event received from Orders container | Outbound notification dispatched to seller institution webhook |
+| Institution endpoint timeout | Seller endpoint unresponsive | Retain and retry with configured policy and same identifiers; escalate/DLQ when applicable |
+| Duplicate delivery event | Re-delivery, including lost ACK | No duplicate logical work/effects; physical retransmission is permitted |

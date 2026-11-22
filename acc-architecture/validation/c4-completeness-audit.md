@@ -1,5 +1,10 @@
 # ACC Diagram Completeness Audit
 
+
+> **Superseding note (2026-11-21):** The ACCSystem C1/C2 observations below describe the 2026-11-19 snapshot. The canonical black-box C1 view is now `c1-context/context-diagram.md`; the canonical C2 view is `c2-containers/accsystem/container-diagram.md`. The former embedded/overlay duplication is removed. C3 edge semantics and owner approval remain separate open review items.
+
+> **Historical finding set:** This audit predates the 2026-11-20 focused corrections and current renderer/schema checks. Its counts and findings are retained for provenance; do not read them as the current diagram state or as owner approval/release readiness. Consult `validation-status.md` for the current snapshot.
+
 **Audit date:** 2026-11-19. **Source archive:** `acc-architecture.zip`, SHA-256 `806faea3966d0abb0b3b955360bee2529d3bd9238e5b265862ed82da76bc45ac`. **Method:** an independent reviewer started from `registry/elements.json`, cross-checked `registry/decomposition-map.json`, interfaces, functions and decisions, then inspected actual Mermaid blocks and local file paths. It did not treat the coverage matrix or plausible filenames as proof. No files were edited by the auditor.
 
 ## Registry-derived counts
@@ -23,7 +28,7 @@ The coverage matrix contains rows for the 7 C1, 30 C2, and 28 selected C3 elemen
 
 ## Semantic completeness and traceability
 
-The ACCSystem focal C1 overlay is semantically incomplete relative to `c1-context/systems/SYS-ACCSYSTEM.md` and `c1-context/landscape.md`: the view does not show several documented direct client-system relationships and CDN distribution, despite relevant system IDs appearing elsewhere in the file. A generic `ACTORS` node in focal views also does not identify which registered actors have which documented relationships. This finding is distinct from the 7/7 C1 ID-presence result.
+The ACCSystem focal C1 overlay is semantically incomplete relative to the C1 system record and its embedded black-box context diagram; the canonical C2 container view is `c1-context/landscape.md`: the view does not show several documented direct client-system relationships and CDN distribution, despite relevant system IDs appearing elsewhere in the file. A generic `ACTORS` node in focal views also does not identify which registered actors have which documented relationships. This finding is distinct from the 7/7 C1 ID-presence result.
 
 Nine interface IDs are registered. Five were found as literal labels in Mermaid. Four—`IF-ACC-CATALOG-QUERY`, `IF-ACC-ORDER-CREATE`, `IF-ACC-EVENT-ENVELOPE`, and `IF-ACC-SOFTDL`—were not found as literal interface IDs in Mermaid. Some corresponding edges may be drawn without their interface IDs. C4 does not require an ID on every edge; this is a low-severity traceability improvement, not a claim that relationships are absent.
 

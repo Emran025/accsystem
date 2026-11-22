@@ -2,6 +2,8 @@
 
 **Scope:** Entire `acc-architecture/` directory after the `pasted_content_3.txt` pass.
 
+> **2026-11-20 re-review erratum:** This is a historical V3 record, not current certification. The later tree retained proposed retention numbers/triggers and some unsupported retry/latency assumptions outside the named examples; the broad claims below that no numeric policy or documentation contradiction remained do not apply to the current tree. Subsequent repairs make the values approval-gated and preserve owner decisions. No runtime test or stakeholder approval is implied.
+
 ## Reproducible searches
 
 The following searches were run recursively over Markdown and JSON source files:

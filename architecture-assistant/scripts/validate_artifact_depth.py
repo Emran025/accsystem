@@ -105,7 +105,7 @@ def audit(root: str | Path) -> dict[str, Any]:
         errors.append("Element registry must not be a symlink or hard-linked file")
     else:
         try:
-            payload = json.loads(registry_path.read_text(encoding="utf-8"))
+            payload = json.loads(registry_path.read_text(encoding="utf-8-sig"))
             elements = payload.get("elements", [])
             if not isinstance(elements, list):
                 raise ValueError("elements must be an array")

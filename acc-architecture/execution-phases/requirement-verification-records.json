@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "purpose": "Evidence-bearing execution/review records keyed to exact requirement content hashes; no acceptance verification is currently recorded.",
+  "records": []
+}

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import sys
+import argparse
 from validate_architecture import validate
-errs,_=validate(sys.argv[1]); errs=[e for e in errs if any(w in e for w in ['mapping','orphan','operation','function','decision','parent reference'])]
-print('PASS' if not errs else 'BLOCKED'); [print('- '+e) for e in errs]; sys.exit(bool(errs))
+p=argparse.ArgumentParser(description='Validate architecture traceability mappings.')
+p.add_argument('architecture_dir')
+a=p.parse_args(); errs,_=validate(a.architecture_dir); errs=[e for e in errs if any(w in e for w in ['mapping','orphan','operation','function','decision','parent reference'])]
+for e in errs: print('- '+e)
+raise SystemExit(1 if errs else 0)

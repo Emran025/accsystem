@@ -7,9 +7,9 @@ System: ACC Ecosystem (`SYS-ACCECOSYSTEM`)
 | Level | In-scope total | Decomposition complete | Exceptions (not complete) | Blocked/in progress/not started | Missing IDs |
 |---|---:|---:|---:|---:|---|
 | C1 | 15 | 7 | 8 | 0 | None |
-| C2 | 39 | 16 | 23 | 0 | None |
+| C2 | 40 | 17 | 23 | 0 | None |
 | C3 | 35 | 35 | 0 | 0 | None |
-| DECISION | 14 | 14 | 0 | 0 | None |
+| DECISION | 22 | 22 | 0 | 0 | None |
 
 Unmapped validation findings: 0
 

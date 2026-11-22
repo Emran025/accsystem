@@ -3,23 +3,23 @@
 **Status:** PROPOSED MVP BASELINE — multi-seller and multi-category carts are required.
 
 ## Rules
-A cart is grouped by seller/institution into one ParentOrder and one SellerOrder per seller. ACCore owns inventory. Reservation requests run concurrently where safe and each has a unique reservation ID/idempotency key. Payment is blocked until every required reservation has a known definitive result. `UNKNOWN` never means rejection and never authorizes an unsafe release.
+A cart is grouped by seller/institution into one ParentOrder and one SellerOrder per seller. ACCore owns inventory. Reservation requests run concurrently where safe and each has a stable scoped request/idempotency key; reservation-ID assignment remains an institution/API contract gate. Payment is blocked until every required reservation is authoritatively accepted and other guards hold. `UNKNOWN` never means rejection and never authorizes an unsafe release.
 
 ## Sequence
 ```mermaid
 sequenceDiagram
     autonumber
-    participant B as Buyer
-    participant C as CartCheckout
-    participant O as ParentSaga
-    participant S as Splitter
-    participant I as IntegrationRelay
-    participant A1 as SellerACCore1
-    participant A2 as SellerACCore2
-    participant P as PaymentOrchestrator
-    participant E as Provider
-    participant X as OutboxEventBus
-    participant D as Delivery
+  participant B as Buyer
+  participant C as CartCheckout
+  participant O as ParentSaga
+  participant S as Splitter
+  participant I as IntegrationRelay
+  participant A1 as SellerACCore1
+  participant A2 as SellerACCore2
+  participant P as PaymentOrchestrator
+  participant E as Provider
+  participant X as OutboxEventBus
+  participant D as Delivery
 
     B->>C: Create checkout with cart and delivery/payment details
     C->>C: Snapshot prices, tax lines, currencies, delivery and policy versions
@@ -27,22 +27,27 @@ sequenceDiagram
     O->>S: Create ParentOrder and group lines by seller
     S-->>O: ParentOrder + SellerOrder[1..N] persisted with outbox
     par Reservation per seller
-        O->>I: Reserve SellerOrder[1] (unique reservation ID/key)
+        O->>I: Reserve SellerOrder[1] (stable scoped request key)
         I->>A1: Atomic local reserve at ACCore
-        A1-->>I: ACCEPTED / REJECTED / UNKNOWN
+        A1-->>I: ACCEPTED / REJECTED / UNKNOWN / authoritative EXPIRED
         I-->>O: SellerOrder[1] outcome
     and
-        O->>I: Reserve SellerOrder[2..N] (unique reservation IDs/keys)
+        O->>I: Reserve SellerOrder[2..N] (stable scoped request keys)
         I->>A2: Atomic local reserve at ACCore
-        A2-->>I: ACCEPTED / REJECTED / UNKNOWN
+        A2-->>I: ACCEPTED / REJECTED / UNKNOWN / authoritative EXPIRED
         I-->>O: SellerOrder[2..N] outcomes
     end
-    alt Any definitive rejection
-        O->>I: Release only confirmed accepted holds
-        I-->>O: RELEASED or release UNKNOWN for reconciliation
-        O->>X: ParentOrderFailed via durable outbox
+    alt Definitive rejection or authoritative expiry
+        O->>O: Block checkout, reconcile other in-flight outcomes under UNKNOWN guard
+        O->>I: Release only eligible confirmed accepted holds when guards permit
+        I-->>O: RELEASED or release UNKNOWN
+        alt All required outcomes and compensation resolved
+            O->>X: ParentOrderFailed or eligible expiry via durable outbox
+        else Any required result remains UNKNOWN or pending
+            O->>O: Retain recovery/review work, do not announce final closure
+        end
     else Any UNKNOWN
-        O->>O: ParentOrder ReservationUnknown, query and reconcile, no payment or unsafe release
+        O->>O: ParentOrder ReservationUnknown, query where the institution contract supports it, otherwise wait/escalate and reconcile, with no payment or unsafe release
     else All required reservations accepted
         O->>P: Create per-SellerOrder payment allocations
         alt Compatible policy group and provider supports aggregation
@@ -53,16 +58,23 @@ sequenceDiagram
         E-->>P: AUTHORIZED / CAPTURED / DECLINED / UNKNOWN
         alt Definitive payment failure
             P-->>O: PaymentFailed
-            O->>I: Release confirmed holds
-            O->>X: ParentOrderFailed via durable outbox
+            O->>O: Reconcile other in-flight payment and reservation effects
+            O->>I: Compensate eligible confirmed holds when guards permit
+            alt Required compensation settled
+                O->>X: ParentOrderFailed via durable outbox
+            else Compensation or another effect UNKNOWN
+                O->>O: Keep recovery pending and escalate per policy
+            end
         else Payment unknown
             P-->>O: PaymentUnknown
             O->>O: Reconcile without repeating financial effect or releasing unknown hold
-        else Payment success
-            O->>O: Persist immutable parent/seller snapshots and CONFIRMED transition
+        else All required allocations definitively successful and holds still accepted
+            O->>O: Recheck all confirmation guards, persist immutable snapshots and CONFIRMED transition
             O->>X: OrderConfirmed(parent + seller orders) in same local transaction/outbox
-            X->>D: Create seller-scoped shipments
-            X->>P: Apply configured capture/settlement effects
+            X->>D: Create applicable seller-scoped physical shipments
+            X->>P: Evaluate approved later capture per allocation, skip already captured and reconcile UNKNOWN
+        else Authoritative hold expiry or other guard fails during payment
+            O->>O: Block confirmation, reconcile payment and peers, keep compensation pending until settled
         end
     end
 ```

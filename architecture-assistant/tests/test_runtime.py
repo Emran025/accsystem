@@ -22,6 +22,16 @@ class RuntimeTests(unittest.TestCase):
   with self.assertRaises(AgentError):t.read_file('../outside')
   with self.assertRaises(AgentError):t.read_file('docs/../README.md')
   with self.assertRaises(AgentError):t.write_file('.rag/index.json','bad')
+ def test_symlinked_parent_is_rejected_for_read_and_write(self):
+  outside=Path(self.tmp.name)/'outside';outside.mkdir();(outside/'note.md').write_text('secret');(self.root/'linked').symlink_to(outside, target_is_directory=True)
+  t=ArchitectureTools(self.root,approval=lambda *a:True)
+  with self.assertRaises(AgentError):t.read_file('linked/note.md')
+  with self.assertRaises(AgentError):t.write_file('linked/new.md','blocked')
+ def test_new_and_updated_files_have_explicit_regular_permissions(self):
+  t=ArchitectureTools(self.root,approval=lambda *a:True);r=t.write_file('permissions.md','one')
+  self.assertEqual(0o600,(self.root/'permissions.md').stat().st_mode & 0o777)
+  updated=t.write_file('permissions.md','two')
+  self.assertEqual('two',(self.root/'permissions.md').read_text());self.assertIsNotNone(updated['backup']);self.assertTrue((self.root/updated['backup']).is_file())
  def test_hard_linked_file_is_not_read_or_overwritten(self):
   original=self.root/'note.md';original.write_text('sensitive');linked=self.root/'alias.md'
   try:linked.hardlink_to(original)
@@ -53,6 +63,20 @@ class RuntimeTests(unittest.TestCase):
   s=SessionStore(self.root,'paused-1');tools=ArchitectureTools(self.root,session=s);c=FakeClient([tool_call('read_architecture_file',json.dumps({'path':'README.md'}))]);messages=[{'role':'user','content':'Inspect README'}]
   answer=run_turn(c,tools,'test-model',messages,max_steps=1,session=s);state=SessionStore(self.root,'paused-1').load()
   self.assertIn('Paused safely',answer);self.assertEqual('PAUSED_AT_STEP_LIMIT',state['status']);self.assertTrue(any(m.get('role')=='tool' for m in state['messages']))
+ def test_session_message_limit_is_bounded(self):
+  s=SessionStore(self.root,'bounded-1');s.state['messages']=[{'role':'user','content':'x'}]*(s.MAX_MESSAGES+1)
+  with self.assertRaises(AgentError):s.save()
+ def test_load_rejects_symlinked_or_mismatched_checkpoint(self):
+  original=SessionStore(self.root,'original-1');original.save([{'role':'user','content':'safe'}])
+  alias=SessionStore(self.root,'alias-1')
+  try:alias.path.symlink_to(original.path)
+  except OSError:self.skipTest('symlinks are unavailable on this filesystem')
+  with self.assertRaises(AgentError):alias.load()
+  alias.path.unlink();alias.path.write_text(json.dumps({'version':1,'session_id':'other-1','messages':[]}))
+  with self.assertRaises(AgentError):alias.load()
+ def test_model_step_limit_cannot_be_unbounded(self):
+  t=ArchitectureTools(self.root);c=FakeClient([])
+  with self.assertRaises(AgentError):run_turn(c,t,'test-model',[{'role':'user','content':'x'}],max_steps=501)
  def test_truncated_file_read_names_range_and_next_line(self):
   p=self.root/'long.md';p.write_text('\n'.join(f'line {i}' for i in range(1,1001)));tools=ArchitectureTools(self.root)
   part=tools.read_file('long.md',20,900);self.assertTrue(part['truncated']);self.assertEqual(20,part['start_line']);self.assertEqual(part['end_line']+1,part['next_start_line']);self.assertIn('explicitly bounded',part['notice'])

@@ -19,13 +19,13 @@ This view documents the license activation flow for ACCore institutions. It cove
 
 **Preconditions:**
 - Institution is registered with `platform_institution_id`
-- Platform admin has `license:write` role (RBAC)
+- Authorized platform admin or institution-scoped admin acts within approved role, institution scope and issuance/request approval policy; exact role matrix remains OPEN
 - Target product and license plan are defined in License & Entitlement catalog
 - ACCore backend is operational
 
 **Postconditions (success):**
-- License record created with status=ACTIVATED
-- Signed entitlement token delivered to ACCore
+- Institutional license advances ISSUED → ACTIVATED → ACTIVE when the applicable delivery, acknowledgment and operation conditions are met
+- Signed entitlement token reaches ACCore through a separate license-owned issuance/delivery operation; its approved interface, channel, receiver and acknowledgement remain OPEN
 - ACCore validates entitlement and enables licensed modules/features
 - LicenseIssued + LicenseActivated events on Event Bus (audit trail)
 
@@ -36,103 +36,111 @@ This view documents the license activation flow for ACCore institutions. It cove
 ```mermaid
 sequenceDiagram
     autonumber
-    participant ADM as ACManagement Admin<br/>(Management Console)
-    participant AGW as API Gateway<br/>(ACCSystem)
-    participant PA as Platform Administration<br/>& Support
-    participant LE as License & Entitlement<br/>Management
-    participant IA as Identity & Access
-    participant BUS as Event Bus
-    participant IGW as Integration Gateway
-    participant ACC as ACCore<br/>License Connector + Backend
-    participant AUD as Audit & Observability
+  participant ADM as ACManagement Admin / (Management Console)
+  participant AGW as API Gateway / (ACCSystem)
+  participant PA as Platform Administration / and Support
+  participant LE as License and Entitlement / Management
+  participant IA as Identity and Access
+  participant BUS as Event Bus
+  participant IGW as Integration Gateway
+  participant ACC as ACCore / License Connector + Backend
+  participant AUD as Audit and Observability
 
-    Note over ADM,AUD: PHASE 1 — LICENSE REQUEST CREATION
+    Note over ADM,AUD: PHASE 1 - LICENSE REQUEST CREATION
 
-    ADM->>AGW: POST /v1/management/institutions/{institution_id}/licenses<br/>Authorization: Bearer <admin_jwt + MFA><br/>{product_code, plan_id, seat_count, valid_from, valid_until, units[]}
-    AGW->>AGW: Validate JWT (MFA claim required), extract admin_id, check role: license:write
-    AGW->>PA: ForwardLicenseRequest(admin_id, institution_id, product_code, plan_id, params)
-    PA->>IA: VerifyAdminPermission(admin_id, action: license:issue, resource: institution_id)
-    IA-->>PA: Permission GRANTED (role + scope confirmed)
-    PA->>LE: CreateLicense(institution_id, product_code, plan_id, seat_count,<br/>valid_from, valid_until, units[], issued_by: admin_id)
+    ADM->>AGW: Submit authenticated admin request, license fields illustrative, token format and MFA claim policy OPEN
+    AGW->>AGW: Validate token/session and extract verified identity context, no authorization decision
+    AGW->>PA: Forward authenticated LicenseRequest and identity context
+    PA->>IA: Resolve role, membership and institution-scope data for this operation
+    IA-->>PA: Role / membership data only, no central ALLOW/DENY verdict
+    PA->>PA: Apply target workflow / approval policy (role matrix and approval rules OPEN)
+    PA->>LE: CreateLicense after workflow authorization (fields and contract OPEN)
 
-    Note over LE,BUS: PHASE 2 — LICENSE RECORD CREATION AND SIGNING
+    Note over LE,BUS: PHASE 2 - LICENSE RECORD CREATION AND SIGNING
 
     LE->>LE: Validate institution eligibility and plan constraints
-    LE->>LE: Create License record<br/>{license_id, institution_id, product_code, plan_id,<br/>seat_count, units[], valid_from, valid_until, status: ISSUED}
-    LE->>LE: Generate signed Entitlement token (JWT or signed JSON)<br/>{entitlement_id, license_id, institution_id, product_code,<br/>units[], seat_count, valid_from, valid_until, issued_at,<br/>signature: RS256(private_key)}
-    LE->>BUS: publish LicenseIssued<br/>{license_id, institution_id, product_code, issued_by, issued_at, correlation_id}
-    BUS->>AUD: consume LicenseIssued → write immutable AuditEvent
-    LE-->>PA: LicenseCreated(license_id, entitlement_token)
-    PA-->>AGW: 201 Created (license_id, status: ISSUED)
-    AGW-->>ADM: License issued — license_id, status: ISSUED
+    LE->>LE: Create License record / (license_id, institution_id, product_code, plan_id, / seat_count, units[], valid_from, valid_until, status: ISSUED)
+    LE->>LE: Arrange recoverable separate token signing work (format OPEN)
+    LE->>BUS: publish LicenseIssued via durable event path
+    BUS->>AUD: consume LicenseIssued to write AuditEvent
+    LE-->>PA: LicenseCreated(license_id, status ISSUED)
+    PA-->>AGW: Receipt under approved contract
+    AGW-->>ADM: License issued, token readiness is separate
 
-    Note over IGW,ACC: PHASE 3 — ENTITLEMENT DELIVERY TO ACCORE
+    Note over IGW,ACC: PHASE 3 - INSTITUTIONAL SIGNING AND DELIVERY
+    alt Signing succeeds and delivery is acknowledged
+        LE->>LE: Sign institutional scoped entitlement (token format, algorithm and key policy OPEN)
+        LE->>IGW: Proposed signed-entitlement delivery via Integration, interface/channel OPEN
+        IGW->>ACC: Logical delivery direction only, receiving component/channel/ACK OPEN
+        ACC->>ACC: Candidate checks for signature, scope and credential bounds, approved contract OPEN
+        ACC->>ACC: Store validated token locally if selected implementation requires it
+        ACC-->>IGW: Candidate receipt, ACK meaning and durable responsibility OPEN
+        IGW->>LE: Forward receipt only if selected by the approved contract
+        LE->>LE: Advance ISSUED to ACTIVATED only after approved contract-valid receipt and policy conditions
+        LE->>BUS: Publish LicenseActivated at approved transition
+        BUS->>AUD: Audit activation
+        ACC->>ACC: Begin authorized licensed operation
+        LE->>LE: Advance ACTIVATED to ACTIVE under lifecycle policy
+    else Signing or delivery unavailable / uncertain
+        LE->>LE: Retain recoverable pending work, retry/reconcile under policy
+        Note over LE,ACC: No token readiness or activation is inferred from a missing result
+    end
 
-    LE->>IGW: DeliverEntitlement(institution_id, entitlement_token, license_id,<br/>idempotency_key: license_id, correlation_id)
-    IGW->>ACC: POST /v1/licenses/entitlement (TLS, service auth)<br/>{entitlement_token, license_id, delivered_at}
+    Note over LE,ACC: PROPOSED logical delivery. Receiver, interface, ACK, retry ownership, activation correlation and wire schema remain OPEN.
+    Note over IGW,ACC: ADR-015 transport-initiation baseline: ACCore outbound for firewalled institutions, with polling, long-polling or a persistent channel as candidate mechanisms. Protected inbound remains optional.
+    Note over LE,ACC: Arrows show the logical token path, not network initiation. This does not reuse read-only IF-ACC-LICENSE-VALIDATE or register a new delivery IF.
 
-    ACC->>ACC: Verify entitlement token signature (RS256 with platform public key)
-    ACC->>ACC: Check entitlement validity (not_before, not_after, institution_id match)
-    ACC->>ACC: Store entitlement token locally (encrypted at rest)
-    ACC->>ACC: Enable licensed units/features per entitlement.units[]
-    ACC->>ACC: Set license_check_at = now + validation_interval
-
-    ACC-->>IGW: 200 OK — EntitlementAcknowledged(entitlement_id)
-    IGW->>LE: DeliveryConfirmed(license_id, entitlement_id, activated_at)
-    LE->>LE: Update License status → ACTIVATED
-    LE->>BUS: publish LicenseActivated<br/>{license_id, entitlement_id, institution_id, activated_at, correlation_id}
-    BUS->>AUD: consume LicenseActivated → write immutable AuditEvent
-
-    Note over ADM,AUD: PHASE 4A — ONLINE PERIODIC VALIDATION
+    Note over ADM,AUD: PHASE 4A - ONLINE PERIODIC VALIDATION
 
     loop Every validation_interval (configurable, no value selected)
         ACC->>ACC: Check if validation_interval elapsed
-        ACC->>IGW: POST /v1/licenses/validate (TLS, service auth)<br/>{license_id, entitlement_id, institution_id, check_at: now,<br/>usage: {active_seats, active_units[]}}
-        IGW->>LE: ValidateLicense(license_id, entitlement_id, usage)
+        ACC->>IGW: POST /v1/licenses/validate (TLS, service auth) / (institution_id, product_code, module_codes, seat_count, / installation_id, correlation_id)
+        IGW->>LE: Validate institutional scope and requested usage (read-only)
         LE->>LE: Check license status (ACTIVE / SUSPENDED / REVOKED / EXPIRED)
         LE->>LE: Check seat/usage against limits
         
         alt License ACTIVE and within limits
-            LE-->>IGW: ValidationResult(status: VALID, valid_until, usage_ok: true)
-            IGW-->>ACC: ValidationResult(VALID, valid_until)
+            LE-->>IGW: status ACTIVE and entitlement (validity, modules, limits)
+            IGW-->>ACC: ACTIVE plus entitlement, evaluation is distinct
             ACC->>ACC: Update local validation cache (last_validated_at = now)
             ACC->>ACC: Continue normal operation
         else License SUSPENDED or REVOKED
-            LE-->>IGW: ValidationResult(status: SUSPENDED | REVOKED, reason)
+            LE-->>IGW: ValidationResult(status: SUSPENDED  or  REVOKED, reason)
             IGW-->>ACC: ValidationResult(status)
-            ACC->>ACC: Restrict licensed features (grace period policy applies — UNKNOWN duration)
-            LE->>BUS: publish LicenseSuspended | LicenseRevoked
+            ACC->>ACC: Restrict licensed features for known suspension/revocation, expiry grace is a separate policy
+            Note over LE,BUS: Read-only validation returns status and optional telemetry, lifecycle-owned transitions publish LicenseSuspended or LicenseRevoked once per idempotent transition
             BUS->>AUD: AuditEvent
         else License EXPIRED
             LE-->>IGW: ValidationResult(status: EXPIRED)
             IGW-->>ACC: ValidationResult(EXPIRED, renewal_url)
-            ACC->>ACC: Enter grace period (UNKNOWN duration) — alert institution admin
+            ACC->>ACC: Restrict unless applicable grace is approved, alert admin
         else Usage exceeds limits (seat overuse)
-            LE-->>IGW: ValidationResult(status: VALID, usage_ok: false, overage_detail)
-            IGW-->>ACC: ValidationResult(usage_ok: false)
-            ACC->>ACC: Alert institution admin; block new seat activations
+            LE-->>IGW: Capacity exceeded diagnostic/error (mapping OPEN)
+            IGW-->>ACC: Capacity result, do not conflate ACTIVE with within limits
+            ACC->>ACC: Refuse additional unapproved activations, apply any approved broader overage policy and alert admin
         end
         
-        LE->>BUS: LicenseValidated event (periodic)
+        LE->>BUS: Optional validation telemetry, if approved, no lifecycle transition event
         BUS->>AUD: AuditEvent (validation result logged)
     end
 
-    Note over ACC,LE: PHASE 4B — OFFLINE VALIDATION (when ACCSystem unreachable)
+    Note over ACC,LE: PHASE 4B - OFFLINE VALIDATION (when ACCSystem unreachable)
 
     alt ACCSystem unreachable during validation check
-        ACC->>ACC: Attempt online validation → timeout/connection failure
+        ACC->>ACC: Attempt online validation to timeout/connection failure
         ACC->>ACC: Fall back to local signed entitlement token
-        ACC->>ACC: Verify signature on stored entitlement (RS256 with cached platform public key)
-        ACC->>ACC: Check entitlement.valid_until > now
+        ACC->>ACC: Verify signature using an approved algorithm and trust anchor, algorithm and key distribution UNKNOWN, RS256 not selected
+        ACC->>ACC: Check scoped identity, authenticated grant validity and credential expiry separately
+        ACC->>ACC: If locally observed suspension or revocation applies, restrict, unseen revocations remain an offline limitation
         
         alt Entitlement still within validity window
-            ACC->>ACC: Continue operation (offline mode — CONFIRMED per idea.md §4.2, §4.3)
+            ACC->>ACC: Continue operation (offline mode - CONFIRMED per idea.md §4.2, §4.3)
             ACC->>ACC: Log offline validation event locally
             Note over ACC: Offline period bounded by entitlement TTL and grace period (UNKNOWN)
         else Entitlement expired and cannot reach platform
-            ACC->>ACC: Enter grace period (if configured — UNKNOWN)
-            ACC->>ACC: Alert institution admin — connectivity required for license renewal
-            Note over ACC: Specific offline tolerance window is UNKNOWN — requires business decision
+            ACC->>ACC: Restrict unless an applicable grace policy is approved
+            ACC->>ACC: Alert institution admin - connectivity required for license renewal
+            Note over ACC: Specific offline tolerance window is UNKNOWN - requires business decision
         end
     end
 ```
@@ -147,7 +155,7 @@ sequenceDiagram
 | ACTIVATED | ISSUED / RENEWED | ACTIVE (operational) | ACCore begins using license |
 | ACTIVE | ACTIVATED | SUSPENDED | Admin suspension action |
 | ACTIVE | ACTIVATED | REVOKED | Admin revocation action |
-| ACTIVE | ACTIVATED | EXPIRED | `valid_until` timestamp passed |
+| ACTIVE | ACTIVATED | EXPIRED | Status timing relative to validity end and approved grace is OPEN |
 | ACTIVE | ACTIVATED | RENEWED | Renewal issued before expiry |
 | SUSPENDED | ACTIVE | ACTIVE | Suspension lifted |
 | SUSPENDED | ACTIVE | REVOKED | Further action taken |
@@ -164,10 +172,10 @@ sequenceDiagram
 | Trigger | Periodic validation interval elapsed | ACCSystem unreachable |
 | Validation source | License & Entitlement Management service (authoritative) | Local signed entitlement token (cached) |
 | Covers revocation? | Yes — real-time status check | No — revocation not reflected until connectivity restored |
-| Coverage | Full: status, seat count, usage, unit list | Limited: signature validity + expiry only |
-| Timing | Every `validation_interval` (configurable validation interval — no value selected) | Until entitlement TTL expires or connectivity restored |
+| Coverage | Status, seat count, usage and unit list per contract | Signature, workflow/identity, grant validity and credential expiry; current revocation may be unavailable offline |
+| Timing | Every `validation_interval` (configurable validation interval — no value selected) | Credential and grant bounds, observed revocation and approved applicable grace constrain offline use |
 | Logged where | Platform AuditEvent (server-side) | ACCore local log; synced to platform on reconnect PROPOSED |
-| Security risk | Requires connectivity | Revoked license may operate offline until TTL expires |
+| Security risk | Requires connectivity | Revocation may be unseen offline, subject to credential/grant bounds and approved policy |
 
 > [!WARNING]
 > The offline tolerance window (entitlement TTL + grace period) is a **BLOCKER — UNKNOWN**. Too short → disrupts legitimate offline ACCore deployments. Too long → revoked licenses operate undetected. Requires business/security decision. See ADR-014.
@@ -180,6 +188,7 @@ sequenceDiagram
 {
   "entitlement_id": "ent_uuid",
   "license_id": "lic_uuid",
+  "workflow": "institutional",
   "institution_id": "inst_uuid",
   "product_code": "ACCORE",
   "units": ["FINANCE", "INVENTORY", "MARKETPLACE"],
@@ -187,11 +196,12 @@ sequenceDiagram
   "valid_from": "2026-01-01T00:00:00Z",
   "valid_until": "2027-01-01T00:00:00Z",
   "issued_at": "2026-01-01T00:00:00Z",
+  "expires_at": "2026-01-02T00:00:00Z",
   "issuer": "accsystem.license",
-  "grace_period_days": 7
+  "grace_policy_ref": "policy-controlled"
 }
 ```
-*Signed with RS256 using platform License & Entitlement signing key. ACCore holds platform public key for offline verification.*
+*Illustrative claim values only: grant dates differ from credential issue/expiry; TTL, wire mapping, algorithm, key distribution and rotation require approval. Offline verification requires an approved trust anchor; its storage and update path are not selected.*
 
 > [!NOTE]
 > Token format (JWT vs custom signed JSON vs signed binary) is **PROPOSED**. JWT (RFC 7519) is recommended for ecosystem compatibility and existing library support.
@@ -207,7 +217,7 @@ sequenceDiagram
 | LIC-003 | Seat overuse enforcement — block vs alert vs retroactive billing | MEDIUM | Business |
 | LIC-004 | Entitlement token refresh strategy — how ACCore gets renewed token without manual admin action | MEDIUM | Architecture |
 | LIC-005 | Key rotation — how platform public key rotation is propagated to ACCore instances | MEDIUM | Architecture/Security |
-| LIC-006 | ACCommerce license model — not addressed (assumed free; see idea.md §12) | UNKNOWN | Business |
+| LIC-006 | `validation/traceability-24-topics.md` records reported owner direction that ACCommerce is initially free; the original owner prompt is unavailable. Future monetization and access/entitlement model remain OPEN, distinct from purchased software licenses | UNKNOWN | Business |
 | LIC-007 | Multi-unit license — partial unit revocation behavior | UNKNOWN | Business |
 
 ---
@@ -219,7 +229,7 @@ sequenceDiagram
 
 | Term | Definition | Identifier(s) |
 |---|---|---|
-| **Licensee / Beneficiary** | The party entitled to use the licensed software. For **institutional licenses** (this flow): the institution. For **marketplace licenses** (FN-LIC-ACTIVATE flow): the individual or institutional buyer. | `institution_id` (institutional) OR `buyer_id` (marketplace) |
+| **Licensee / Beneficiary** | Party entitled to use the software. Institutional flow is institution-scoped; marketplace record is buyer-scoped, but B2B beneficiary/delegation may differ and is OPEN. | `institution_id` (institutional); `buyer_id` identifies marketplace buyer, not an approved delegated-beneficiary mapping |
 | **Buyer** | The party who transacted the purchase. May differ from beneficiary in B2B scenarios. For marketplace flow: `buyer_id`. | `buyer_id` |
 | **Publisher / Seller** | The institution that publishes the product to the marketplace and receives payment. This is **not** the license beneficiary. | `publisher_institution_id` (= `item.seller_id` in order context) |
 | **Institution operating the installation** | The ACCore instance that runs the licensed software. For institutional licenses = Licensee. For marketplace licenses, the institution operating on behalf of a buyer is a separate concept (OPEN — not yet modelled). | `institution_id` |
@@ -234,11 +244,11 @@ sequenceDiagram
 |---|---|---|
 | **Trigger** | Admin action via ACManagement | Automatic — triggered by `OrderConfirmed` event |
 | **Licensee identifier** | `institution_id` | `buyer_id` |
-| **Product identifier** | `product_code` + `plan_id` | `product_id` (marketplace listing) |
+| **Product identifier** | `product_code` + `plan_id` | `product_id`; mapping to listing, seller product and software catalog identifiers is OPEN |
 | **Publisher/Seller** | Platform itself (ACCSystem as publisher) | An institution's published product |
 | **Initial state** | ISSUED → ACTIVATED → ACTIVE | Directly ACTIVE |
 | **Seat/unit model** | Yes — `seat_count`, `units[]` | UNKNOWN (idea.md §12 — open decision) |
-| **Offline token** | Long-lived entitlement (months — ADR-014) | Short-lived (TTL UNKNOWN — ADR-014) |
+| **Offline token** | Policy-controlled credential TTL UNKNOWN; grant validity is separate | Policy-controlled credential TTL UNKNOWN; grant validity is separate |
 | **Validation query** | `institution_id + product_code` | `buyer_id + product_id` or `license_id` |
 
 > [!NOTE]

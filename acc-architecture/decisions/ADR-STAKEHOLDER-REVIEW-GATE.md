@@ -2,7 +2,7 @@
 
 **Artifact ID:** `decisions/ADR-STAKEHOLDER-REVIEW-GATE.md`  
 **Date:** 2026-11-16  
-**Status:** READY FOR STAKEHOLDER SIGN-OFF  
+**Status:** REVIEW PACKAGE — SIGN-OFF PENDING; NO STAKEHOLDER APPROVAL RECORDED
 **Governance Authority:** `architecture-assistant/AGENT.md`, `architecture-assistant/WORKFLOW.md`
 
 ---
@@ -13,13 +13,21 @@ In accordance with strict architectural governance rules:
 > **"AI-generated approval is never stakeholder approval."**  
 > An automated assistant or language model cannot self-approve architectural decisions, commit an enterprise to operational risk, or declare production readiness.
 
-For this reason, all fourteen Architectural Decision Records (ADRs) have been methodically authored and maintained in **`PROPOSED`** status. This document serves as the formal **Stakeholder Decision Gate**. It provides human decision-makers (Lead Architects, Product Owners, Security Officers, and Operations Leads) with a structured evaluation framework, risk summary, and formal sign-off protocol to review, adjust, and advance each ADR from `PROPOSED` to `ACCEPTED`.
+The original package covered fourteen Architectural Decision Records (ADR-001–014). The sign-off inventory below now includes ADR-001–022, with review still pending as recorded. Individual ADRs also contain narrower owner-direction or accepted-principle labels; governance must reconcile their meaning with the registry/sign-off table rather than treating any label as evidence of formal stakeholder approval. This document serves as the formal **Stakeholder Decision Gate**. It provides human decision-makers (Lead Architects, Product Owners, Security Officers, and Operations Leads) with a structured evaluation framework, risk summary, and formal sign-off protocol to review, adjust, and advance each ADR from `PROPOSED` to `ACCEPTED`.
 
 ---
 
 ## 2. Priority Decision Tiers
 
-The 14 ADRs are organized into three sequential evaluation tiers based on architectural impact and dependency order:
+The original 14 ADRs are organized into three sequential evaluation tiers below. That diagram is a historical starting point. The current provisional mapping for ADR-015–022 is listed below; it is a review-sequencing aid, not approval evidence:
+
+| Provisional review tier | ADRs | Dependency / gate | Approval state |
+|---|---|---|---|
+| Tier 1 — boundaries and governance | ADR-015, ADR-020, ADR-021 | Connectivity/view scope and API governance establish interpretation boundaries | Proposed; owner review required |
+| Tier 2 — transaction and reservation integrity | ADR-018, ADR-019 | Reservation uncertainty, accounting trigger, and event contracts require institution/Finance/API review | Proposed; owner review required |
+| Tier 3 — policy and operational enablement | ADR-016, ADR-017, ADR-022 | Ledger/settlement, policy registry, and threshold values require Finance/Legal/Operations approval | Proposed; owner review required |
+
+No row below or above constitutes stakeholder approval; the registry remains the machine-readable status source and currently classifies these ADRs as proposed.
 
 ```
 +-----------------------------------------------------------------------------------+

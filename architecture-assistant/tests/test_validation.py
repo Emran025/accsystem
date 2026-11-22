@@ -74,4 +74,16 @@ class ValidationTests(unittest.TestCase):
  def test_diagram_unknown_id(self):
   with (self.root/'c1-context/context-diagram.md').open('a') as f:f.write('\n```mermaid\nflowchart LR\n X["CMP-NOPE"]\n```\n')
   self.assertTrue(any('diagram references unknown registry ID CMP-NOPE' in e for e in self.errs()))
+ def test_declared_schema_rejects_missing_element_type(self):
+  self.edit('registry/elements.json',lambda x:x['elements'][0].pop('type',None))
+  self.assertTrue(any('elements.json[0].type' in e and 'architectural-element.schema.json' in e for e in self.errs()))
+ def test_declared_schema_rejects_invalid_manifest_stage(self):
+  self.edit('registry/architecture-manifest.json',lambda x:x['stages'].__setitem__('C1','NOT_A_GATE'))
+  self.assertTrue(any('architecture-manifest.json[0].stages.C1' in e and 'architecture-manifest.schema.json' in e for e in self.errs()))
+ def test_declared_schema_rejects_wrong_dialect(self):
+  schema=Path('architecture-assistant/schemas/architecture-manifest.schema.json');original=schema.read_text()
+  try:
+   schema.write_text(original.replace('https://json-schema.org/draft/2020-12/schema','https://json-schema.org/draft/07/schema',1))
+   self.assertTrue(any('schema dialect must be JSON Schema Draft 2020-12' in e for e in self.errs()))
+  finally:schema.write_text(original)
 if __name__=='__main__':unittest.main()
